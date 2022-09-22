@@ -1,0 +1,215 @@
+syntax = "proto3";
+
+/* 
+  Protobuf Specification for the VP9 Video Codec 
+  spec: https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf 
+*/
+
+message VP9SignedInteger {
+  bytes value = 1; // n bits to store signed integer value
+  uint32 sign = 2; // 1 bit to determine signedness of integer
+}
+
+message UncompressedHeader {
+
+  message ColorConfig {
+    uint32 ten_or_twelve_bit = 0; // 1 bit
+  
+    uint32 color_space = 1; // 3 bits
+  
+    uint32 color_range = 2; // 1 bit
+  
+    uint32 subsampling_x = 3; // 1 bit, only present if profile == 1 or profile == 3
+    uint32 subsampling_y = 4; // 1 bit, only present if profile == 1 or profile == 3
+  
+    uint32 reserved_zero = 5; // 1 bit
+  }
+  
+  message FrameSize {
+    uint32 frame_width_minus_1 = 1; // 16 bit
+  
+    uint32 frame_height_minus_1 = 2; // 16 bit
+  }
+  
+  message RenderSize {
+    uint32 render_and_frame_size_different = 1; // 1 bit
+  
+    uint32 render_width_minus_1 = 2; // 16 bit
+  
+    uint32 render_height_minus_1 = 3; // 16 bit
+  }
+  
+  message ReadInterpolationFilter {
+    uint32 is_filter_switchable = 1; // 1 bit
+  
+    uint32 raw_interpolation_filter = 2; // 2 bits
+  }
+  
+  message LoopFilterParams {
+    uint32 loop_filter_level = 1; // 6 bits
+    uint32 loop_filter_sharpness = 2; // 3 bits
+    uint32 loop_filter_delta_enabled = 3; // 1 bit
+    uint32 loop_filter_delta_update = 4; // 1 bit
+  
+    uint32 update_ref_delta = 5; // 1 bit
+    VP9SignedInteger loop_filter_ref_deltas = 6; // 7 bits
+  
+    uint32 update_mode_delta = 7; // 1 bit
+    VP9SignedInteger loop_filter_mode_deltas = 8; // 7 bits
+  }
+  
+  message QuantizationParams {
+    uint32 base_q_idx = 1; // 8 bits
+  }
+  
+  message SegmentationParams {
+    uint32 segmentation_enabled = 1; // 1 bit
+  
+    uint32 segmentation_update_map = 2; // 1 bit
+  
+    uint32 segmentation_temporal_update = 3; // 1 bit
+  
+    uint32 segmentation_update_data = 4; // 1 bit
+  
+    uint32 segmentation_abs_or_delta_update = 5; // 1 bit
+  
+    uint32 feature_enabled = 6; // 1 bit
+  
+    bytes feature_value = 7; // ? bits
+    uint32 feature_sign = 8; // 1 bit
+  }
+  
+  message TileInfo {
+    uint32 increment_tile_cols_log2 = 1; // 1 bit
+  
+    uint32 tile_rows_log2 = 2; // 1 bit
+  
+    uint32 increment_tile_rows_Log2 = 3; // 1 bit
+  }
+
+  uint32 marker = 1;  // 2 bits
+
+  uint32 profile = 2; // 2 bits, profile_low bit and profile_high_bit in spec
+  uint32 reserved_zero = 3; // 1 bit
+  
+  uint32 show_existing_frame = 4; // 1 bit
+  uint32 frame_to_show_map_idx = 5; // 3 bits
+
+  uint32 frame_type = 6; // 1 bit
+  
+  uint32 show_frame = 7; // 1 bit
+
+  uint32 error_resilient_mode = 8; // 1 bit
+
+  uint32 frame_sync_code = 9; // 24 bits, frame_sync_code() in spec
+
+  ColorConfig color_config = 10; // 8 bits, color_config() in spec
+
+  uint32 frame_size_found_ref = 11; // 3 bits, found_ref inside frame_size_with_refs() in spec
+
+  FrameSize frame_size = 12; // 32 bits, frame_size() in spec
+
+  RenderSize render_size = 13; // 1-33 bits, render_size() in spec 
+
+  uint32 intra_only = 14; // 1 bit
+
+  uint32 reset_frame_context = 15; // 2 bits
+
+  uint32 refresh_frame_flags = 16; // 8 bits
+  
+  uint32 ref_frame_idx = 17; // 9 bits
+
+  uint32 ref_frame_sign_bias = 18; // 3 bits
+
+  uint32 allow_high_precision_mv = 19; // 1 bit
+
+  ReadInterpolationFilter read_interpolation_filter = 20; // 3 bits, read_interpolation_filter() in spec
+
+  uint32 frame_parallel_decoding_mode = 21; // 1 bit
+
+  uint32 frame_context_idx = 22; // 2 bits
+
+  LoopFilterParams loop_filter_params = 23; // 27 bits, loop_filter_params() in spec
+  QuantizationParams quantization_params = 24; // 8 bits, quantization_params() in spec
+  SegmentationParams SegmentationParams = 25; // ? bits, segmentation_params() in spec
+  TileInfo tile_info = 26; // 3 bits, tile_info() in spec
+
+  uint32 header_size_in_bytes = 27; // 16 bits
+}
+
+
+
+message CompressedHeader {
+  bytes read_tx_mode = 1; // read_tx_Mode() in spec
+  bytes tx_mode_probs = 2; // tx_mode_probs() in spec
+
+  bytes read_coef_probs = 3; // read_coef_probs() in spec
+  bytes read_skip_prob = 4; // read_skip_prob() in spec
+  bytes read_inter_mode_probs = 5; // read_inter_mode_probs() in spec
+  bytes read_interp_filter_probs = 6; // read_interp_filter_probs() in spec
+  bytes read_is_inter_probs = 7; // read_is_inter_probs() in spec
+
+  bytes frame_reference_mode = 8; // frame_reference_mode() in spec
+  bytes frame_reference_mode_probs = 9; // frame_reference_mode_probs() in spec
+
+  bytes read_y_mode_probs = 10; // read_y_mode_probs() in spec
+  bytes read_partition_probs = 11; // read_partition_probs() in spec
+
+  bytes mv_probs = 12; // mv_probs() in spec
+}
+
+message Block {
+    
+  message IntraFrameModeInfo {
+    bytes segment_id = 1; // intra_segment_id() in spec
+    bytes skip = 2; // read_skip() in spec
+    bytes tx_size = 3; // read_tx_size() in spec
+    
+    bytes default_intra_mode = 4;
+
+    bytes default_uv_mode = 5;
+  }
+
+  message InterFrameModeInfo {
+    bytes segment_id = 2; // inter_segment_id() in spec
+    bytes skip = 2; // read_skip() in spec
+    bytes is_inter = 3; // read_is_inter() in spec
+    bytes tx_size = 4; // read_tx_size() in spec
+
+    oneof next_frame { // should only use inter_frame if is_inter == true per the spec
+      IntraFrameModeInfo intra_frame = 1;
+      InterFrameModeInfo inter_frame = 2;
+    }
+  }
+
+  oneof mode_info {
+    IntraFrameModeInfo intra_frame = 1;
+    InterFrameModeInfo inter_frame = 2;
+  }
+
+  bytes residual = 2; // TODO: better define this field
+}
+
+message Partition {
+  bytes partition = 1;
+
+  Block block = 2;
+}
+
+message Tile {
+  uint32 tile_size = 1; // 32 bits
+
+  Partition partition = 2;
+}
+
+message VP9Frame {
+  UncompressedHeader uncompressed_header = 1; // uncompressed_header() in spec
+
+  uint32 trailing_bits = 2; // trailing_bits() in spec
+
+  uint32 padding_bit = 3; // padding for if header is 0 bytes large
+
+  CompressedHeader compressed_header = 4; // compressed_header() in spec
+
+  repeated Tile tiles = 5; // decode_tiles() in spec
+}
