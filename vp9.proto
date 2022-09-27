@@ -13,16 +13,16 @@ message VP9SignedInteger {
 message UncompressedHeader {
 
   message ColorConfig {
-    uint32 ten_or_twelve_bit = 0; // 1 bit
+    uint32 ten_or_twelve_bit = 1; // 1 bit
   
-    uint32 color_space = 1; // 3 bits
+    uint32 color_space = 2; // 3 bits
   
-    uint32 color_range = 2; // 1 bit
+    uint32 color_range = 3; // 1 bit
   
-    uint32 subsampling_x = 3; // 1 bit, only present if profile == 1 or profile == 3
-    uint32 subsampling_y = 4; // 1 bit, only present if profile == 1 or profile == 3
+    uint32 subsampling_x = 4; // 1 bit, only present if profile == 1 or profile == 3
+    uint32 subsampling_y = 5; // 1 bit, only present if profile == 1 or profile == 3
   
-    uint32 reserved_zero = 5; // 1 bit
+    uint32 reserved_zero = 6; // 1 bit
   }
   
   message FrameSize {
@@ -131,7 +131,7 @@ message UncompressedHeader {
 
   LoopFilterParams loop_filter_params = 23; // 27 bits, loop_filter_params() in spec
   QuantizationParams quantization_params = 24; // 8 bits, quantization_params() in spec
-  SegmentationParams SegmentationParams = 25; // ? bits, segmentation_params() in spec
+  SegmentationParams segmentation_params = 25; // ? bits, segmentation_params() in spec
   TileInfo tile_info = 26; // 3 bits, tile_info() in spec
 
   uint32 header_size_in_bytes = 27; // 16 bits
@@ -171,14 +171,14 @@ message Block {
   }
 
   message InterFrameModeInfo {
-    bytes segment_id = 2; // inter_segment_id() in spec
+    bytes segment_id = 1; // inter_segment_id() in spec
     bytes skip = 2; // read_skip() in spec
     bytes is_inter = 3; // read_is_inter() in spec
     bytes tx_size = 4; // read_tx_size() in spec
 
     oneof next_frame { // should only use inter_frame if is_inter == true per the spec
-      IntraFrameModeInfo intra_frame = 1;
-      InterFrameModeInfo inter_frame = 2;
+      IntraFrameModeInfo intra_frame = 5;
+      InterFrameModeInfo inter_frame = 6;
     }
   }
 
@@ -187,7 +187,7 @@ message Block {
     InterFrameModeInfo inter_frame = 2;
   }
 
-  bytes residual = 2; // TODO: better define this field
+  bytes residual = 3; // TODO: better define this field
 }
 
 message Partition {

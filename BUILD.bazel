@@ -1,0 +1,18 @@
+load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_proto_library")
+load("@rules_proto//proto:defs.bzl", "proto_library")
+
+proto_library(
+    name = "vp9_proto",
+    srcs = ["vp9.proto"]
+)
+
+cc_proto_library(
+    name = "vp9_cc_proto",
+    deps = [":vp9_proto"],
+)
+
+cc_binary(
+    name = "vp9_proto_cpp",
+    srcs = ["vp9_proto.cpp"],
+    deps = [":vp9_cc_proto"],
+)
