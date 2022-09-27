@@ -7,22 +7,38 @@ syntax = "proto3";
 
 message VP9SignedInteger {
   bytes value = 1; // n bits to store signed integer value
-  uint32 sign = 2; // 1 bit to determine signedness of integer
+  VP9BitField sign = 2; // 1 bit to determine signedness of integer
+}
+
+enum VP9BitField {
+  ZERO = 0;
+  ONE = 1;
 }
 
 message UncompressedHeader {
 
   message ColorConfig {
-    uint32 ten_or_twelve_bit = 1; // 1 bit
+    enum ColorSpace {
+      CS_UNKNOWN = 0;
+      CS_BT_601 = 1;
+      CS_BT_709 = 2;
+      CS_SMPTE_170 = 3;
+      CS_SMPTE_240 = 4;
+      CS_BT_2020 = 5;
+      CS_RESERVED = 6;
+      CS_RGB = 7;
+    }
+
+    VP9BitField ten_or_twelve_bit = 1; // 1 bit
   
     uint32 color_space = 2; // 3 bits
   
-    uint32 color_range = 3; // 1 bit
+    VP9BitField color_range = 3; // 1 bit
   
-    uint32 subsampling_x = 4; // 1 bit, only present if profile == 1 or profile == 3
-    uint32 subsampling_y = 5; // 1 bit, only present if profile == 1 or profile == 3
+    VP9BitField subsampling_x = 4; // 1 bit, only present if profile == 1 or profile == 3
+    VP9BitField subsampling_y = 5; // 1 bit, only present if profile == 1 or profile == 3
   
-    uint32 reserved_zero = 6; // 1 bit
+    VP9BitField reserved_zero = 6; // 1 bit
   }
   
   message FrameSize {
@@ -30,9 +46,21 @@ message UncompressedHeader {
   
     uint32 frame_height_minus_1 = 2; // 16 bit
   }
+
+  enum FrameType {
+    KEY_FRAME = 0;
+    NON_KEY_FRAME = 1;
+  }
+
+  enum Profile {
+    ZERO = 0;
+    ONE = 1;
+    TWO = 2;
+    THREE = 3;
+  }
   
   message RenderSize {
-    uint32 render_and_frame_size_different = 1; // 1 bit
+    VP9BitField render_and_frame_size_different = 1; // 1 bit
   
     uint32 render_width_minus_1 = 2; // 16 bit
   
@@ -40,7 +68,7 @@ message UncompressedHeader {
   }
   
   message ReadInterpolationFilter {
-    uint32 is_filter_switchable = 1; // 1 bit
+    VP9BitField is_filter_switchable = 1; // 1 bit
   
     uint32 raw_interpolation_filter = 2; // 2 bits
   }
@@ -48,58 +76,62 @@ message UncompressedHeader {
   message LoopFilterParams {
     uint32 loop_filter_level = 1; // 6 bits
     uint32 loop_filter_sharpness = 2; // 3 bits
-    uint32 loop_filter_delta_enabled = 3; // 1 bit
-    uint32 loop_filter_delta_update = 4; // 1 bit
+    VP9BitField loop_filter_delta_enabled = 3; // 1 bit
+    VP9BitField loop_filter_delta_update = 4; // 1 bit
   
-    uint32 update_ref_delta = 5; // 1 bit
-    VP9SignedInteger loop_filter_ref_deltas = 6; // 7 bits
+    VP9BitField update_ref_delta = 5; // 4 bits
+    VP9SignedInteger loop_filter_ref_deltas = 6; // 28 bits
   
-    uint32 update_mode_delta = 7; // 1 bit
-    VP9SignedInteger loop_filter_mode_deltas = 8; // 7 bits
+    VP9BitField update_mode_delta = 7; // 2 bits
+    VP9SignedInteger loop_filter_mode_deltas = 8; // 14 bits
   }
   
   message QuantizationParams {
+    message ReadDeltaQ {
+      VP9BitField delta_coded = 1; // 1 bit
+      VP9SignedInteger delta_q = 2; // 5 bits
+    }
     uint32 base_q_idx = 1; // 8 bits
+    ReadDeltaQ delta_q_y_dc = 2; // 6 bits
+    ReadDeltaQ delta_q_uv_dc = 3; // 6 bits
+    ReadDeltaQ delta_q_uv_ac = 4; // 6 bits
   }
   
   message SegmentationParams {
-    uint32 segmentation_enabled = 1; // 1 bit
+    VP9BitField segmentation_enabled = 1; // 1 bit
   
-    uint32 segmentation_update_map = 2; // 1 bit
+    VP9BitField segmentation_update_map = 2; // 1 bit
   
-    uint32 segmentation_temporal_update = 3; // 1 bit
+    VP9BitField segmentation_temporal_update = 3; // 1 bit
   
-    uint32 segmentation_update_data = 4; // 1 bit
+    VP9BitField segmentation_update_data = 4; // 1 bit
   
-    uint32 segmentation_abs_or_delta_update = 5; // 1 bit
+    VP9BitField segmentation_abs_or_delta_update = 5; // 1 bit
   
-    uint32 feature_enabled = 6; // 1 bit
-  
-    bytes feature_value = 7; // ? bits
-    uint32 feature_sign = 8; // 1 bit
+    bytes features = 6; // ? bits; feature_enabled, feature_value, and feature_sign in spec
   }
   
-  message TileInfo {
-    uint32 increment_tile_cols_log2 = 1; // 1 bit
+  // message TileInfo {
+  //   uint32 increment_tile_cols_log2 = 1; // 1 bit
   
-    uint32 tile_rows_log2 = 2; // 1 bit
+  //   uint32 tile_rows_log2 = 2; // 1 bit
   
-    uint32 increment_tile_rows_Log2 = 3; // 1 bit
-  }
+  //   uint32 increment_tile_rows_Log2 = 3; // 1 bit
+  // }
 
   uint32 marker = 1;  // 2 bits
 
-  uint32 profile = 2; // 2 bits, profile_low bit and profile_high_bit in spec
+  Profile profile = 2; // 2 bits, profile_low bit and profile_high_bit in spec
   uint32 reserved_zero = 3; // 1 bit
   
-  uint32 show_existing_frame = 4; // 1 bit
+  VP9BitField show_existing_frame = 4; // 1 bit
   uint32 frame_to_show_map_idx = 5; // 3 bits
 
-  uint32 frame_type = 6; // 1 bit
+  FrameType frame_type = 6; // 1 bit
   
-  uint32 show_frame = 7; // 1 bit
+  VP9BitField show_frame = 7; // 1 bit
 
-  uint32 error_resilient_mode = 8; // 1 bit
+  VP9BitField error_resilient_mode = 8; // 1 bit
 
   uint32 frame_sync_code = 9; // 24 bits, frame_sync_code() in spec
 
@@ -111,7 +143,7 @@ message UncompressedHeader {
 
   RenderSize render_size = 13; // 1-33 bits, render_size() in spec 
 
-  uint32 intra_only = 14; // 1 bit
+  VP9BitField intra_only = 14; // 1 bit
 
   uint32 reset_frame_context = 15; // 2 bits
 
@@ -121,20 +153,22 @@ message UncompressedHeader {
 
   uint32 ref_frame_sign_bias = 18; // 3 bits
 
-  uint32 allow_high_precision_mv = 19; // 1 bit
+  VP9BitField allow_high_precision_mv = 19; // 1 bit
 
   ReadInterpolationFilter read_interpolation_filter = 20; // 3 bits, read_interpolation_filter() in spec
 
-  uint32 frame_parallel_decoding_mode = 21; // 1 bit
+  VP9BitField refresh_frame_context = 21; // 1 bit
 
-  uint32 frame_context_idx = 22; // 2 bits
+  VP9BitField frame_parallel_decoding_mode = 22; // 1 bit
 
-  LoopFilterParams loop_filter_params = 23; // 27 bits, loop_filter_params() in spec
-  QuantizationParams quantization_params = 24; // 8 bits, quantization_params() in spec
-  SegmentationParams segmentation_params = 25; // ? bits, segmentation_params() in spec
-  TileInfo tile_info = 26; // 3 bits, tile_info() in spec
+  uint32 frame_context_idx = 23; // 2 bits
 
-  uint32 header_size_in_bytes = 27; // 16 bits
+  LoopFilterParams loop_filter_params = 24; // 27 bits, loop_filter_params() in spec
+  QuantizationParams quantization_params = 25; // 8 bits, quantization_params() in spec
+  SegmentationParams segmentation_params = 26; // ? bits, segmentation_params() in spec
+  bytes tile_info = 27; // ? bits, tile_info() in spec
+
+  uint32 header_size_in_bytes = 28; // 16 bits
 }
 
 
