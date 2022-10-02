@@ -12,7 +12,15 @@ cc_proto_library(
 )
 
 cc_binary(
-    name = "vp9_proto_cpp",
-    srcs = ["vp9_proto.cpp"],
+    name = "proto_to_vp9",
+    srcs = ["proto_to_vp9.cpp",
+            "vp9_constants.h"],
+    deps = [":vp9_cc_proto"],
+)
+
+cc_binary(
+    name = "vp9_to_proto",
+    srcs = ["vp9_to_proto.cpp",
+            "vp9_constants.h"],
     deps = [":vp9_cc_proto"],
 )

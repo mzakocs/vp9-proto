@@ -5,6 +5,9 @@ syntax = "proto3";
   spec: https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf 
 */
 
+// TODO: Implement SuperFrames
+// TODO: Backport VP8 Protobuf
+
 message VP9SignedInteger {
   bytes value = 1; // n bits to store signed integer value
   VP9BitField sign = 2; // 1 bit to determine signedness of integer
@@ -66,24 +69,39 @@ message UncompressedHeader {
   
     uint32 render_height_minus_1 = 3; // 16 bit
   }
+
+  enum InterpolationFilter {
+    EIGHTTAP = 0;
+    EIGHTTAP_SMOOTH = 1;
+    EIGHTTAP_SHARP = 2;
+    BILINEAR = 3;
+    SWITCHABLE = 4;
+  }
   
   message ReadInterpolationFilter {
     VP9BitField is_filter_switchable = 1; // 1 bit
   
-    uint32 raw_interpolation_filter = 2; // 2 bits
+    InterpolationFilter raw_interpolation_filter = 2; // 2 bits
   }
   
   message LoopFilterParams {
+    message RefDelta {
+      VP9BitField update_ref_delta = 1; // 1 bit
+      VP9SignedInteger loop_filter_ref_deltas = 2; // 7 bits
+    }
+    message ModeDelta {
+      VP9BitField update_mode_delta = 1; // 1 bit
+      VP9SignedInteger loop_filter_mode_deltas = 2; // 7 bits
+    }
+
     uint32 loop_filter_level = 1; // 6 bits
     uint32 loop_filter_sharpness = 2; // 3 bits
     VP9BitField loop_filter_delta_enabled = 3; // 1 bit
     VP9BitField loop_filter_delta_update = 4; // 1 bit
   
-    VP9BitField update_ref_delta = 5; // 4 bits
-    VP9SignedInteger loop_filter_ref_deltas = 6; // 28 bits
+    repeated RefDelta ref_delta = 5;
   
-    VP9BitField update_mode_delta = 7; // 2 bits
-    VP9SignedInteger loop_filter_mode_deltas = 8; // 14 bits
+    repeated ModeDelta mode_delta = 6;
   }
   
   message QuantizationParams {
@@ -96,8 +114,23 @@ message UncompressedHeader {
     ReadDeltaQ delta_q_uv_dc = 3; // 6 bits
     ReadDeltaQ delta_q_uv_ac = 4; // 6 bits
   }
+
+  message TileInfo {
+    // Currently not implemented as it would require for full tile size calculation
+    // repeated VP9BitField increment_tile_cols_log2 = 1; // 1 bit
+
+    VP9BitField tile_rows_log2 = 1; // 1 bit
+    VP9BitField increment_tile_rows_log2 = 2; // 1 bit
+  }
   
   message SegmentationParams {
+
+    message Feature {
+      VP9BitField feature_enabled = 1; // 1 bit
+      bytes feature_value = 2; // 0-8 bits
+      VP9BitField feature_sign = 3; // 1 bit
+    }
+
     VP9BitField segmentation_enabled = 1; // 1 bit
   
     VP9BitField segmentation_update_map = 2; // 1 bit
@@ -108,7 +141,7 @@ message UncompressedHeader {
   
     VP9BitField segmentation_abs_or_delta_update = 5; // 1 bit
   
-    bytes features = 6; // ? bits; feature_enabled, feature_value, and feature_sign in spec
+    repeated Feature features = 6; // 6 - 30 bits
   }
   
   // message TileInfo {
@@ -149,9 +182,9 @@ message UncompressedHeader {
 
   uint32 refresh_frame_flags = 16; // 8 bits
   
-  uint32 ref_frame_idx = 17; // 9 bits
+  repeated uint32 ref_frame_idx = 17; // 9 bits
 
-  uint32 ref_frame_sign_bias = 18; // 3 bits
+  repeated VP9BitField ref_frame_sign_bias = 18; // 3 bits
 
   VP9BitField allow_high_precision_mv = 19; // 1 bit
 
@@ -166,74 +199,177 @@ message UncompressedHeader {
   LoopFilterParams loop_filter_params = 24; // 27 bits, loop_filter_params() in spec
   QuantizationParams quantization_params = 25; // 8 bits, quantization_params() in spec
   SegmentationParams segmentation_params = 26; // ? bits, segmentation_params() in spec
-  bytes tile_info = 27; // ? bits, tile_info() in spec
+  TileInfo tile_info = 27; // ? bits, tile_info() in spec 
 
   uint32 header_size_in_bytes = 28; // 16 bits
 }
 
-
-
 message CompressedHeader {
-  bytes read_tx_mode = 1; // read_tx_Mode() in spec
-  bytes tx_mode_probs = 2; // tx_mode_probs() in spec
 
-  bytes read_coef_probs = 3; // read_coef_probs() in spec
-  bytes read_skip_prob = 4; // read_skip_prob() in spec
-  bytes read_inter_mode_probs = 5; // read_inter_mode_probs() in spec
-  bytes read_interp_filter_probs = 6; // read_interp_filter_probs() in spec
-  bytes read_is_inter_probs = 7; // read_is_inter_probs() in spec
-
-  bytes frame_reference_mode = 8; // frame_reference_mode() in spec
-  bytes frame_reference_mode_probs = 9; // frame_reference_mode_probs() in spec
-
-  bytes read_y_mode_probs = 10; // read_y_mode_probs() in spec
-  bytes read_partition_probs = 11; // read_partition_probs() in spec
-
-  bytes mv_probs = 12; // mv_probs() in spec
-}
-
-message Block {
-    
-  message IntraFrameModeInfo {
-    bytes segment_id = 1; // intra_segment_id() in spec
-    bytes skip = 2; // read_skip() in spec
-    bytes tx_size = 3; // read_tx_size() in spec
-    
-    bytes default_intra_mode = 4;
-
-    bytes default_uv_mode = 5;
+  enum TxMode {
+    ONLY_4X4 = 0;
+    ALLOW_8X8 = 1;
+    ALLOW_16X16 = 2;
+    ALLOW_32X32 = 3;
+    TX_MODE_SELECT = 4;
   }
 
-  message InterFrameModeInfo {
-    bytes segment_id = 1; // inter_segment_id() in spec
-    bytes skip = 2; // read_skip() in spec
-    bytes is_inter = 3; // read_is_inter() in spec
-    bytes tx_size = 4; // read_tx_size() in spec
+  message ReadTxMode {
+    TxMode tx_mode = 1; // 2 bits
+    VP9BitField tx_mode_select = 2; // 1 bit, only in header if tx_mode == ALLOW_32X32
+  }
 
-    oneof next_frame { // should only use inter_frame if is_inter == true per the spec
-      IntraFrameModeInfo intra_frame = 5;
-      InterFrameModeInfo inter_frame = 6;
+  message DecodeTermSubexp {
+    VP9BitField bit_1 = 1; // 1 bit
+    uint32 sub_exp_val = 2; // 4 bits
+    VP9BitField bit_2 = 3; // 4 bits
+    uint32 sub_exp_Val_minus_16 = 4; // 4 bits
+    VP9BitField bit_3 = 5; // 1 bit
+    uint32 sub_exp_val_minus_32 = 6; // 5 bits
+    uint32 v = 7; // 7 bits
+    VP9BitField bit_4 = 8; // 1 bit
+  }
+
+  message DiffUpdateProb {
+    VP9BitField update_prob = 1; // 1 bit, 252/256 probability of == 0
+    DecodeTermSubexp decode_term_subexp = 2; // 5-27 bits
+  }
+
+  message TxModeProbs {
+    // First loop iterates 2 * 1 (2) times
+    // Second loop iterates 2 * 2 (4) times
+    // Third loop iterates 2 * 3 (6) times
+    // Total 12 loops
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message ReadCoefProbs {
+    message ReadCoefProbsLoop {
+      VP9BitField update_probs = 1; // 1 bit
+      // Nested loop iterates (2 * 2 * 5 * 6 * 3) + (2 * 2 * 1 * 3 * 3) (396) times
+      repeated DiffUpdateProb diff_update_prob = 2; // 6-28 * n bits
     }
+    // First loop iterates up to 4 times (when maxTxSize == 4 and txSz == 0)
+    repeated ReadCoefProbsLoop read_coef_probs = 1; // 7-29 * n? bits
   }
 
-  oneof mode_info {
-    IntraFrameModeInfo intra_frame = 1;
-    InterFrameModeInfo inter_frame = 2;
+  message ReadSkipProb {
+    // Loop iterates 3 times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
   }
 
-  bytes residual = 3; // TODO: better define this field
+  message ReadInterModeProbs {
+    // Loop iterates 7 * 3 (21) times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message ReadInterpFilterProbs {
+    // Loop iterates 4 * 2 (8) times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message ReadIsInterProbs {
+    // Loop iterates 4 times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message FrameReferenceMode {
+    VP9BitField non_single_reference = 1; // 1 bit
+    VP9BitField reference_select = 2; // 1 bit
+  }
+
+  message FrameReferenceModeProbs {
+    // First loop iterates 5 times
+    // Second loop iterates 5 times
+    // Third loop iterates 5 times 
+    // Total 15 loops (but some conditional)
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message ReadYModeProbs {
+    // Loop iterates 4 * 9 (36) times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message ReadPartitionProbs {
+    // Loop iterates 16 * 3 (48) times
+    repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
+  }
+
+  message MvProbs {
+    message MvProbsLoop {
+      VP9BitField update_mv_prob = 1; // 1 bit, 252/256 probability of == 0
+      uint32 mv_prob = 2; // 7 bits
+    }
+    // First loop iterates 3 times
+    // Second loop iterates 2*2 + 2*10 + 2*10 (24) times
+    // Third loop iterates 2*2*3 + 2*3 (18) times
+    // Fourth loop iterates 2*2 (4) times
+    // Total 49 loops
+    repeated MvProbsLoop mv_probs = 1; // 8 * n bits
+  }
+
+  ReadTxMode read_tx_mode = 1; // read_tx_mode() in spec
+  TxModeProbs tx_mode_probs = 2; // tx_mode_probs() in spec
+
+  ReadCoefProbs read_coef_probs = 3; // read_coef_probs() in spec
+  ReadSkipProb read_skip_prob = 4; // read_skip_prob() in spec
+  ReadInterModeProbs read_inter_mode_probs = 5; // read_inter_mode_probs() in spec
+  ReadInterpFilterProbs read_interp_filter_probs = 6; // read_interp_filter_probs() in spec
+  ReadIsInterProbs read_is_inter_probs = 7; // read_is_inter_probs() in spec
+
+  FrameReferenceMode frame_reference_mode = 8; // frame_reference_mode() in spec
+  FrameReferenceModeProbs frame_reference_mode_probs = 9; // frame_reference_mode_probs() in spec
+
+  ReadYModeProbs read_y_mode_probs = 10; // read_y_mode_probs() in spec
+  ReadPartitionProbs read_partition_probs = 11; // read_partition_probs() in spec
+
+  MvProbs mv_probs = 12; // mv_probs() in spec
 }
 
-message Partition {
-  bytes partition = 1;
+// message Block {
+    
+//   // message IntraFrameModeInfo {
+//   //   bytes segment_id = 1; // intra_segment_id() in spec
+//   //   bytes skip = 2; // read_skip() in spec
+//   //   bytes tx_size = 3; // read_tx_size() in spec
+    
+//   //   bytes default_intra_mode = 4;
 
-  Block block = 2;
-}
+//   //   bytes default_uv_mode = 5;
+//   // }
+
+//   // message InterFrameModeInfo {
+//   //   bytes segment_id = 1; // inter_segment_id() in spec
+//   //   bytes skip = 2; // read_skip() in spec
+//   //   bytes is_inter = 3; // read_is_inter() in spec
+//   //   bytes tx_size = 4; // read_tx_size() in spec
+
+//   //   oneof next_frame { // should only use inter_frame if is_inter == true per the spec
+//   //     IntraFrameModeInfo intra_frame = 5;
+//   //     InterFrameModeInfo inter_frame = 6;
+//   //   }
+//   // }
+
+//   // oneof mode_info {
+//   //   IntraFrameModeInfo intra_frame = 1;
+//   //   InterFrameModeInfo inter_frame = 2;
+//   // }
+//   bytes frame = 1; // TODO: better define this field, difficult because of tree structure however
+
+//   bytes residual = 2; // TODO: better define this field
+// }
+
+// message Partition {
+//   bytes partition = 1;
+
+//   Block block = 2;
+// }
 
 message Tile {
   uint32 tile_size = 1; // 32 bits
 
-  Partition partition = 2;
+  bytes partition = 2;
 }
 
 message VP9Frame {
