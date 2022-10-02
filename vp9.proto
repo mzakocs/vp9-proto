@@ -375,11 +375,11 @@ message Tile {
 message VP9Frame {
   UncompressedHeader uncompressed_header = 1; // uncompressed_header() in spec
 
-  uint32 trailing_bits = 2; // trailing_bits() in spec
+  // uint32 trailing_bits = 2; // trailing_bits() in spec
 
-  uint32 padding_bit = 3; // padding for if header is 0 bytes large
+  // uint32 padding_bit = 3; // padding for if header is 0 bytes large
 
-  CompressedHeader compressed_header = 4; // compressed_header() in spec
+  CompressedHeader compressed_header = 2; // compressed_header() in spec
 
-  repeated Tile tiles = 5; // decode_tiles() in spec
+  repeated Tile tiles = 3; // decode_tiles() in spec
 }

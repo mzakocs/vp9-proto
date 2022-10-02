@@ -20,6 +20,7 @@ bool compoundReferenceAllowed = false;
 uint32_t reference_mode = 0;
 uint32_t interpolation_filter = 0;
 uint32_t tx_mode = 0;
+uint32_t header_size_in_bytes = 0;
 
 uint64_t ReadBitUInt(uint32_t bits) {
   uint64_t return_num = 0;
@@ -246,6 +247,8 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
 
   if (show_existing_frame == 1) {
     uncompressed_header->set_frame_to_show_map_idx(ReadBitUInt(3));
+    header_size_in_bytes = 0;
+    return;
   }
   frame_type = (UncompressedHeader_FrameType) ReadBitUInt(1);
   uncompressed_header->set_frame_type(frame_type);
@@ -289,7 +292,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
       // refresh_frame_flags
       uncompressed_header->set_refresh_frame_flags(ReadBitUInt(8));
       // ref_frame_idx and ref_frame_sign_bias
-      VP9BitField first_ref_frame_sign_bias = 0;
+      VP9BitField first_ref_frame_sign_bias = (VP9BitField) 0;
       for (uint32_t i = 0; i < 3; i++) {
         uncompressed_header->add_ref_frame_idx(ReadBitUInt(3));
 
@@ -328,7 +331,8 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
   uncompressed_header->set_allocated_segmentation_params(ReadVP9SegmentationParams());
   uncompressed_header->set_allocated_tile_info(ReadVP9TileInfo());
 
-  uncompressed_header->set_header_size_in_bytes(ReadBitUInt(16));
+  header_size_in_bytes = ReadBitUInt(16);
+  uncompressed_header->set_header_size_in_bytes(header_size_in_bytes);
 
   return uncompressed_header;
 }
@@ -539,9 +543,38 @@ CompressedHeader_ReadYModeProbs* ReadVP9ReadYModeProbs() {
 CompressedHeader_ReadPartitionProbs* ReadVP9ReadPartitionProbs() {
   auto read_partition_probs = new CompressedHeader_ReadPartitionProbs();
 
-  
+  for (uint32_t i = 0; i < 48; i++) {
+    read_partition_probs->add_diff_update_prob();
+    ReadVP9DiffUpdateProb(read_partition_probs->mutable_diff_update_prob(i));
+  }
 
   return read_partition_probs;
+}
+
+void ReadVP9MvProbsLoop(CompressedHeader_MvProbs_MvProbsLoop* mv_probs_loop) {
+  VP9BitField update_mv_prob = (VP9BitField) ReadBitUInt(1);
+  mv_probs_loop->set_update_mv_prob(update_mv_prob);
+  if (update_mv_prob == 1) {
+    mv_probs_loop->set_mv_prob(ReadBitUInt(7));
+  }
+}
+
+CompressedHeader_MvProbs* ReadVP9MvProbs() {
+  auto mv_probs = new CompressedHeader_MvProbs();
+
+  for (uint32_t i = 0; i < 45; i++) {
+    mv_probs->add_mv_probs();
+    ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i));
+  }
+
+  if (allow_high_precision_mv) {
+    for (uint32_t i = 45; i < (45 + 4); i++) {
+      mv_probs->add_mv_probs();
+      ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i);
+    }
+  }
+
+  return mv_probs;
 }
 
 CompressedHeader* ReadVP9CompressedHeader() {
@@ -566,9 +599,22 @@ CompressedHeader* ReadVP9CompressedHeader() {
     compressed_header->set_allocated_frame_reference_mode_probs(ReadVP9FrameReferenceModeProbs());
     compressed_header->set_allocated_read_y_mode_probs(ReadVP9ReadYModeProbs());
     compressed_header->set_allocated_read_partition_probs(ReadVP9ReadPartitionProbs());
+    compressed_header->set_allocated_mv_probs(ReadVP9MvProbs());
   }
 
   return compressed_header;
+}
+
+void ReadVP9TrailingBits() {
+  while (bit_counter & 7) {
+    ReadBitUInt(1);
+  }
+}
+
+void ReadVP9Tile(Tile* tile) {
+  uint32_t tile_size = ReadBitUInt(32);
+  tile->set_tile_size(tile_size);
+  tile->set_partition(ReadBitString(tile_size * 8));
 }
 
 VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
@@ -580,14 +626,25 @@ VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
   bit_buffer = std::vector<bool>();
   char data;
   while (file.read(&data, 1)) {
-      for (int i = 0; i < 8; i++)
-      {
-          bit_buffer.push_back(((data >> i) & 1) != 0);
-      }
+    for (int i = 0; i < 8; i++) {
+      bit_buffer.push_back(((data >> i) & 1) != 0);
+    }
   }
-  // Read File
+  // Read Headers
   vp9_frame->set_allocated_uncompressed_header(ReadVP9UncompressedHeader());
+  ReadVP9TrailingBits();
+  if (header_size_in_bytes == 0) {
+    return vp9_frame;
+  }
   vp9_frame->set_allocated_compressed_header(ReadVP9CompressedHeader());
+  
+  // Read Tiles
+  uint32_t tile_count = 0;
+  while (bit_counter <= bit_buffer.size()) {
+    vp9_frame->add_tiles();
+    ReadVP9Tile(vp9_frame->mutable_tiles(tile_count++));
+  }
+  
   return vp9_frame;
 }
 

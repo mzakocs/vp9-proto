@@ -16,6 +16,7 @@ static bool FrameIsIntra = false;
 static uint32_t interpolation_filter = 0;
 bool compoundReferenceAllowed = false;
 uint32_t reference_mode = 0;
+uint32_t header_size_in_bytes = 0;
 bool allow_high_precision_mv = 0;
 
 // uint64_t BindBitUInt(uint64_t number, uint32_t bits) {
@@ -255,6 +256,8 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
   // Write existing frame info if existing frame bit is set
   if (uncompressed_header->show_existing_frame() == 1) {
     WriteBitUInt(uncompressed_header->frame_to_show_map_idx(), 3);
+    header_size_in_bytes = 0;
+    return;
   }
   // Write frame type
   WriteBitUInt(uncompressed_header->frame_type(), 1);
@@ -340,7 +343,8 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
   WriteVP9TileInfo(uncompressed_header);
   // Write header size
   // TODO: Maybe try something more interesting here
-  WriteBitUInt(ceil(bit_buffer.size() / 8), 16);
+  header_size_in_bytes = ceil(bit_buffer.size() / 8);
+  WriteBitUInt(header_size_in_bytes, 16);
 }
 
 void WriteVP9ReadTxMode(const CompressedHeader *compressed_header) {
@@ -578,11 +582,23 @@ std::string BitVectorToBytes(std::vector<bool> &bit_buffer) {
   return return_buffer;
 }
 
+void WriteVP9TrailingBits() {
+ while (bit_buffer.size() & 7) {
+  WriteBitUInt(0, 1);
+ }
+}
+
 std::string ProtoToVP9(const VP9Frame *frame) {
   // Instantiate bitvector to store frame bits/bytes
   bit_buffer = std::vector<bool>();
   // Write VP9 uncompressed header
   WriteVP9UncompressedHeader(&frame->uncompressed_header());
+  // Write trailing_bits
+  WriteVP9TrailingBits();
+  // Return if header size == 0
+  if (header_size_in_bytes == 0) {
+    return BitVectorToBytes(bit_buffer);
+  }
   // Write VP9 compressed header
   WriteVP9CompressedHeader(&frame->compressed_header());
   // Write video frame tiles
