@@ -141,6 +141,9 @@ extern UncompressedHeader_SegmentationParamsDefaultTypeInternal _UncompressedHea
 class UncompressedHeader_SegmentationParams_Feature;
 struct UncompressedHeader_SegmentationParams_FeatureDefaultTypeInternal;
 extern UncompressedHeader_SegmentationParams_FeatureDefaultTypeInternal _UncompressedHeader_SegmentationParams_Feature_default_instance_;
+class UncompressedHeader_SegmentationParams_ReadProb;
+struct UncompressedHeader_SegmentationParams_ReadProbDefaultTypeInternal;
+extern UncompressedHeader_SegmentationParams_ReadProbDefaultTypeInternal _UncompressedHeader_SegmentationParams_ReadProb_default_instance_;
 class UncompressedHeader_TileInfo;
 struct UncompressedHeader_TileInfoDefaultTypeInternal;
 extern UncompressedHeader_TileInfoDefaultTypeInternal _UncompressedHeader_TileInfo_default_instance_;
@@ -212,6 +215,8 @@ template <>
 template <>
 ::UncompressedHeader_SegmentationParams_Feature* Arena::CreateMaybeMessage<::UncompressedHeader_SegmentationParams_Feature>(Arena*);
 template <>
+::UncompressedHeader_SegmentationParams_ReadProb* Arena::CreateMaybeMessage<::UncompressedHeader_SegmentationParams_ReadProb>(Arena*);
+template <>
 ::UncompressedHeader_TileInfo* Arena::CreateMaybeMessage<::UncompressedHeader_TileInfo>(Arena*);
 template <>
 ::VP9Frame* Arena::CreateMaybeMessage<::VP9Frame>(Arena*);
@@ -282,37 +287,6 @@ inline bool UncompressedHeader_FrameType_Parse(
     ::absl::string_view name, UncompressedHeader_FrameType* value) {
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UncompressedHeader_FrameType>(
     UncompressedHeader_FrameType_descriptor(), name, value);
-}
-enum UncompressedHeader_Profile : int {
-  UncompressedHeader_Profile_ZERO = 0,
-  UncompressedHeader_Profile_ONE = 1,
-  UncompressedHeader_Profile_TWO = 2,
-  UncompressedHeader_Profile_THREE = 3,
-  UncompressedHeader_Profile_UncompressedHeader_Profile_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  UncompressedHeader_Profile_UncompressedHeader_Profile_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool UncompressedHeader_Profile_IsValid(int value);
-constexpr UncompressedHeader_Profile UncompressedHeader_Profile_Profile_MIN = UncompressedHeader_Profile_ZERO;
-constexpr UncompressedHeader_Profile UncompressedHeader_Profile_Profile_MAX = UncompressedHeader_Profile_THREE;
-constexpr int UncompressedHeader_Profile_Profile_ARRAYSIZE = UncompressedHeader_Profile_Profile_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UncompressedHeader_Profile_descriptor();
-template<typename T>
-inline const std::string& UncompressedHeader_Profile_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, UncompressedHeader_Profile>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function UncompressedHeader_Profile_Name.");
-  return UncompressedHeader_Profile_Name(static_cast<UncompressedHeader_Profile>(enum_t_value));
-}
-template<>
-inline const std::string& UncompressedHeader_Profile_Name(UncompressedHeader_Profile value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <UncompressedHeader_Profile_descriptor, 0, 3>(static_cast<int>(value));
-}
-inline bool UncompressedHeader_Profile_Parse(
-    ::absl::string_view name, UncompressedHeader_Profile* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UncompressedHeader_Profile>(
-    UncompressedHeader_Profile_descriptor(), name, value);
 }
 enum UncompressedHeader_InterpolationFilter : int {
   UncompressedHeader_InterpolationFilter_EIGHTTAP = 0,
@@ -2396,6 +2370,164 @@ class UncompressedHeader_TileInfo final :
   friend struct ::TableStruct_vp9_2eproto;
 };// -------------------------------------------------------------------
 
+class UncompressedHeader_SegmentationParams_ReadProb final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.ReadProb) */ {
+ public:
+  inline UncompressedHeader_SegmentationParams_ReadProb() : UncompressedHeader_SegmentationParams_ReadProb(nullptr) {}
+  ~UncompressedHeader_SegmentationParams_ReadProb() override;
+  explicit PROTOBUF_CONSTEXPR UncompressedHeader_SegmentationParams_ReadProb(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  UncompressedHeader_SegmentationParams_ReadProb(const UncompressedHeader_SegmentationParams_ReadProb& from);
+  UncompressedHeader_SegmentationParams_ReadProb(UncompressedHeader_SegmentationParams_ReadProb&& from) noexcept
+    : UncompressedHeader_SegmentationParams_ReadProb() {
+    *this = ::std::move(from);
+  }
+
+  inline UncompressedHeader_SegmentationParams_ReadProb& operator=(const UncompressedHeader_SegmentationParams_ReadProb& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline UncompressedHeader_SegmentationParams_ReadProb& operator=(UncompressedHeader_SegmentationParams_ReadProb&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const UncompressedHeader_SegmentationParams_ReadProb& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const UncompressedHeader_SegmentationParams_ReadProb* internal_default_instance() {
+    return reinterpret_cast<const UncompressedHeader_SegmentationParams_ReadProb*>(
+               &_UncompressedHeader_SegmentationParams_ReadProb_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  friend void swap(UncompressedHeader_SegmentationParams_ReadProb& a, UncompressedHeader_SegmentationParams_ReadProb& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(UncompressedHeader_SegmentationParams_ReadProb* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(UncompressedHeader_SegmentationParams_ReadProb* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  UncompressedHeader_SegmentationParams_ReadProb* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<UncompressedHeader_SegmentationParams_ReadProb>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const UncompressedHeader_SegmentationParams_ReadProb& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const UncompressedHeader_SegmentationParams_ReadProb& from) {
+    UncompressedHeader_SegmentationParams_ReadProb::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(UncompressedHeader_SegmentationParams_ReadProb* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "UncompressedHeader.SegmentationParams.ReadProb";
+  }
+  protected:
+  explicit UncompressedHeader_SegmentationParams_ReadProb(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kProbCodedFieldNumber = 1,
+    kProbFieldNumber = 2,
+  };
+  // .VP9BitField prob_coded = 1;
+  void clear_prob_coded();
+  ::VP9BitField prob_coded() const;
+  void set_prob_coded(::VP9BitField value);
+  private:
+  ::VP9BitField _internal_prob_coded() const;
+  void _internal_set_prob_coded(::VP9BitField value);
+  public:
+
+  // uint32 prob = 2;
+  void clear_prob();
+  uint32_t prob() const;
+  void set_prob(uint32_t value);
+  private:
+  uint32_t _internal_prob() const;
+  void _internal_set_prob(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:UncompressedHeader.SegmentationParams.ReadProb)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    int prob_coded_;
+    uint32_t prob_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vp9_2eproto;
+};// -------------------------------------------------------------------
+
 class UncompressedHeader_SegmentationParams_Feature final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.Feature) */ {
  public:
@@ -2444,7 +2576,7 @@ class UncompressedHeader_SegmentationParams_Feature final :
                &_UncompressedHeader_SegmentationParams_Feature_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   friend void swap(UncompressedHeader_SegmentationParams_Feature& a, UncompressedHeader_SegmentationParams_Feature& b) {
     a.Swap(&b);
@@ -2618,7 +2750,7 @@ class UncompressedHeader_SegmentationParams final :
                &_UncompressedHeader_SegmentationParams_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   friend void swap(UncompressedHeader_SegmentationParams& a, UncompressedHeader_SegmentationParams& b) {
     a.Swap(&b);
@@ -2688,19 +2820,39 @@ class UncompressedHeader_SegmentationParams final :
 
   // nested types ----------------------------------------------------
 
+  typedef UncompressedHeader_SegmentationParams_ReadProb ReadProb;
   typedef UncompressedHeader_SegmentationParams_Feature Feature;
 
   // accessors -------------------------------------------------------
 
   enum : int {
-    kFeaturesFieldNumber = 6,
+    kProbFieldNumber = 4,
+    kFeaturesFieldNumber = 7,
     kSegmentationEnabledFieldNumber = 1,
     kSegmentationUpdateMapFieldNumber = 2,
     kSegmentationTemporalUpdateFieldNumber = 3,
-    kSegmentationUpdateDataFieldNumber = 4,
-    kSegmentationAbsOrDeltaUpdateFieldNumber = 5,
+    kSegmentationUpdateDataFieldNumber = 5,
+    kSegmentationAbsOrDeltaUpdateFieldNumber = 6,
   };
-  // repeated .UncompressedHeader.SegmentationParams.Feature features = 6;
+  // repeated .UncompressedHeader.SegmentationParams.ReadProb prob = 4;
+  int prob_size() const;
+  private:
+  int _internal_prob_size() const;
+  public:
+  void clear_prob();
+  ::UncompressedHeader_SegmentationParams_ReadProb* mutable_prob(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_ReadProb >*
+      mutable_prob();
+  private:
+  const ::UncompressedHeader_SegmentationParams_ReadProb& _internal_prob(int index) const;
+  ::UncompressedHeader_SegmentationParams_ReadProb* _internal_add_prob();
+  public:
+  const ::UncompressedHeader_SegmentationParams_ReadProb& prob(int index) const;
+  ::UncompressedHeader_SegmentationParams_ReadProb* add_prob();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_ReadProb >&
+      prob() const;
+
+  // repeated .UncompressedHeader.SegmentationParams.Feature features = 7;
   int features_size() const;
   private:
   int _internal_features_size() const;
@@ -2745,7 +2897,7 @@ class UncompressedHeader_SegmentationParams final :
   void _internal_set_segmentation_temporal_update(::VP9BitField value);
   public:
 
-  // .VP9BitField segmentation_update_data = 4;
+  // .VP9BitField segmentation_update_data = 5;
   void clear_segmentation_update_data();
   ::VP9BitField segmentation_update_data() const;
   void set_segmentation_update_data(::VP9BitField value);
@@ -2754,7 +2906,7 @@ class UncompressedHeader_SegmentationParams final :
   void _internal_set_segmentation_update_data(::VP9BitField value);
   public:
 
-  // .VP9BitField segmentation_abs_or_delta_update = 5;
+  // .VP9BitField segmentation_abs_or_delta_update = 6;
   void clear_segmentation_abs_or_delta_update();
   ::VP9BitField segmentation_abs_or_delta_update() const;
   void set_segmentation_abs_or_delta_update(::VP9BitField value);
@@ -2771,6 +2923,7 @@ class UncompressedHeader_SegmentationParams final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_ReadProb > prob_;
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_Feature > features_;
     int segmentation_enabled_;
     int segmentation_update_map_;
@@ -2831,7 +2984,7 @@ class UncompressedHeader final :
                &_UncompressedHeader_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   friend void swap(UncompressedHeader& a, UncompressedHeader& b) {
     a.Swap(&b);
@@ -2940,40 +3093,6 @@ class UncompressedHeader final :
     return UncompressedHeader_FrameType_Parse(name, value);
   }
 
-  typedef UncompressedHeader_Profile Profile;
-  static constexpr Profile ZERO =
-    UncompressedHeader_Profile_ZERO;
-  static constexpr Profile ONE =
-    UncompressedHeader_Profile_ONE;
-  static constexpr Profile TWO =
-    UncompressedHeader_Profile_TWO;
-  static constexpr Profile THREE =
-    UncompressedHeader_Profile_THREE;
-  static inline bool Profile_IsValid(int value) {
-    return UncompressedHeader_Profile_IsValid(value);
-  }
-  static constexpr Profile Profile_MIN =
-    UncompressedHeader_Profile_Profile_MIN;
-  static constexpr Profile Profile_MAX =
-    UncompressedHeader_Profile_Profile_MAX;
-  static constexpr int Profile_ARRAYSIZE =
-    UncompressedHeader_Profile_Profile_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  Profile_descriptor() {
-    return UncompressedHeader_Profile_descriptor();
-  }
-  template<typename T>
-  static inline const std::string& Profile_Name(T enum_t_value) {
-    static_assert(::std::is_same<T, Profile>::value ||
-      ::std::is_integral<T>::value,
-      "Incorrect type passed to function Profile_Name.");
-    return UncompressedHeader_Profile_Name(enum_t_value);
-  }
-  static inline bool Profile_Parse(::absl::string_view name,
-      Profile* value) {
-    return UncompressedHeader_Profile_Parse(name, value);
-  }
-
   typedef UncompressedHeader_InterpolationFilter InterpolationFilter;
   static constexpr InterpolationFilter EIGHTTAP =
     UncompressedHeader_InterpolationFilter_EIGHTTAP;
@@ -3023,8 +3142,8 @@ class UncompressedHeader final :
     kQuantizationParamsFieldNumber = 25,
     kSegmentationParamsFieldNumber = 26,
     kTileInfoFieldNumber = 27,
-    kMarkerFieldNumber = 1,
-    kProfileFieldNumber = 2,
+    kProfileLowBitFieldNumber = 1,
+    kProfileHighBitFieldNumber = 2,
     kReservedZeroFieldNumber = 3,
     kShowExistingFrameFieldNumber = 4,
     kFrameToShowMapIdxFieldNumber = 5,
@@ -3225,22 +3344,22 @@ class UncompressedHeader final :
       ::UncompressedHeader_TileInfo* tile_info);
   ::UncompressedHeader_TileInfo* unsafe_arena_release_tile_info();
 
-  // uint32 marker = 1;
-  void clear_marker();
-  uint32_t marker() const;
-  void set_marker(uint32_t value);
+  // .VP9BitField profile_low_bit = 1;
+  void clear_profile_low_bit();
+  ::VP9BitField profile_low_bit() const;
+  void set_profile_low_bit(::VP9BitField value);
   private:
-  uint32_t _internal_marker() const;
-  void _internal_set_marker(uint32_t value);
+  ::VP9BitField _internal_profile_low_bit() const;
+  void _internal_set_profile_low_bit(::VP9BitField value);
   public:
 
-  // .UncompressedHeader.Profile profile = 2;
-  void clear_profile();
-  ::UncompressedHeader_Profile profile() const;
-  void set_profile(::UncompressedHeader_Profile value);
+  // .VP9BitField profile_high_bit = 2;
+  void clear_profile_high_bit();
+  ::VP9BitField profile_high_bit() const;
+  void set_profile_high_bit(::VP9BitField value);
   private:
-  ::UncompressedHeader_Profile _internal_profile() const;
-  void _internal_set_profile(::UncompressedHeader_Profile value);
+  ::VP9BitField _internal_profile_high_bit() const;
+  void _internal_set_profile_high_bit(::VP9BitField value);
   public:
 
   // uint32 reserved_zero = 3;
@@ -3407,8 +3526,8 @@ class UncompressedHeader final :
     ::UncompressedHeader_QuantizationParams* quantization_params_;
     ::UncompressedHeader_SegmentationParams* segmentation_params_;
     ::UncompressedHeader_TileInfo* tile_info_;
-    uint32_t marker_;
-    int profile_;
+    int profile_low_bit_;
+    int profile_high_bit_;
     uint32_t reserved_zero_;
     int show_existing_frame_;
     uint32_t frame_to_show_map_idx_;
@@ -3479,7 +3598,7 @@ class CompressedHeader_ReadTxMode final :
                &_CompressedHeader_ReadTxMode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    14;
+    15;
 
   friend void swap(CompressedHeader_ReadTxMode& a, CompressedHeader_ReadTxMode& b) {
     a.Swap(&b);
@@ -3637,7 +3756,7 @@ class CompressedHeader_DecodeTermSubexp final :
                &_CompressedHeader_DecodeTermSubexp_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    15;
+    16;
 
   friend void swap(CompressedHeader_DecodeTermSubexp& a, CompressedHeader_DecodeTermSubexp& b) {
     a.Swap(&b);
@@ -3861,7 +3980,7 @@ class CompressedHeader_DiffUpdateProb final :
                &_CompressedHeader_DiffUpdateProb_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    16;
+    17;
 
   friend void swap(CompressedHeader_DiffUpdateProb& a, CompressedHeader_DiffUpdateProb& b) {
     a.Swap(&b);
@@ -4028,7 +4147,7 @@ class CompressedHeader_TxModeProbs final :
                &_CompressedHeader_TxModeProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    17;
+    18;
 
   friend void swap(CompressedHeader_TxModeProbs& a, CompressedHeader_TxModeProbs& b) {
     a.Swap(&b);
@@ -4184,7 +4303,7 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
                &_CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    18;
+    19;
 
   friend void swap(CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& a, CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& b) {
     a.Swap(&b);
@@ -4351,7 +4470,7 @@ class CompressedHeader_ReadCoefProbs final :
                &_CompressedHeader_ReadCoefProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    19;
+    20;
 
   friend void swap(CompressedHeader_ReadCoefProbs& a, CompressedHeader_ReadCoefProbs& b) {
     a.Swap(&b);
@@ -4509,7 +4628,7 @@ class CompressedHeader_ReadSkipProb final :
                &_CompressedHeader_ReadSkipProb_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    20;
+    21;
 
   friend void swap(CompressedHeader_ReadSkipProb& a, CompressedHeader_ReadSkipProb& b) {
     a.Swap(&b);
@@ -4665,7 +4784,7 @@ class CompressedHeader_ReadInterModeProbs final :
                &_CompressedHeader_ReadInterModeProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    21;
+    22;
 
   friend void swap(CompressedHeader_ReadInterModeProbs& a, CompressedHeader_ReadInterModeProbs& b) {
     a.Swap(&b);
@@ -4821,7 +4940,7 @@ class CompressedHeader_ReadInterpFilterProbs final :
                &_CompressedHeader_ReadInterpFilterProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    22;
+    23;
 
   friend void swap(CompressedHeader_ReadInterpFilterProbs& a, CompressedHeader_ReadInterpFilterProbs& b) {
     a.Swap(&b);
@@ -4977,7 +5096,7 @@ class CompressedHeader_ReadIsInterProbs final :
                &_CompressedHeader_ReadIsInterProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    23;
+    24;
 
   friend void swap(CompressedHeader_ReadIsInterProbs& a, CompressedHeader_ReadIsInterProbs& b) {
     a.Swap(&b);
@@ -5133,7 +5252,7 @@ class CompressedHeader_FrameReferenceMode final :
                &_CompressedHeader_FrameReferenceMode_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    24;
+    25;
 
   friend void swap(CompressedHeader_FrameReferenceMode& a, CompressedHeader_FrameReferenceMode& b) {
     a.Swap(&b);
@@ -5291,7 +5410,7 @@ class CompressedHeader_FrameReferenceModeProbs final :
                &_CompressedHeader_FrameReferenceModeProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    25;
+    26;
 
   friend void swap(CompressedHeader_FrameReferenceModeProbs& a, CompressedHeader_FrameReferenceModeProbs& b) {
     a.Swap(&b);
@@ -5447,7 +5566,7 @@ class CompressedHeader_ReadYModeProbs final :
                &_CompressedHeader_ReadYModeProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    26;
+    27;
 
   friend void swap(CompressedHeader_ReadYModeProbs& a, CompressedHeader_ReadYModeProbs& b) {
     a.Swap(&b);
@@ -5603,7 +5722,7 @@ class CompressedHeader_ReadPartitionProbs final :
                &_CompressedHeader_ReadPartitionProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    27;
+    28;
 
   friend void swap(CompressedHeader_ReadPartitionProbs& a, CompressedHeader_ReadPartitionProbs& b) {
     a.Swap(&b);
@@ -5759,7 +5878,7 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
                &_CompressedHeader_MvProbs_MvProbsLoop_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    28;
+    29;
 
   friend void swap(CompressedHeader_MvProbs_MvProbsLoop& a, CompressedHeader_MvProbs_MvProbsLoop& b) {
     a.Swap(&b);
@@ -5917,7 +6036,7 @@ class CompressedHeader_MvProbs final :
                &_CompressedHeader_MvProbs_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    29;
+    30;
 
   friend void swap(CompressedHeader_MvProbs& a, CompressedHeader_MvProbs& b) {
     a.Swap(&b);
@@ -6075,7 +6194,7 @@ class CompressedHeader final :
                &_CompressedHeader_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    30;
+    31;
 
   friend void swap(CompressedHeader& a, CompressedHeader& b) {
     a.Swap(&b);
@@ -6502,7 +6621,7 @@ class Tile final :
                &_Tile_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    31;
+    32;
 
   friend void swap(Tile& a, Tile& b) {
     a.Swap(&b);
@@ -6665,7 +6784,7 @@ class VP9Frame final :
                &_VP9Frame_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(VP9Frame& a, VP9Frame& b) {
     a.Swap(&b);
@@ -6738,13 +6857,11 @@ class VP9Frame final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTilesFieldNumber = 5,
+    kTilesFieldNumber = 3,
     kUncompressedHeaderFieldNumber = 1,
-    kCompressedHeaderFieldNumber = 4,
-    kTrailingBitsFieldNumber = 2,
-    kPaddingBitFieldNumber = 3,
+    kCompressedHeaderFieldNumber = 2,
   };
-  // repeated .Tile tiles = 5;
+  // repeated .Tile tiles = 3;
   int tiles_size() const;
   private:
   int _internal_tiles_size() const;
@@ -6780,7 +6897,7 @@ class VP9Frame final :
       ::UncompressedHeader* uncompressed_header);
   ::UncompressedHeader* unsafe_arena_release_uncompressed_header();
 
-  // .CompressedHeader compressed_header = 4;
+  // .CompressedHeader compressed_header = 2;
   bool has_compressed_header() const;
   private:
   bool _internal_has_compressed_header() const;
@@ -6798,24 +6915,6 @@ class VP9Frame final :
       ::CompressedHeader* compressed_header);
   ::CompressedHeader* unsafe_arena_release_compressed_header();
 
-  // uint32 trailing_bits = 2;
-  void clear_trailing_bits();
-  uint32_t trailing_bits() const;
-  void set_trailing_bits(uint32_t value);
-  private:
-  uint32_t _internal_trailing_bits() const;
-  void _internal_set_trailing_bits(uint32_t value);
-  public:
-
-  // uint32 padding_bit = 3;
-  void clear_padding_bit();
-  uint32_t padding_bit() const;
-  void set_padding_bit(uint32_t value);
-  private:
-  uint32_t _internal_padding_bit() const;
-  void _internal_set_padding_bit(uint32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:VP9Frame)
  private:
   class _Internal;
@@ -6827,8 +6926,6 @@ class VP9Frame final :
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile > tiles_;
     ::UncompressedHeader* uncompressed_header_;
     ::CompressedHeader* compressed_header_;
-    uint32_t trailing_bits_;
-    uint32_t padding_bit_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -8042,6 +8139,50 @@ inline void UncompressedHeader_TileInfo::set_increment_tile_rows_log2(::VP9BitFi
 
 // -------------------------------------------------------------------
 
+// UncompressedHeader_SegmentationParams_ReadProb
+
+// .VP9BitField prob_coded = 1;
+inline void UncompressedHeader_SegmentationParams_ReadProb::clear_prob_coded() {
+  _impl_.prob_coded_ = 0;
+}
+inline ::VP9BitField UncompressedHeader_SegmentationParams_ReadProb::_internal_prob_coded() const {
+  return static_cast< ::VP9BitField >(_impl_.prob_coded_);
+}
+inline ::VP9BitField UncompressedHeader_SegmentationParams_ReadProb::prob_coded() const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.SegmentationParams.ReadProb.prob_coded)
+  return _internal_prob_coded();
+}
+inline void UncompressedHeader_SegmentationParams_ReadProb::_internal_set_prob_coded(::VP9BitField value) {
+  
+  _impl_.prob_coded_ = value;
+}
+inline void UncompressedHeader_SegmentationParams_ReadProb::set_prob_coded(::VP9BitField value) {
+  _internal_set_prob_coded(value);
+  // @@protoc_insertion_point(field_set:UncompressedHeader.SegmentationParams.ReadProb.prob_coded)
+}
+
+// uint32 prob = 2;
+inline void UncompressedHeader_SegmentationParams_ReadProb::clear_prob() {
+  _impl_.prob_ = 0u;
+}
+inline uint32_t UncompressedHeader_SegmentationParams_ReadProb::_internal_prob() const {
+  return _impl_.prob_;
+}
+inline uint32_t UncompressedHeader_SegmentationParams_ReadProb::prob() const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.SegmentationParams.ReadProb.prob)
+  return _internal_prob();
+}
+inline void UncompressedHeader_SegmentationParams_ReadProb::_internal_set_prob(uint32_t value) {
+
+  _impl_.prob_ = value;
+}
+inline void UncompressedHeader_SegmentationParams_ReadProb::set_prob(uint32_t value) {
+  _internal_set_prob(value);
+  // @@protoc_insertion_point(field_set:UncompressedHeader.SegmentationParams.ReadProb.prob)
+}
+
+// -------------------------------------------------------------------
+
 // UncompressedHeader_SegmentationParams_Feature
 
 // .VP9BitField feature_enabled = 1;
@@ -8198,7 +8339,47 @@ inline void UncompressedHeader_SegmentationParams::set_segmentation_temporal_upd
   // @@protoc_insertion_point(field_set:UncompressedHeader.SegmentationParams.segmentation_temporal_update)
 }
 
-// .VP9BitField segmentation_update_data = 4;
+// repeated .UncompressedHeader.SegmentationParams.ReadProb prob = 4;
+inline int UncompressedHeader_SegmentationParams::_internal_prob_size() const {
+  return _impl_.prob_.size();
+}
+inline int UncompressedHeader_SegmentationParams::prob_size() const {
+  return _internal_prob_size();
+}
+inline void UncompressedHeader_SegmentationParams::clear_prob() {
+  _impl_.prob_.Clear();
+}
+inline ::UncompressedHeader_SegmentationParams_ReadProb* UncompressedHeader_SegmentationParams::mutable_prob(int index) {
+  // @@protoc_insertion_point(field_mutable:UncompressedHeader.SegmentationParams.prob)
+  return _impl_.prob_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_ReadProb >*
+UncompressedHeader_SegmentationParams::mutable_prob() {
+  // @@protoc_insertion_point(field_mutable_list:UncompressedHeader.SegmentationParams.prob)
+  return &_impl_.prob_;
+}
+inline const ::UncompressedHeader_SegmentationParams_ReadProb& UncompressedHeader_SegmentationParams::_internal_prob(int index) const {
+  return _impl_.prob_.Get(index);
+}
+inline const ::UncompressedHeader_SegmentationParams_ReadProb& UncompressedHeader_SegmentationParams::prob(int index) const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.SegmentationParams.prob)
+  return _internal_prob(index);
+}
+inline ::UncompressedHeader_SegmentationParams_ReadProb* UncompressedHeader_SegmentationParams::_internal_add_prob() {
+  return _impl_.prob_.Add();
+}
+inline ::UncompressedHeader_SegmentationParams_ReadProb* UncompressedHeader_SegmentationParams::add_prob() {
+  ::UncompressedHeader_SegmentationParams_ReadProb* _add = _internal_add_prob();
+  // @@protoc_insertion_point(field_add:UncompressedHeader.SegmentationParams.prob)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::UncompressedHeader_SegmentationParams_ReadProb >&
+UncompressedHeader_SegmentationParams::prob() const {
+  // @@protoc_insertion_point(field_list:UncompressedHeader.SegmentationParams.prob)
+  return _impl_.prob_;
+}
+
+// .VP9BitField segmentation_update_data = 5;
 inline void UncompressedHeader_SegmentationParams::clear_segmentation_update_data() {
   _impl_.segmentation_update_data_ = 0;
 }
@@ -8218,7 +8399,7 @@ inline void UncompressedHeader_SegmentationParams::set_segmentation_update_data(
   // @@protoc_insertion_point(field_set:UncompressedHeader.SegmentationParams.segmentation_update_data)
 }
 
-// .VP9BitField segmentation_abs_or_delta_update = 5;
+// .VP9BitField segmentation_abs_or_delta_update = 6;
 inline void UncompressedHeader_SegmentationParams::clear_segmentation_abs_or_delta_update() {
   _impl_.segmentation_abs_or_delta_update_ = 0;
 }
@@ -8238,7 +8419,7 @@ inline void UncompressedHeader_SegmentationParams::set_segmentation_abs_or_delta
   // @@protoc_insertion_point(field_set:UncompressedHeader.SegmentationParams.segmentation_abs_or_delta_update)
 }
 
-// repeated .UncompressedHeader.SegmentationParams.Feature features = 6;
+// repeated .UncompressedHeader.SegmentationParams.Feature features = 7;
 inline int UncompressedHeader_SegmentationParams::_internal_features_size() const {
   return _impl_.features_.size();
 }
@@ -8282,44 +8463,44 @@ UncompressedHeader_SegmentationParams::features() const {
 
 // UncompressedHeader
 
-// uint32 marker = 1;
-inline void UncompressedHeader::clear_marker() {
-  _impl_.marker_ = 0u;
+// .VP9BitField profile_low_bit = 1;
+inline void UncompressedHeader::clear_profile_low_bit() {
+  _impl_.profile_low_bit_ = 0;
 }
-inline uint32_t UncompressedHeader::_internal_marker() const {
-  return _impl_.marker_;
+inline ::VP9BitField UncompressedHeader::_internal_profile_low_bit() const {
+  return static_cast< ::VP9BitField >(_impl_.profile_low_bit_);
 }
-inline uint32_t UncompressedHeader::marker() const {
-  // @@protoc_insertion_point(field_get:UncompressedHeader.marker)
-  return _internal_marker();
+inline ::VP9BitField UncompressedHeader::profile_low_bit() const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.profile_low_bit)
+  return _internal_profile_low_bit();
 }
-inline void UncompressedHeader::_internal_set_marker(uint32_t value) {
-
-  _impl_.marker_ = value;
-}
-inline void UncompressedHeader::set_marker(uint32_t value) {
-  _internal_set_marker(value);
-  // @@protoc_insertion_point(field_set:UncompressedHeader.marker)
-}
-
-// .UncompressedHeader.Profile profile = 2;
-inline void UncompressedHeader::clear_profile() {
-  _impl_.profile_ = 0;
-}
-inline ::UncompressedHeader_Profile UncompressedHeader::_internal_profile() const {
-  return static_cast< ::UncompressedHeader_Profile >(_impl_.profile_);
-}
-inline ::UncompressedHeader_Profile UncompressedHeader::profile() const {
-  // @@protoc_insertion_point(field_get:UncompressedHeader.profile)
-  return _internal_profile();
-}
-inline void UncompressedHeader::_internal_set_profile(::UncompressedHeader_Profile value) {
+inline void UncompressedHeader::_internal_set_profile_low_bit(::VP9BitField value) {
   
-  _impl_.profile_ = value;
+  _impl_.profile_low_bit_ = value;
 }
-inline void UncompressedHeader::set_profile(::UncompressedHeader_Profile value) {
-  _internal_set_profile(value);
-  // @@protoc_insertion_point(field_set:UncompressedHeader.profile)
+inline void UncompressedHeader::set_profile_low_bit(::VP9BitField value) {
+  _internal_set_profile_low_bit(value);
+  // @@protoc_insertion_point(field_set:UncompressedHeader.profile_low_bit)
+}
+
+// .VP9BitField profile_high_bit = 2;
+inline void UncompressedHeader::clear_profile_high_bit() {
+  _impl_.profile_high_bit_ = 0;
+}
+inline ::VP9BitField UncompressedHeader::_internal_profile_high_bit() const {
+  return static_cast< ::VP9BitField >(_impl_.profile_high_bit_);
+}
+inline ::VP9BitField UncompressedHeader::profile_high_bit() const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.profile_high_bit)
+  return _internal_profile_high_bit();
+}
+inline void UncompressedHeader::_internal_set_profile_high_bit(::VP9BitField value) {
+  
+  _impl_.profile_high_bit_ = value;
+}
+inline void UncompressedHeader::set_profile_high_bit(::VP9BitField value) {
+  _internal_set_profile_high_bit(value);
+  // @@protoc_insertion_point(field_set:UncompressedHeader.profile_high_bit)
 }
 
 // uint32 reserved_zero = 3;
@@ -11618,47 +11799,7 @@ inline void VP9Frame::set_allocated_uncompressed_header(::UncompressedHeader* un
   // @@protoc_insertion_point(field_set_allocated:VP9Frame.uncompressed_header)
 }
 
-// uint32 trailing_bits = 2;
-inline void VP9Frame::clear_trailing_bits() {
-  _impl_.trailing_bits_ = 0u;
-}
-inline uint32_t VP9Frame::_internal_trailing_bits() const {
-  return _impl_.trailing_bits_;
-}
-inline uint32_t VP9Frame::trailing_bits() const {
-  // @@protoc_insertion_point(field_get:VP9Frame.trailing_bits)
-  return _internal_trailing_bits();
-}
-inline void VP9Frame::_internal_set_trailing_bits(uint32_t value) {
-
-  _impl_.trailing_bits_ = value;
-}
-inline void VP9Frame::set_trailing_bits(uint32_t value) {
-  _internal_set_trailing_bits(value);
-  // @@protoc_insertion_point(field_set:VP9Frame.trailing_bits)
-}
-
-// uint32 padding_bit = 3;
-inline void VP9Frame::clear_padding_bit() {
-  _impl_.padding_bit_ = 0u;
-}
-inline uint32_t VP9Frame::_internal_padding_bit() const {
-  return _impl_.padding_bit_;
-}
-inline uint32_t VP9Frame::padding_bit() const {
-  // @@protoc_insertion_point(field_get:VP9Frame.padding_bit)
-  return _internal_padding_bit();
-}
-inline void VP9Frame::_internal_set_padding_bit(uint32_t value) {
-
-  _impl_.padding_bit_ = value;
-}
-inline void VP9Frame::set_padding_bit(uint32_t value) {
-  _internal_set_padding_bit(value);
-  // @@protoc_insertion_point(field_set:VP9Frame.padding_bit)
-}
-
-// .CompressedHeader compressed_header = 4;
+// .CompressedHeader compressed_header = 2;
 inline bool VP9Frame::_internal_has_compressed_header() const {
   return this != internal_default_instance() && _impl_.compressed_header_ != nullptr;
 }
@@ -11748,7 +11889,7 @@ inline void VP9Frame::set_allocated_compressed_header(::CompressedHeader* compre
   // @@protoc_insertion_point(field_set_allocated:VP9Frame.compressed_header)
 }
 
-// repeated .Tile tiles = 5;
+// repeated .Tile tiles = 3;
 inline int VP9Frame::_internal_tiles_size() const {
   return _impl_.tiles_.size();
 }
@@ -11806,11 +11947,6 @@ template <> struct is_proto_enum< ::UncompressedHeader_FrameType> : ::std::true_
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::UncompressedHeader_FrameType>() {
   return ::UncompressedHeader_FrameType_descriptor();
-}
-template <> struct is_proto_enum< ::UncompressedHeader_Profile> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::UncompressedHeader_Profile>() {
-  return ::UncompressedHeader_Profile_descriptor();
 }
 template <> struct is_proto_enum< ::UncompressedHeader_InterpolationFilter> : ::std::true_type {};
 template <>

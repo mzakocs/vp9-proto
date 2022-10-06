@@ -1,5 +1,6 @@
 #include <cmath>
 #include <string>
+#include <fstream>
 #include <vector>
 
 #include "vp9.pb.h"
@@ -10,10 +11,11 @@
 
 // Parser State Variables
 std::vector<bool> bit_buffer;
-static bool Lossless = false;
-static uint32_t tx_mode;
-static bool FrameIsIntra = false;
-static uint32_t interpolation_filter = 0;
+bool Lossless = false;
+uint32_t tx_mode;
+uint32_t profile;
+bool FrameIsIntra = false;
+uint32_t interpolation_filter = 0;
 bool compoundReferenceAllowed = false;
 uint32_t reference_mode = 0;
 uint32_t header_size_in_bytes = 0;
@@ -31,6 +33,7 @@ bool allow_high_precision_mv = 0;
 
 void WriteBitUInt(uint64_t number, uint32_t bits) {
   // Writes integer bits in big endian format to the bit buffer
+  std::cout << number << std::endl;
   number = __builtin_bswap64(number);
   // Write number to bit buffer
   for (uint32_t i = 0; i < bits; i++) {
@@ -66,12 +69,12 @@ void WriteVP9SignedInteger(const VP9SignedInteger *number, uint32_t number_bits)
 
 void WriteVP9FrameSyncCode(const UncompressedHeader *uncompressed_header) {
   // Write frame sync codes
-  WriteByteUInt(uncompressed_header->frame_sync_code(), 3);
+  WriteByteUInt(uncompressed_header->frame_sync_code(), 24);
 }
 
 void WriteVP9ColorConfig(const UncompressedHeader *uncompressed_header) {
   // Write the ten_or_twelve bit for certain profiles
-  if (uncompressed_header->profile() >= 2) {
+  if (profile >= 2) {
     WriteBitUInt(uncompressed_header->color_config().ten_or_twelve_bit(), 1);
   } 
   // Write color space info
@@ -79,14 +82,14 @@ void WriteVP9ColorConfig(const UncompressedHeader *uncompressed_header) {
   // Write conditional color space info
   if (uncompressed_header->color_config().color_space() != UncompressedHeader_ColorConfig::CS_RGB) {
     WriteBitUInt(uncompressed_header->color_config().color_range(), 1);
-    if (uncompressed_header->profile() == 1 || uncompressed_header->profile() == 3) {
+    if (profile == 1 || profile == 3) {
       WriteBitUInt(uncompressed_header->color_config().subsampling_x(), 1);
       WriteBitUInt(uncompressed_header->color_config().subsampling_y(), 1);
       WriteBitUInt(uncompressed_header->color_config().reserved_zero(), 1);
     }
   }
   else {
-    if (uncompressed_header->profile() == 1 || uncompressed_header->profile() == 3) {
+    if (profile == 1 || profile == 3) {
       WriteBitUInt(uncompressed_header->color_config().reserved_zero(), 1);
     }
   }
@@ -152,12 +155,16 @@ void WriteVP9QuantizationParams(const UncompressedHeader *uncompressed_header) {
 
 void WriteVP9RefDelta(VP9BitField update_ref_delta, const VP9SignedInteger* loop_filter_ref_delta) {
   WriteBitUInt(update_ref_delta, 1);
-  WriteVP9SignedInteger(loop_filter_ref_delta, 6);
+  if (update_ref_delta == 1) {
+    WriteVP9SignedInteger(loop_filter_ref_delta, 6);
+  } 
 }
 
 void WriteVP9ModeDelta(VP9BitField update_mode_delta, const VP9SignedInteger* loop_filter_mode_delta) {
   WriteBitUInt(update_mode_delta, 1);
-  WriteVP9SignedInteger(loop_filter_mode_delta, 6);
+  if (update_mode_delta) {
+    WriteVP9SignedInteger(loop_filter_mode_delta, 6);
+  }
 }
 
 void WriteVP9LoopFilterParams(const UncompressedHeader *uncompressed_header) {
@@ -204,13 +211,43 @@ void WriteVP9SegmentationParamsFeature(const UncompressedHeader_SegmentationPara
   }
 }
 
+void WriteVP9SegmentationParamsReadProb(const VP9BitField prob_coded, uint32_t prob) {
+  WriteBitUInt(prob_coded, 1);
+  if (prob_coded) {
+    WriteBitUInt(prob, 8);
+  }
+}
+
 void WriteVP9SegmentationParams(const UncompressedHeader *uncompressed_header) {
   WriteBitUInt(uncompressed_header->segmentation_params().segmentation_enabled(), 1);
   if (uncompressed_header->segmentation_params().segmentation_enabled() == 1) {
     WriteBitUInt(uncompressed_header->segmentation_params().segmentation_update_map(), 1);
+    // Write Segmentation Probabilities
     if (uncompressed_header->segmentation_params().segmentation_update_map() == 1) {
+      uint32_t probs_read = 0;
+      for (int i = 0; i < 7; i++) {
+        if (probs_read < uncompressed_header->segmentation_params().prob().size()) {
+          auto prob = uncompressed_header->segmentation_params().prob().at(probs_read++);
+          WriteVP9SegmentationParamsReadProb(prob.prob_coded(), prob.prob());
+        }
+        else {
+          WriteVP9SegmentationParamsReadProb((VP9BitField) 0, 0);
+        }
+      }
       WriteBitUInt(uncompressed_header->segmentation_params().segmentation_temporal_update(), 1);
+      if (uncompressed_header->segmentation_params().segmentation_temporal_update()) {
+        for (int i = 0; i < 3; i++) {
+          if (probs_read < uncompressed_header->segmentation_params().prob().size()) {
+            auto prob = uncompressed_header->segmentation_params().prob().at(probs_read++);
+            WriteVP9SegmentationParamsReadProb(prob.prob_coded(), prob.prob());
+          }
+          else {
+            WriteVP9SegmentationParamsReadProb((VP9BitField) 0, 0);
+          }
+        }
+      }
     }
+    // Write Segmentation Features
     WriteBitUInt(uncompressed_header->segmentation_params().segmentation_update_data(), 1);
     if (uncompressed_header->segmentation_params().segmentation_update_data() == 1) {
       WriteBitUInt(uncompressed_header->segmentation_params().segmentation_abs_or_delta_update(), 1);
@@ -246,9 +283,11 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
   // Write uncompressed header frame marker
   WriteBitUInt(2, 2);
   // Write profile bits
-  WriteBitUInt(uncompressed_header->profile(), 2);
+  profile = (uncompressed_header->profile_high_bit() << 1) + uncompressed_header->profile_low_bit();
+  WriteBitUInt(uncompressed_header->profile_low_bit(), 1);
+  WriteBitUInt(uncompressed_header->profile_high_bit(), 1);
   // Write zero bit if needed
-  if (uncompressed_header->profile() == 3) {
+  if (profile == 3) {
     WriteBitUInt(uncompressed_header->reserved_zero(), 1);
   }
   // Write show existing frame bit
@@ -278,7 +317,7 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
     uint32_t intra_only = 0;
     if (uncompressed_header->show_frame() == 0) {
       intra_only = uncompressed_header->intra_only();
-      WriteBitUInt(uncompressed_header->intra_only(), 1);
+      WriteBitUInt(intra_only, 1);
     }
     FrameIsIntra = intra_only;
     // Write reset_frame_context if error_resilient_mode
@@ -289,7 +328,7 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
     if (intra_only == 1) {
       WriteVP9FrameSyncCode(uncompressed_header);
       // Write conditional profile data
-      if (uncompressed_header->profile() > 0) {
+      if (profile > 0) {
         WriteVP9ColorConfig(uncompressed_header);
       }
       // Write intra frame info
@@ -619,8 +658,17 @@ std::string ProtoToVP9(const VP9Frame *frame) {
 int main(int argc, char** argv) {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  const VP9Frame vp9_frame;
-  std::string binary = ProtoToVP9(&vp9_frame); 
+  // Read protobuf
+  std::ifstream ifs("./test_frame_protobuf", std::ios_base::in | std::ios_base::binary);
+
+  // Convert protobuf to frame
+  VP9Frame vp9_frame;
+  vp9_frame.ParseFromIstream(&ifs);
+  std::string binary = ProtoToVP9((const VP9Frame*) &vp9_frame); 
+
+  // Write binary to file
+  std::ofstream ofs("./test_frame", std::ios_base::out | std::ios_base::binary);
+  ofs << binary;
   
   return 0;
 }

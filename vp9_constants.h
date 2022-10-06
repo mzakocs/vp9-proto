@@ -14,7 +14,7 @@ enum ReferenceMode {
   REFERENCE_MODE_SELECT
 };
 
-int tx_mode_to_biggest_tx_size[ TX_MODES ] = {
+unsigned int tx_mode_to_biggest_tx_size[ TX_MODES ] = {
  TX_4X4,
  TX_8X8,
  TX_16X16,
@@ -22,5 +22,5 @@ int tx_mode_to_biggest_tx_size[ TX_MODES ] = {
  TX_32X32
 };
 
-int segmentation_feature_bits[ SEG_LVL_MAX ] = { 8, 6, 2, 0 };
-int segmentation_feature_signed[ SEG_LVL_MAX ] = { 1, 1, 0, 0 };
+unsigned int segmentation_feature_bits[ SEG_LVL_MAX ] = { 8, 6, 2, 0 };
+unsigned int segmentation_feature_signed[ SEG_LVL_MAX ] = { 1, 1, 0, 0 };

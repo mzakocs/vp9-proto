@@ -2,6 +2,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <bitset>
 
 #include "vp9.pb.h"
 #include "vp9_constants.h"
@@ -12,7 +13,7 @@ uint64_t bit_counter = 0;
 VP9Frame* vp9_frame;
 
 UncompressedHeader_FrameType frame_type;
-UncompressedHeader_Profile profile;
+uint32_t profile;
 bool FrameIsIntra = false;
 bool Lossless = false;
 bool allow_high_precision_mv = false;
@@ -24,24 +25,48 @@ uint32_t header_size_in_bytes = 0;
 
 uint64_t ReadBitUInt(uint32_t bits) {
   uint64_t return_num = 0;
-  for (uint32_t i = 0; i < bits; i++) {
-    return_num |= bit_buffer.at(bit_counter++) << i;
+  int current_byte_index = 7;
+  uint64_t bits_written = 0;
+  // Keep iterating over bytes while we have bits to read
+  while (bits_written < bits) {
+    // Loop backwards over the bits in current_byte as we're popping them from bit_buffer
+    //  We will either loop over 8 bits or the remaining bits depending on how many bits we have left to read
+    for (uint32_t i = std::min((bits - bits_written), (unsigned long) 8); i --> 0;) {
+      ((char*) &return_num)[current_byte_index] |= ((bit_buffer.at(bit_counter++) << i));
+      // std::cout << std::bitset<64>(bit_buffer.at(bit_counter - 1) << i) << std::endl;
+      ++bits_written;
+    }
+    // Go to the next byte
+    --current_byte_index;
+    if (current_byte_index == -1) {
+      return __builtin_bswap64(return_num);
+    }
   }
-  return __builtin_bswap64(return_num);
+  
+  // for (uint32_t i = 0; i < bits; i++) {
+  //   return_num |= ((bit_buffer.at(bit_counter++) << i) & (0b1 << i));
+  //   std::cout << std::bitset<64>(bit_buffer.at(bit_counter - 1) << i) << std::endl;
+  // }
+  return_num = __builtin_bswap64(return_num);
+  // std::cout << return_num << " (n = " << bits << ")" << std::endl;
+  return return_num;
 }
 
 std::string ReadBitString(uint32_t bits) {
   std::string return_string;
   uint64_t bits_written = 0;
   while (true) {
-    char current_byte = NULL;
+    char current_byte = 0;
     for (uint64_t i = 0; i < 8; i++) {
       // Check if we're at bit cap
       if (bits == bits_written) {
+        return_string.push_back(current_byte);
+        // std::cout << return_string << " (n = " << bits << ")" << std::endl;
         return return_string;
       }
       // Otherwise write bit to string
       current_byte |= bit_buffer.at(bit_counter++) << i;
+      ++bits_written;
     } 
     return_string.push_back(current_byte);
   }
@@ -116,13 +141,19 @@ UncompressedHeader_LoopFilterParams* ReadVP9LoopFilterParams() {
     if (loop_filter_delta_update == 1) {
       for (int i = 0; i < 4; i++) {
         loop_filter_params->add_ref_delta();
-        loop_filter_params->mutable_ref_delta(i)->set_update_ref_delta((VP9BitField) ReadBitUInt(1));
-        loop_filter_params->mutable_ref_delta(i)->set_allocated_loop_filter_ref_deltas(ReadVP9SignedInteger(6));
+        bool update_ref_delta = ReadBitUInt(1);
+        loop_filter_params->mutable_ref_delta(i)->set_update_ref_delta((VP9BitField) update_ref_delta);
+        if (update_ref_delta == 1) {
+          loop_filter_params->mutable_ref_delta(i)->set_allocated_loop_filter_ref_deltas(ReadVP9SignedInteger(6));
+        }
       }
       for (int i = 0; i < 2; i++) {
         loop_filter_params->add_mode_delta();
-        loop_filter_params->mutable_mode_delta(i)->set_update_mode_delta((VP9BitField) ReadBitUInt(1));
-        loop_filter_params->mutable_mode_delta(i)->set_allocated_loop_filter_mode_deltas(ReadVP9SignedInteger(6));
+        bool update_mode_delta = ReadBitUInt(1);
+        loop_filter_params->mutable_mode_delta(i)->set_update_mode_delta((VP9BitField) update_mode_delta);
+        if (update_mode_delta == 1) {
+          loop_filter_params->mutable_mode_delta(i)->set_allocated_loop_filter_mode_deltas(ReadVP9SignedInteger(6));
+        }
       }
     }
   }
@@ -135,7 +166,7 @@ UncompressedHeader_QuantizationParams_ReadDeltaQ* ReadVP9ReadDeltaQ() {
 
   VP9BitField delta_coded = (VP9BitField) ReadBitUInt(1);
   read_delta_q->set_delta_coded(delta_coded);
-  if (delta_coded == 1) {
+  if (delta_coded) {
     read_delta_q->set_allocated_delta_q(ReadVP9SignedInteger(4));
   }
   return read_delta_q;
@@ -161,6 +192,7 @@ UncompressedHeader_SegmentationParams* ReadVP9SegmentationParams() {
   auto segmentation_params = new UncompressedHeader_SegmentationParams();
 
   VP9BitField segmentation_enabled = (VP9BitField) ReadBitUInt(1);
+  std::cout << "Segmentation Enabled: " << segmentation_enabled << std::endl;
   segmentation_params->set_segmentation_enabled(segmentation_enabled);
 
   if (segmentation_enabled == 1) {
@@ -168,12 +200,36 @@ UncompressedHeader_SegmentationParams* ReadVP9SegmentationParams() {
     segmentation_params->set_segmentation_update_map(segmentation_update_map);
 
     if (segmentation_update_map == 1) {
-      segmentation_params->set_segmentation_temporal_update((VP9BitField) ReadBitUInt(1));
+      // Read probabilities
+      uint32_t probs_read = 0;
+      for (int i = 0; i < 7; i++) {
+        segmentation_params->add_prob();
+        auto prob = segmentation_params->mutable_prob(probs_read++);
+
+        bool prob_coded = ReadBitUInt(1);
+        prob->set_prob_coded((VP9BitField) prob_coded);
+        if (prob_coded) {
+          prob->set_prob(ReadBitUInt(8));
+        }
+      }
+      bool segmentation_temporal_update = ReadBitUInt(1);
+      segmentation_params->set_segmentation_temporal_update((VP9BitField) segmentation_temporal_update);
+      if (segmentation_temporal_update) {
+        segmentation_params->add_prob();
+        auto prob = segmentation_params->mutable_prob(probs_read++);
+
+        bool prob_coded = ReadBitUInt(1);
+        prob->set_prob_coded((VP9BitField) prob_coded);
+        if (prob_coded) {
+          prob->set_prob(ReadBitUInt(8));
+        }
+      }
     }
 
     VP9BitField segmentation_update_data = (VP9BitField) ReadBitUInt(1);
     segmentation_params->set_segmentation_update_data(segmentation_update_data);
 
+    // Read segmentation features
     uint32_t feature_index = 0;
     if (segmentation_update_data == 1) {
       segmentation_params->set_segmentation_abs_or_delta_update((VP9BitField) ReadBitUInt(1));
@@ -200,6 +256,7 @@ UncompressedHeader_SegmentationParams* ReadVP9SegmentationParams() {
 }
 
 UncompressedHeader_TileInfo* ReadVP9TileInfo() {
+  // TODO: Rewrite this as it's clearly not working properly
   auto tile_info = new UncompressedHeader_TileInfo();
   // Read all 1 bits for increment_tile_cols_log2 (unsupported in protobuf so we ignore)
   // We would have to calculate tile cols/rows to get right 100% of the time but a max of 6 is good enough for now
@@ -234,10 +291,12 @@ UncompressedHeader_ReadInterpolationFilter* ReadVP9ReadInterpolationFilter() {
 UncompressedHeader* ReadVP9UncompressedHeader() {
   auto uncompressed_header = new UncompressedHeader();
 
-  uncompressed_header->set_marker(0b10);
+  uint32_t profile_low_bit = ReadBitUInt(1);
+  uint32_t profile_high_bit = ReadBitUInt(1);
+  profile = (profile_high_bit << 1) + profile_low_bit;
 
-  profile = (UncompressedHeader_Profile) ReadBitUInt(2);
-  uncompressed_header->set_profile(profile);
+  uncompressed_header->set_profile_low_bit((VP9BitField) profile_low_bit);
+  uncompressed_header->set_profile_high_bit((VP9BitField) profile_high_bit);
   if (profile == 3) {
     uncompressed_header->set_reserved_zero(ReadBitUInt(1));
   }
@@ -248,7 +307,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
   if (show_existing_frame == 1) {
     uncompressed_header->set_frame_to_show_map_idx(ReadBitUInt(3));
     header_size_in_bytes = 0;
-    return;
+    return uncompressed_header;
   }
   frame_type = (UncompressedHeader_FrameType) ReadBitUInt(1);
   uncompressed_header->set_frame_type(frame_type);
@@ -261,7 +320,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
 
   if (frame_type == UncompressedHeader_FrameType_KEY_FRAME) {
     FrameIsIntra = true;
-    uncompressed_header->set_frame_sync_code(ReadBitUInt(3));
+    uncompressed_header->set_frame_sync_code(ReadBitUInt(24));
     uncompressed_header->set_allocated_color_config(ReadVP9ColorConfig());
     uncompressed_header->set_allocated_frame_size(ReadVP9FrameSize());
     uncompressed_header->set_allocated_render_size(ReadVP9RenderSize());
@@ -332,6 +391,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
   uncompressed_header->set_allocated_tile_info(ReadVP9TileInfo());
 
   header_size_in_bytes = ReadBitUInt(16);
+  std::cout << "Compressed Header Size: " << header_size_in_bytes << std::endl;
   uncompressed_header->set_header_size_in_bytes(header_size_in_bytes);
 
   return uncompressed_header;
@@ -570,7 +630,7 @@ CompressedHeader_MvProbs* ReadVP9MvProbs() {
   if (allow_high_precision_mv) {
     for (uint32_t i = 45; i < (45 + 4); i++) {
       mv_probs->add_mv_probs();
-      ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i);
+      ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i));
     }
   }
 
@@ -613,6 +673,7 @@ void ReadVP9TrailingBits() {
 
 void ReadVP9Tile(Tile* tile) {
   uint32_t tile_size = ReadBitUInt(32);
+  std::cout << "Tile Size: " << tile_size << std::endl;
   tile->set_tile_size(tile_size);
   tile->set_partition(ReadBitString(tile_size * 8));
 }
@@ -627,28 +688,43 @@ VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
   char data;
   while (file.read(&data, 1)) {
     for (int i = 0; i < 8; i++) {
-      bit_buffer.push_back(((data >> i) & 1) != 0);
+      bit_buffer.push_back(((data >> (7 - i)) & 0b1));
     }
+  }
+  // Check that we have data to parse
+  if (bit_buffer.size() < 5) {
+    std::cerr << "Failed to read file: " << vp9_frame_file_path << std::endl; 
+    exit(0);
   }
   // Read Headers
   vp9_frame->set_allocated_uncompressed_header(ReadVP9UncompressedHeader());
+  std::cout << "Wrote Uncompressed Header" << std::endl;
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
   ReadVP9TrailingBits();
   if (header_size_in_bytes == 0) {
+    std::cout << "Repeat Frame, " << bit_counter << " / " << bit_buffer.size() << std::endl;
     return vp9_frame;
   }
   vp9_frame->set_allocated_compressed_header(ReadVP9CompressedHeader());
-  
-  // Read Tiles
-  uint32_t tile_count = 0;
-  while (bit_counter <= bit_buffer.size()) {
-    vp9_frame->add_tiles();
-    ReadVP9Tile(vp9_frame->mutable_tiles(tile_count++));
-  }
-  
+  std::cout << "Wrote Compressed Header" << std::endl;
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  // // Read Tiles
+  // uint32_t tile_count = 0;
+  // while (bit_counter <= bit_buffer.size()) {
+  //   vp9_frame->add_tiles();
+  //   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  //   ReadVP9Tile(vp9_frame->mutable_tiles(tile_count++));
+  // }
+
   return vp9_frame;
 }
 
 int main(int argc, char** argv) {
-  VP9ToProto("../frames/test_frame.vp9");
+  // Convert vp9 binary frame to protobuf
+  VP9Frame* vp9_frame = VP9ToProto("/home/mitchbuntu/Documents/Github/vp9-proto/frames/test_frame.vp9");
+
+  // Serialize protobuf and store to file
+  std::ofstream ofs("./test_frame_protobuf", std::ios_base::out | std::ios_base::binary);
+  vp9_frame->SerializeToOstream(&ofs);
   return 0;
 }

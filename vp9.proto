@@ -54,13 +54,6 @@ message UncompressedHeader {
     KEY_FRAME = 0;
     NON_KEY_FRAME = 1;
   }
-
-  enum Profile {
-    ZERO = 0;
-    ONE = 1;
-    TWO = 2;
-    THREE = 3;
-  }
   
   message RenderSize {
     VP9BitField render_and_frame_size_different = 1; // 1 bit
@@ -125,6 +118,11 @@ message UncompressedHeader {
   
   message SegmentationParams {
 
+    message ReadProb {
+      VP9BitField prob_coded = 1; // 1 bit
+      uint32 prob = 2;
+    }
+
     message Feature {
       VP9BitField feature_enabled = 1; // 1 bit
       bytes feature_value = 2; // 0-8 bits
@@ -136,28 +134,23 @@ message UncompressedHeader {
     VP9BitField segmentation_update_map = 2; // 1 bit
   
     VP9BitField segmentation_temporal_update = 3; // 1 bit
+
+    repeated ReadProb prob = 4;
   
-    VP9BitField segmentation_update_data = 4; // 1 bit
+    VP9BitField segmentation_update_data = 5; // 1 bit
   
-    VP9BitField segmentation_abs_or_delta_update = 5; // 1 bit
+    VP9BitField segmentation_abs_or_delta_update = 6; // 1 bit
   
-    repeated Feature features = 6; // 6 - 30 bits
+    repeated Feature features = 7; // 6 - 30 bits
   }
-  
-  // message TileInfo {
-  //   uint32 increment_tile_cols_log2 = 1; // 1 bit
-  
-  //   uint32 tile_rows_log2 = 2; // 1 bit
-  
-  //   uint32 increment_tile_rows_Log2 = 3; // 1 bit
-  // }
 
-  uint32 marker = 1;  // 2 bits
+  VP9BitField profile_low_bit = 1;  // 1 bits
+  VP9BitField profile_high_bit = 2; // 1 bits
 
-  Profile profile = 2; // 2 bits, profile_low bit and profile_high_bit in spec
   uint32 reserved_zero = 3; // 1 bit
   
   VP9BitField show_existing_frame = 4; // 1 bit
+
   uint32 frame_to_show_map_idx = 5; // 3 bits
 
   FrameType frame_type = 6; // 1 bit

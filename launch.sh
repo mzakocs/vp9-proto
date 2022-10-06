@@ -1,2 +1,2 @@
 ./build.sh
-./bazel-bin/vp9_proto_cpp
+./bazel-bin/vp9_to_proto
