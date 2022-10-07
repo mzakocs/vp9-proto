@@ -322,7 +322,7 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
     FrameIsIntra = intra_only;
     // Write reset_frame_context if error_resilient_mode
     if (uncompressed_header->error_resilient_mode() == 0) {
-      WriteBitUInt(uncompressed_header->reset_frame_context(), 1);
+      WriteBitUInt(uncompressed_header->reset_frame_context(), 2);
     }
     // Write conditional intra frame data
     if (intra_only == 1) {

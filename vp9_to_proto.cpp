@@ -12,8 +12,8 @@ std::vector<bool> bit_buffer;
 uint64_t bit_counter = 0;
 VP9Frame* vp9_frame;
 
-UncompressedHeader_FrameType frame_type;
-uint32_t profile;
+UncompressedHeader_FrameType frame_type = (UncompressedHeader_FrameType) 0;
+uint32_t profile = 0;
 bool FrameIsIntra = false;
 bool Lossless = false;
 bool allow_high_precision_mv = false;
@@ -23,32 +23,54 @@ uint32_t interpolation_filter = 0;
 uint32_t tx_mode = 0;
 uint32_t header_size_in_bytes = 0;
 
-uint64_t ReadBitUInt(uint32_t bits) {
-  uint64_t return_num = 0;
-  int current_byte_index = 7;
-  uint64_t bits_written = 0;
-  // Keep iterating over bytes while we have bits to read
-  while (bits_written < bits) {
-    // Loop backwards over the bits in current_byte as we're popping them from bit_buffer
-    //  We will either loop over 8 bits or the remaining bits depending on how many bits we have left to read
-    for (uint32_t i = std::min((bits - bits_written), (unsigned long) 8); i --> 0;) {
-      ((char*) &return_num)[current_byte_index] |= ((bit_buffer.at(bit_counter++) << i));
-      // std::cout << std::bitset<64>(bit_buffer.at(bit_counter - 1) << i) << std::endl;
-      ++bits_written;
-    }
-    // Go to the next byte
-    --current_byte_index;
-    if (current_byte_index == -1) {
-      return __builtin_bswap64(return_num);
-    }
-  }
-  
-  // for (uint32_t i = 0; i < bits; i++) {
-  //   return_num |= ((bit_buffer.at(bit_counter++) << i) & (0b1 << i));
-  //   std::cout << std::bitset<64>(bit_buffer.at(bit_counter - 1) << i) << std::endl;
+uint64_t ReadBitUInt(int bits) {
+  // TODO: Replace this with simple bitshift parser, i'm dumb
+  // uint64_t return_num = 0;
+  // uint64_t bits_written = 0;
+  // // Calculate the byte we need to start on
+  // uint32_t bits_to_bytes = (uint32_t) ceil(bits / 8) - 1;
+  // uint32_t byte_start = bits_to_bytes > 7 ? 0 : (7 - bits_to_bytes);
+  // // Loop backwards over the bytes since it's big endian
+  // for (uint32_t byte_index = byte_start; byte_index < 8; byte_index++) {
+  //   auto current_byte = &((uint8_t*) &return_num)[byte_index];
+  //   // Calculate the bit we need to start on
+  //   uint32_t bits_remaining = (bits - bits_written);
+  //   uint32_t bit_start = bits_remaining < 8 ? bits_remaining : 8;
+  //   for (uint32_t bit_index = bit_start; bit_index --> 0;) {
+  //     *current_byte |= ((bit_buffer.at(bit_counter++) << bit_index));
+  //     // if (bits == 16) {
+  //     //   std::cout << bit_buffer.at(bit_counter-1);
+  //     //   // std::cout << bit << std::endl << std::endl;
+  //     // }
+  //     if (++bits_written == bits) {
+  //       // if (bits == 16){
+  //       //   std::cout << std::endl;
+  //       //   for (int i = 0; i < 8; i++) {
+  //       //     uint8_t lol = ((uint8_t*) &return_num)[i];
+  //       //     std::cout << std::hex << (uint64_t) lol << std::dec << std::endl;
+  //       //   }
+  //       //   std::cout << std::endl;
+  //       // }
+  //       return_num = __builtin_bswap64(return_num);
+  //       // if (bits == 16){
+  //       //   std::cout << std::endl;
+  //       //   for (int i = 0; i < 8; i++) {
+  //       //     uint8_t lol = ((uint8_t*) &return_num)[i];
+  //       //     std::cout << std::hex << (uint64_t) lol << std::dec << std::endl;
+  //       //   }
+  //       //   std::cout << std::endl;
+  //       // }
+  //       return return_num;
+  //     }
+  //   }
   // }
-  return_num = __builtin_bswap64(return_num);
-  // std::cout << return_num << " (n = " << bits << ")" << std::endl;
+  // return_num = __builtin_bswap64(return_num);
+  // return return_num;
+  uint64_t return_num = 0;
+  uint64_t bound_bits = std::min(bits, 64);
+  for (uint32_t i = 0; i < bound_bits; i++) {
+    return_num = (return_num << 1) | bit_buffer.at(bit_counter++);
+  }
   return return_num;
 }
 
@@ -56,7 +78,7 @@ std::string ReadBitString(uint32_t bits) {
   std::string return_string;
   uint64_t bits_written = 0;
   while (true) {
-    char current_byte = 0;
+    uint8_t current_byte = 0;
     for (uint64_t i = 0; i < 8; i++) {
       // Check if we're at bit cap
       if (bits == bits_written) {
@@ -65,7 +87,7 @@ std::string ReadBitString(uint32_t bits) {
         return return_string;
       }
       // Otherwise write bit to string
-      current_byte |= bit_buffer.at(bit_counter++) << i;
+      current_byte = (current_byte << 1) | bit_buffer.at(bit_counter++);
       ++bits_written;
     } 
     return_string.push_back(current_byte);
@@ -134,9 +156,13 @@ UncompressedHeader_LoopFilterParams* ReadVP9LoopFilterParams() {
   VP9BitField loop_filter_delta_enabled = (VP9BitField) ReadBitUInt(1);
   loop_filter_params->set_loop_filter_delta_enabled(loop_filter_delta_enabled);
 
+  std::cout << "Loop Filter Delta Enabled: " << loop_filter_delta_enabled << std::endl;
+
   if (loop_filter_delta_enabled == 1) {
     VP9BitField loop_filter_delta_update = (VP9BitField) ReadBitUInt(1);
     loop_filter_params->set_loop_filter_delta_update(loop_filter_delta_update);
+
+    std::cout << "Loop Filter Delta Update: " << loop_filter_delta_update << std::endl;
 
     if (loop_filter_delta_update == 1) {
       for (int i = 0; i < 4; i++) {
@@ -291,9 +317,14 @@ UncompressedHeader_ReadInterpolationFilter* ReadVP9ReadInterpolationFilter() {
 UncompressedHeader* ReadVP9UncompressedHeader() {
   auto uncompressed_header = new UncompressedHeader();
 
+  // Read marker
+  ReadBitUInt(2);
+
   uint32_t profile_low_bit = ReadBitUInt(1);
   uint32_t profile_high_bit = ReadBitUInt(1);
   profile = (profile_high_bit << 1) + profile_low_bit;
+
+  std::cout << "Profile: " << profile << std::endl;
 
   uncompressed_header->set_profile_low_bit((VP9BitField) profile_low_bit);
   uncompressed_header->set_profile_high_bit((VP9BitField) profile_high_bit);
@@ -318,6 +349,8 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
   VP9BitField error_resilient_mode = (VP9BitField) ReadBitUInt(1);
   uncompressed_header->set_error_resilient_mode(error_resilient_mode);
 
+  std::cout << "Frame Type: " << frame_type << std::endl;
+  
   if (frame_type == UncompressedHeader_FrameType_KEY_FRAME) {
     FrameIsIntra = true;
     uncompressed_header->set_frame_sync_code(ReadBitUInt(24));
@@ -335,7 +368,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
     FrameIsIntra = intra_only;
 
     if (error_resilient_mode == 0) {
-      uncompressed_header->set_reset_frame_context(ReadBitUInt(1));
+      uncompressed_header->set_reset_frame_context(ReadBitUInt(2));
     }
 
     if (intra_only == 1) {
@@ -379,6 +412,9 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
     }
 
   }
+
+  std::cout << "Error Resilient Mode: " << error_resilient_mode << std::endl;
+
   if (error_resilient_mode == 0) {
     uncompressed_header->set_refresh_frame_flags(ReadBitUInt(1));
     uncompressed_header->set_frame_parallel_decoding_mode((VP9BitField)ReadBitUInt(1));
@@ -685,8 +721,8 @@ VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
   file = std::ifstream(vp9_frame_file_path, std::ios::binary);
   // Read into bit vector
   bit_buffer = std::vector<bool>();
-  char data;
-  while (file.read(&data, 1)) {
+  uint8_t data;
+  while (file.read((char *)&data, 1)) {
     for (int i = 0; i < 8; i++) {
       bit_buffer.push_back(((data >> (7 - i)) & 0b1));
     }

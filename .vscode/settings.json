@@ -67,6 +67,8 @@
     "valarray": "cpp",
     "variant": "cpp",
     "iomanip": "cpp",
-    "regex": "cpp"
+    "regex": "cpp",
+    "condition_variable": "cpp",
+    "shared_mutex": "cpp"
   }
 }
