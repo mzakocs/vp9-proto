@@ -21,6 +21,13 @@ uint32_t reference_mode = 0;
 uint32_t header_size_in_bytes = 0;
 bool allow_high_precision_mv = 0;
 
+uint32_t FrameWidth = 0;
+uint32_t FrameHeight = 0;
+uint32_t MiCols = 0;
+uint32_t MiRows = 0;
+uint32_t Sb64Cols = 0;
+uint32_t Sb64Rows = 0;
+
 // uint64_t BindBitUInt(uint64_t number, uint32_t bits) {
 //   // Calculate max number for bit count
 //   uint64_t max_number = pow(2, bits) - 1;
@@ -33,11 +40,9 @@ bool allow_high_precision_mv = 0;
 
 void WriteBitUInt(uint64_t number, uint32_t bits) {
   // Writes integer bits in big endian format to the bit buffer
-  std::cout << number << std::endl;
-  number = __builtin_bswap64(number);
-  // Write number to bit buffer
-  for (uint32_t i = 0; i < bits; i++) {
-    bool number_bit = (number << i) & 0b1;
+  for (uint32_t i = bits; i --> 0;) {
+    bool number_bit = (number >> i) & 0b1;
+    // std::cout << number_bit << std::endl;
     bit_buffer.push_back(number_bit);
   }
 }
@@ -45,20 +50,19 @@ void WriteBitUInt(uint64_t number, uint32_t bits) {
 void WriteBitString(std::string string, uint32_t bits) {
   // Convert string to c bytes
   const char* bytes = string.c_str();
-  // Write string to bit buffer
-  for (uint32_t i = 0; i < bits; i++) {
-    int byte_index = floor(i / 8);
-    bool string_bit = false;
-    if (byte_index < string.size()) {
-      bool string_bit = (bytes[byte_index] << i) & 0b1;
-    }
-    bit_buffer.push_back(string_bit);
-  }
-}
+  // Write bytes to bit buffer
+  uint32_t byte_count = ceil(bits / 8.0);
+  for (uint32_t byte_index = byte_count; byte_index --> 0;) {
+    
+    uint32_t bit_limit = (byte_index > 0) ? 8 : 8 - ((byte_count * 8) - bits);
+    uint8_t current_byte = byte_index < string.size() ? bytes[byte_index] : 0;
 
-void WriteByteUInt(uint64_t number, uint32_t bytes) {
-  // Writes integer bytes in big endian format to the bit buffer
-  WriteBitUInt(number, bytes * 8);
+    for (uint32_t bit_index = bit_limit; bit_index --> 0;) {
+      bool bit = (current_byte >> bit_index) & 0b1;
+      bit_buffer.push_back(bit);
+    }
+    
+  }
 }
 
 void WriteVP9SignedInteger(const VP9SignedInteger *number, uint32_t number_bits) {
@@ -69,7 +73,7 @@ void WriteVP9SignedInteger(const VP9SignedInteger *number, uint32_t number_bits)
 
 void WriteVP9FrameSyncCode(const UncompressedHeader *uncompressed_header) {
   // Write frame sync codes
-  WriteByteUInt(uncompressed_header->frame_sync_code(), 24);
+  WriteBitUInt(uncompressed_header->frame_sync_code(), 24);
 }
 
 void WriteVP9ColorConfig(const UncompressedHeader *uncompressed_header) {
@@ -95,11 +99,24 @@ void WriteVP9ColorConfig(const UncompressedHeader *uncompressed_header) {
   }
 }
 
+void ComputeImageSize() {
+  MiCols = (FrameWidth + 7) >> 3;
+  MiRows = (FrameHeight + 7) >> 3;
+  Sb64Cols = (MiCols + 7) >> 3;
+  Sb64Rows = (MiRows + 7) >> 3;
+  return;
+}
+
 void WriteVP9FrameSize(const UncompressedHeader *uncompressed_header) {
   // Write frame size
   // TODO: Maybe mutate this a bit more granularly
   WriteBitUInt(uncompressed_header->frame_size().frame_width_minus_1(), 16);
   WriteBitUInt(uncompressed_header->frame_size().frame_height_minus_1(), 16);
+
+  FrameWidth = uncompressed_header->frame_size().frame_width_minus_1() + 1;
+  FrameHeight = uncompressed_header->frame_size().frame_height_minus_1() + 1;
+
+  ComputeImageSize();
 }
 
 void WriteVP9RenderSize(const UncompressedHeader *uncompressed_header) {
@@ -155,6 +172,7 @@ void WriteVP9QuantizationParams(const UncompressedHeader *uncompressed_header) {
 
 void WriteVP9RefDelta(VP9BitField update_ref_delta, const VP9SignedInteger* loop_filter_ref_delta) {
   WriteBitUInt(update_ref_delta, 1);
+  std::cout << "Update Ref Delta: " << update_ref_delta << std::endl;
   if (update_ref_delta == 1) {
     WriteVP9SignedInteger(loop_filter_ref_delta, 6);
   } 
@@ -269,9 +287,42 @@ void WriteVP9SegmentationParams(const UncompressedHeader *uncompressed_header) {
   }
 }
 
+uint32_t CalcMinLog2TileCols() {
+  uint32_t minLog2 = 0;
+  while ((MAX_TILE_WIDTH_B64 << minLog2) < Sb64Cols) {
+    ++minLog2;
+  }
+  return minLog2;
+}
+
+uint32_t CalcMaxLog2TileCols() {
+  uint32_t maxLog2 = 1;
+  while ((Sb64Cols >> maxLog2) >= MIN_TILE_WIDTH_B64 ) {
+    ++maxLog2;
+  }
+  return maxLog2 - 1;
+}
+
 void WriteVP9TileInfo(const UncompressedHeader* uncompressed_header) {
-  // Always write 1 bit of 0b1 since we don't know min or max cols
-  WriteBitUInt(1, 1);
+  uint32_t minLog2TileCols = CalcMinLog2TileCols();  
+  uint32_t maxLog2TileCols = CalcMaxLog2TileCols();
+  uint32_t tile_cols_log2 = minLog2TileCols;
+
+  uint32_t inc_count = 0;
+
+  while (tile_cols_log2 < maxLog2TileCols) {
+    // Grab an increment_tile_cols_log2 element if we have one
+    uint32_t increment_tile_cols_log2 = 0;
+    if (inc_count < uncompressed_header->tile_info().increment_tile_cols_log2().size()) {
+      increment_tile_cols_log2 = uncompressed_header->tile_info().increment_tile_cols_log2().at(inc_count++);
+    }
+    // Write it to the packet
+    WriteBitUInt(increment_tile_cols_log2, 1);
+    if (increment_tile_cols_log2) {
+      ++tile_cols_log2;
+    }
+    else break;
+  }
   // Then write tile_rows_log2
   WriteBitUInt(uncompressed_header->tile_info().tile_rows_log2(), 1);
   if (uncompressed_header->tile_info().tile_rows_log2() == 1) {
@@ -299,8 +350,10 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
     return;
   }
   // Write frame type
+  std::cout << "Frame Type: " << uncompressed_header->frame_type() << std::endl;
   WriteBitUInt(uncompressed_header->frame_type(), 1);
   // Write show frame bit
+  std::cout << "Show Frame: " << uncompressed_header->show_frame() << std::endl;
   WriteBitUInt(uncompressed_header->show_frame(), 1);
   // Write error resilience mode bit
   WriteBitUInt(uncompressed_header->error_resilient_mode(), 1);
@@ -379,10 +432,12 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
   WriteVP9LoopFilterParams(uncompressed_header);
   WriteVP9QuantizationParams(uncompressed_header);
   WriteVP9SegmentationParams(uncompressed_header);
+  std::cout << "Bits Read: " << bit_buffer.size() << std::endl;
   WriteVP9TileInfo(uncompressed_header);
   // Write header size
   // TODO: Maybe try something more interesting here
-  header_size_in_bytes = ceil(bit_buffer.size() / 8);
+  // header_size_in_bytes = ceil(bit_buffer.size() / 8.0);
+  header_size_in_bytes = uncompressed_header->header_size_in_bytes();
   WriteBitUInt(header_size_in_bytes, 16);
 }
 
@@ -594,37 +649,48 @@ void WriteVP9CompressedHeader(const CompressedHeader *compressed_header) {
   }
 }
 
-void WriteVP9Tile(const Tile* tile) {
-  // WriteBitUInt(tile->tile_size(), 32);
-  WriteBitUInt(tile->partition().size(), 32);
-  WriteBitString(tile->partition(), (tile->partition().size() * 8));
-}
+// void WriteVP9Tile(const Tile* tile) {
+//   // WriteBitUInt(tile->tile_size(), 32);
+//   WriteBitUInt(tile->partition().size(), 32);
+//   WriteBitString(tile->partition(), (tile->partition().size() * 8));
+// }
 
 std::string BitVectorToBytes(std::vector<bool> &bit_buffer) {
   // Create std::string to return
-  std::string return_buffer = std::string(ceil(bit_buffer.size() / 8), 0);
+  size_t bitbuffer_size = bit_buffer.size();
+  std::string return_buffer;
   // Loop through all the bits and set the bytes on the return buffer
-  auto current_byte = return_buffer.begin();
-  for (uint64_t i = 0; i < bit_buffer.size(); i++) {
-    // Get bit
-    bool bit = bit_buffer.at(i);
-    // Get bit position in current string byte
-    uint16_t bit_index = i % 8;
-    // Write bit to the byte at specified position
-    *current_byte |= bit << bit_index;
-    // Update byte position if we've gone through 8 bits already
-    if (i != 0 && bit_index == 7) {
-      ++current_byte;
+  uint64_t bytes_to_write = ceil(bitbuffer_size / 8.0);
+  uint64_t bit_buffer_index = 0;
+  for (uint64_t i = 0; i < bytes_to_write; i++) {
+    // Setup temporary byte
+    uint8_t temp_byte = 0;
+    for (uint64_t j = 8; j --> 0;) {
+      // Get bit
+      bool bit;
+      if (bit_buffer_index < bitbuffer_size) {
+        bit = bit_buffer.at(bit_buffer_index) & 0b1;
+      }
+      else bit = 0;
+      // std::cout << bit;
+      // Write bit to the temporary byte at the necessary position
+      temp_byte |= (bit << j);
+      // Increate bit index
+      ++bit_buffer_index;
     }
+    // std::cout << std::hex << temp_byte << std::dec << std::endl;
+    // Put temporary byte into the return buffer
+    return_buffer.push_back(temp_byte);
   }
   // Return string
+  // std::cout << return_buffer;
   return return_buffer;
 }
 
 void WriteVP9TrailingBits() {
- while (bit_buffer.size() & 7) {
-  WriteBitUInt(0, 1);
- }
+  while (bit_buffer.size() & 7) {
+    WriteBitUInt(0, 1);
+  }
 }
 
 std::string ProtoToVP9(const VP9Frame *frame) {
@@ -639,17 +705,18 @@ std::string ProtoToVP9(const VP9Frame *frame) {
     return BitVectorToBytes(bit_buffer);
   }
   // Write VP9 compressed header
-  WriteVP9CompressedHeader(&frame->compressed_header());
+  // WriteVP9CompressedHeader(&frame->compressed_header());
   // Write video frame tiles
-  uint32_t tile_count = 0;
-  for (const Tile tile : frame->tiles()) {
-    WriteVP9Tile(&tile);
-    // Limit tiles to 
-    ++tile_count;
-    if (tile_count > MAX_TILES) {
-      break;
-    }
-  }
+  // WriteBitString(frame->tiles(), (frame->tiles().size() * 8));
+  // uint32_t tile_count = 0;
+  // for (const Tile tile : frame->tiles()) {
+  //   WriteVP9Tile(&tile);
+  //   // Limit tiles to 
+  //   ++tile_count;
+  //   if (tile_count > MAX_TILES) {
+  //     break;
+  //   }
+  // }
   
   // Convert bitvector to string (may need to byte align)
   return BitVectorToBytes(bit_buffer);
@@ -667,7 +734,7 @@ int main(int argc, char** argv) {
   std::string binary = ProtoToVP9((const VP9Frame*) &vp9_frame); 
 
   // Write binary to file
-  std::ofstream ofs("./test_frame", std::ios_base::out | std::ios_base::binary);
+  std::ofstream ofs("./test_frame_out", std::ios_base::out | std::ios_base::binary);
   ofs << binary;
   
   return 0;

@@ -102,9 +102,6 @@ extern CompressedHeader_ReadYModeProbsDefaultTypeInternal _CompressedHeader_Read
 class CompressedHeader_TxModeProbs;
 struct CompressedHeader_TxModeProbsDefaultTypeInternal;
 extern CompressedHeader_TxModeProbsDefaultTypeInternal _CompressedHeader_TxModeProbs_default_instance_;
-class Tile;
-struct TileDefaultTypeInternal;
-extern TileDefaultTypeInternal _Tile_default_instance_;
 class UncompressedHeader;
 struct UncompressedHeaderDefaultTypeInternal;
 extern UncompressedHeaderDefaultTypeInternal _UncompressedHeader_default_instance_;
@@ -188,8 +185,6 @@ template <>
 ::CompressedHeader_ReadYModeProbs* Arena::CreateMaybeMessage<::CompressedHeader_ReadYModeProbs>(Arena*);
 template <>
 ::CompressedHeader_TxModeProbs* Arena::CreateMaybeMessage<::CompressedHeader_TxModeProbs>(Arena*);
-template <>
-::Tile* Arena::CreateMaybeMessage<::Tile>(Arena*);
 template <>
 ::UncompressedHeader* Arena::CreateMaybeMessage<::UncompressedHeader>(Arena*);
 template <>
@@ -2333,10 +2328,28 @@ class UncompressedHeader_TileInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTileRowsLog2FieldNumber = 1,
-    kIncrementTileRowsLog2FieldNumber = 2,
+    kIncrementTileColsLog2FieldNumber = 1,
+    kTileRowsLog2FieldNumber = 2,
+    kIncrementTileRowsLog2FieldNumber = 3,
   };
-  // .VP9BitField tile_rows_log2 = 1;
+  // repeated .VP9BitField increment_tile_cols_log2 = 1;
+  int increment_tile_cols_log2_size() const;
+  private:
+  int _internal_increment_tile_cols_log2_size() const;
+  public:
+  void clear_increment_tile_cols_log2();
+  private:
+  ::VP9BitField _internal_increment_tile_cols_log2(int index) const;
+  void _internal_add_increment_tile_cols_log2(::VP9BitField value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_increment_tile_cols_log2();
+  public:
+  ::VP9BitField increment_tile_cols_log2(int index) const;
+  void set_increment_tile_cols_log2(int index, ::VP9BitField value);
+  void add_increment_tile_cols_log2(::VP9BitField value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& increment_tile_cols_log2() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_increment_tile_cols_log2();
+
+  // .VP9BitField tile_rows_log2 = 2;
   void clear_tile_rows_log2();
   ::VP9BitField tile_rows_log2() const;
   void set_tile_rows_log2(::VP9BitField value);
@@ -2345,7 +2358,7 @@ class UncompressedHeader_TileInfo final :
   void _internal_set_tile_rows_log2(::VP9BitField value);
   public:
 
-  // .VP9BitField increment_tile_rows_log2 = 2;
+  // .VP9BitField increment_tile_rows_log2 = 3;
   void clear_increment_tile_rows_log2();
   ::VP9BitField increment_tile_rows_log2() const;
   void set_increment_tile_rows_log2(::VP9BitField value);
@@ -2362,6 +2375,8 @@ class UncompressedHeader_TileInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> increment_tile_cols_log2_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _increment_tile_cols_log2_cached_byte_size_;
     int tile_rows_log2_;
     int increment_tile_rows_log2_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -6573,169 +6588,6 @@ class CompressedHeader final :
   friend struct ::TableStruct_vp9_2eproto;
 };// -------------------------------------------------------------------
 
-class Tile final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Tile) */ {
- public:
-  inline Tile() : Tile(nullptr) {}
-  ~Tile() override;
-  explicit PROTOBUF_CONSTEXPR Tile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Tile(const Tile& from);
-  Tile(Tile&& from) noexcept
-    : Tile() {
-    *this = ::std::move(from);
-  }
-
-  inline Tile& operator=(const Tile& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Tile& operator=(Tile&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Tile& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Tile* internal_default_instance() {
-    return reinterpret_cast<const Tile*>(
-               &_Tile_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    32;
-
-  friend void swap(Tile& a, Tile& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Tile* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Tile* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Tile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Tile>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Tile& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Tile& from) {
-    Tile::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Tile* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() {
-    return "Tile";
-  }
-  protected:
-  explicit Tile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kPartitionFieldNumber = 2,
-    kTileSizeFieldNumber = 1,
-  };
-  // bytes partition = 2;
-  void clear_partition();
-  const std::string& partition() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_partition(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_partition();
-  PROTOBUF_NODISCARD std::string* release_partition();
-  void set_allocated_partition(std::string* partition);
-  private:
-  const std::string& _internal_partition() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_partition(const std::string& value);
-  std::string* _internal_mutable_partition();
-  public:
-
-  // uint32 tile_size = 1;
-  void clear_tile_size();
-  uint32_t tile_size() const;
-  void set_tile_size(uint32_t value);
-  private:
-  uint32_t _internal_tile_size() const;
-  void _internal_set_tile_size(uint32_t value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Tile)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr partition_;
-    uint32_t tile_size_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_vp9_2eproto;
-};// -------------------------------------------------------------------
-
 class VP9Frame final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9Frame) */ {
  public:
@@ -6784,7 +6636,7 @@ class VP9Frame final :
                &_VP9Frame_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    33;
+    32;
 
   friend void swap(VP9Frame& a, VP9Frame& b) {
     a.Swap(&b);
@@ -6861,23 +6713,19 @@ class VP9Frame final :
     kUncompressedHeaderFieldNumber = 1,
     kCompressedHeaderFieldNumber = 2,
   };
-  // repeated .Tile tiles = 3;
-  int tiles_size() const;
-  private:
-  int _internal_tiles_size() const;
-  public:
+  // bytes tiles = 3;
   void clear_tiles();
-  ::Tile* mutable_tiles(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >*
-      mutable_tiles();
+  const std::string& tiles() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_tiles(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_tiles();
+  PROTOBUF_NODISCARD std::string* release_tiles();
+  void set_allocated_tiles(std::string* tiles);
   private:
-  const ::Tile& _internal_tiles(int index) const;
-  ::Tile* _internal_add_tiles();
+  const std::string& _internal_tiles() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_tiles(const std::string& value);
+  std::string* _internal_mutable_tiles();
   public:
-  const ::Tile& tiles(int index) const;
-  ::Tile* add_tiles();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >&
-      tiles() const;
 
   // .UncompressedHeader uncompressed_header = 1;
   bool has_uncompressed_header() const;
@@ -6923,7 +6771,7 @@ class VP9Frame final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile > tiles_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr tiles_;
     ::UncompressedHeader* uncompressed_header_;
     ::CompressedHeader* compressed_header_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -8097,7 +7945,50 @@ inline void UncompressedHeader_QuantizationParams::set_allocated_delta_q_uv_ac(:
 
 // UncompressedHeader_TileInfo
 
-// .VP9BitField tile_rows_log2 = 1;
+// repeated .VP9BitField increment_tile_cols_log2 = 1;
+inline int UncompressedHeader_TileInfo::_internal_increment_tile_cols_log2_size() const {
+  return _impl_.increment_tile_cols_log2_.size();
+}
+inline int UncompressedHeader_TileInfo::increment_tile_cols_log2_size() const {
+  return _internal_increment_tile_cols_log2_size();
+}
+inline void UncompressedHeader_TileInfo::clear_increment_tile_cols_log2() {
+  _impl_.increment_tile_cols_log2_.Clear();
+}
+inline ::VP9BitField UncompressedHeader_TileInfo::_internal_increment_tile_cols_log2(int index) const {
+  return static_cast< ::VP9BitField >(_impl_.increment_tile_cols_log2_.Get(index));
+}
+inline ::VP9BitField UncompressedHeader_TileInfo::increment_tile_cols_log2(int index) const {
+  // @@protoc_insertion_point(field_get:UncompressedHeader.TileInfo.increment_tile_cols_log2)
+  return _internal_increment_tile_cols_log2(index);
+}
+inline void UncompressedHeader_TileInfo::set_increment_tile_cols_log2(int index, ::VP9BitField value) {
+  _impl_.increment_tile_cols_log2_.Set(index, value);
+  // @@protoc_insertion_point(field_set:UncompressedHeader.TileInfo.increment_tile_cols_log2)
+}
+inline void UncompressedHeader_TileInfo::_internal_add_increment_tile_cols_log2(::VP9BitField value) {
+  _impl_.increment_tile_cols_log2_.Add(value);
+}
+inline void UncompressedHeader_TileInfo::add_increment_tile_cols_log2(::VP9BitField value) {
+  _internal_add_increment_tile_cols_log2(value);
+  // @@protoc_insertion_point(field_add:UncompressedHeader.TileInfo.increment_tile_cols_log2)
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
+UncompressedHeader_TileInfo::increment_tile_cols_log2() const {
+  // @@protoc_insertion_point(field_list:UncompressedHeader.TileInfo.increment_tile_cols_log2)
+  return _impl_.increment_tile_cols_log2_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+UncompressedHeader_TileInfo::_internal_mutable_increment_tile_cols_log2() {
+  return &_impl_.increment_tile_cols_log2_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+UncompressedHeader_TileInfo::mutable_increment_tile_cols_log2() {
+  // @@protoc_insertion_point(field_mutable_list:UncompressedHeader.TileInfo.increment_tile_cols_log2)
+  return _internal_mutable_increment_tile_cols_log2();
+}
+
+// .VP9BitField tile_rows_log2 = 2;
 inline void UncompressedHeader_TileInfo::clear_tile_rows_log2() {
   _impl_.tile_rows_log2_ = 0;
 }
@@ -8117,7 +8008,7 @@ inline void UncompressedHeader_TileInfo::set_tile_rows_log2(::VP9BitField value)
   // @@protoc_insertion_point(field_set:UncompressedHeader.TileInfo.tile_rows_log2)
 }
 
-// .VP9BitField increment_tile_rows_log2 = 2;
+// .VP9BitField increment_tile_rows_log2 = 3;
 inline void UncompressedHeader_TileInfo::clear_increment_tile_rows_log2() {
   _impl_.increment_tile_rows_log2_ = 0;
 }
@@ -11633,80 +11524,6 @@ inline void CompressedHeader::set_allocated_mv_probs(::CompressedHeader_MvProbs*
 
 // -------------------------------------------------------------------
 
-// Tile
-
-// uint32 tile_size = 1;
-inline void Tile::clear_tile_size() {
-  _impl_.tile_size_ = 0u;
-}
-inline uint32_t Tile::_internal_tile_size() const {
-  return _impl_.tile_size_;
-}
-inline uint32_t Tile::tile_size() const {
-  // @@protoc_insertion_point(field_get:Tile.tile_size)
-  return _internal_tile_size();
-}
-inline void Tile::_internal_set_tile_size(uint32_t value) {
-
-  _impl_.tile_size_ = value;
-}
-inline void Tile::set_tile_size(uint32_t value) {
-  _internal_set_tile_size(value);
-  // @@protoc_insertion_point(field_set:Tile.tile_size)
-}
-
-// bytes partition = 2;
-inline void Tile::clear_partition() {
-  _impl_.partition_.ClearToEmpty();
-}
-inline const std::string& Tile::partition() const {
-  // @@protoc_insertion_point(field_get:Tile.partition)
-  return _internal_partition();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void Tile::set_partition(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.partition_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Tile.partition)
-}
-inline std::string* Tile::mutable_partition() {
-  std::string* _s = _internal_mutable_partition();
-  // @@protoc_insertion_point(field_mutable:Tile.partition)
-  return _s;
-}
-inline const std::string& Tile::_internal_partition() const {
-  return _impl_.partition_.Get();
-}
-inline void Tile::_internal_set_partition(const std::string& value) {
-
-  _impl_.partition_.Set(value, GetArenaForAllocation());
-}
-inline std::string* Tile::_internal_mutable_partition() {
-
-  return _impl_.partition_.Mutable(GetArenaForAllocation());
-}
-inline std::string* Tile::release_partition() {
-  // @@protoc_insertion_point(field_release:Tile.partition)
-  return _impl_.partition_.Release();
-}
-inline void Tile::set_allocated_partition(std::string* partition) {
-  if (partition != nullptr) {
-
-  } else {
-
-  }
-  _impl_.partition_.SetAllocated(partition, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.partition_.IsDefault()) {
-    _impl_.partition_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Tile.partition)
-}
-
-// -------------------------------------------------------------------
-
 // VP9Frame
 
 // .UncompressedHeader uncompressed_header = 1;
@@ -11889,44 +11706,54 @@ inline void VP9Frame::set_allocated_compressed_header(::CompressedHeader* compre
   // @@protoc_insertion_point(field_set_allocated:VP9Frame.compressed_header)
 }
 
-// repeated .Tile tiles = 3;
-inline int VP9Frame::_internal_tiles_size() const {
-  return _impl_.tiles_.size();
-}
-inline int VP9Frame::tiles_size() const {
-  return _internal_tiles_size();
-}
+// bytes tiles = 3;
 inline void VP9Frame::clear_tiles() {
-  _impl_.tiles_.Clear();
+  _impl_.tiles_.ClearToEmpty();
 }
-inline ::Tile* VP9Frame::mutable_tiles(int index) {
-  // @@protoc_insertion_point(field_mutable:VP9Frame.tiles)
-  return _impl_.tiles_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >*
-VP9Frame::mutable_tiles() {
-  // @@protoc_insertion_point(field_mutable_list:VP9Frame.tiles)
-  return &_impl_.tiles_;
-}
-inline const ::Tile& VP9Frame::_internal_tiles(int index) const {
-  return _impl_.tiles_.Get(index);
-}
-inline const ::Tile& VP9Frame::tiles(int index) const {
+inline const std::string& VP9Frame::tiles() const {
   // @@protoc_insertion_point(field_get:VP9Frame.tiles)
-  return _internal_tiles(index);
+  return _internal_tiles();
 }
-inline ::Tile* VP9Frame::_internal_add_tiles() {
-  return _impl_.tiles_.Add();
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void VP9Frame::set_tiles(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.tiles_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:VP9Frame.tiles)
 }
-inline ::Tile* VP9Frame::add_tiles() {
-  ::Tile* _add = _internal_add_tiles();
-  // @@protoc_insertion_point(field_add:VP9Frame.tiles)
-  return _add;
+inline std::string* VP9Frame::mutable_tiles() {
+  std::string* _s = _internal_mutable_tiles();
+  // @@protoc_insertion_point(field_mutable:VP9Frame.tiles)
+  return _s;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >&
-VP9Frame::tiles() const {
-  // @@protoc_insertion_point(field_list:VP9Frame.tiles)
-  return _impl_.tiles_;
+inline const std::string& VP9Frame::_internal_tiles() const {
+  return _impl_.tiles_.Get();
+}
+inline void VP9Frame::_internal_set_tiles(const std::string& value) {
+
+  _impl_.tiles_.Set(value, GetArenaForAllocation());
+}
+inline std::string* VP9Frame::_internal_mutable_tiles() {
+
+  return _impl_.tiles_.Mutable(GetArenaForAllocation());
+}
+inline std::string* VP9Frame::release_tiles() {
+  // @@protoc_insertion_point(field_release:VP9Frame.tiles)
+  return _impl_.tiles_.Release();
+}
+inline void VP9Frame::set_allocated_tiles(std::string* tiles) {
+  if (tiles != nullptr) {
+
+  } else {
+
+  }
+  _impl_.tiles_.SetAllocated(tiles, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.tiles_.IsDefault()) {
+    _impl_.tiles_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:VP9Frame.tiles)
 }
 
 #ifdef __GNUC__

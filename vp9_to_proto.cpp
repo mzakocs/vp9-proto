@@ -23,53 +23,22 @@ uint32_t interpolation_filter = 0;
 uint32_t tx_mode = 0;
 uint32_t header_size_in_bytes = 0;
 
+uint32_t FrameWidth = 0;
+uint32_t FrameHeight = 0;
+uint32_t MiCols = 0;
+uint32_t MiRows = 0;
+uint32_t Sb64Cols = 0;
+uint32_t Sb64Rows = 0;
+
+uint32_t BoolValue = 0;
+uint32_t BoolRange = 0;
+uint32_t BoolMaxBits = 0;
+
 uint64_t ReadBitUInt(int bits) {
-  // TODO: Replace this with simple bitshift parser, i'm dumb
-  // uint64_t return_num = 0;
-  // uint64_t bits_written = 0;
-  // // Calculate the byte we need to start on
-  // uint32_t bits_to_bytes = (uint32_t) ceil(bits / 8) - 1;
-  // uint32_t byte_start = bits_to_bytes > 7 ? 0 : (7 - bits_to_bytes);
-  // // Loop backwards over the bytes since it's big endian
-  // for (uint32_t byte_index = byte_start; byte_index < 8; byte_index++) {
-  //   auto current_byte = &((uint8_t*) &return_num)[byte_index];
-  //   // Calculate the bit we need to start on
-  //   uint32_t bits_remaining = (bits - bits_written);
-  //   uint32_t bit_start = bits_remaining < 8 ? bits_remaining : 8;
-  //   for (uint32_t bit_index = bit_start; bit_index --> 0;) {
-  //     *current_byte |= ((bit_buffer.at(bit_counter++) << bit_index));
-  //     // if (bits == 16) {
-  //     //   std::cout << bit_buffer.at(bit_counter-1);
-  //     //   // std::cout << bit << std::endl << std::endl;
-  //     // }
-  //     if (++bits_written == bits) {
-  //       // if (bits == 16){
-  //       //   std::cout << std::endl;
-  //       //   for (int i = 0; i < 8; i++) {
-  //       //     uint8_t lol = ((uint8_t*) &return_num)[i];
-  //       //     std::cout << std::hex << (uint64_t) lol << std::dec << std::endl;
-  //       //   }
-  //       //   std::cout << std::endl;
-  //       // }
-  //       return_num = __builtin_bswap64(return_num);
-  //       // if (bits == 16){
-  //       //   std::cout << std::endl;
-  //       //   for (int i = 0; i < 8; i++) {
-  //       //     uint8_t lol = ((uint8_t*) &return_num)[i];
-  //       //     std::cout << std::hex << (uint64_t) lol << std::dec << std::endl;
-  //       //   }
-  //       //   std::cout << std::endl;
-  //       // }
-  //       return return_num;
-  //     }
-  //   }
-  // }
-  // return_num = __builtin_bswap64(return_num);
-  // return return_num;
   uint64_t return_num = 0;
   uint64_t bound_bits = std::min(bits, 64);
   for (uint32_t i = 0; i < bound_bits; i++) {
-    return_num = (return_num << 1) | bit_buffer.at(bit_counter++);
+    return_num = (return_num << 1) + bit_buffer.at(bit_counter++);
   }
   return return_num;
 }
@@ -78,20 +47,71 @@ std::string ReadBitString(uint32_t bits) {
   std::string return_string;
   uint64_t bits_written = 0;
   while (true) {
-    uint8_t current_byte = 0;
-    for (uint64_t i = 0; i < 8; i++) {
-      // Check if we're at bit cap
-      if (bits == bits_written) {
-        return_string.push_back(current_byte);
-        // std::cout << return_string << " (n = " << bits << ")" << std::endl;
-        return return_string;
-      }
-      // Otherwise write bit to string
-      current_byte = (current_byte << 1) | bit_buffer.at(bit_counter++);
-      ++bits_written;
-    } 
+    uint64_t remaining_bits = bits - bits_written;
+    uint64_t bytes_to_read = remaining_bits > 8 ? 8 : remaining_bits;
+    // Read byte
+    uint8_t current_byte = ReadBitUInt(bytes_to_read);
     return_string.push_back(current_byte);
+    // Check if we need to break
+    bits_written += bytes_to_read;
+    if (bits_written == bits) {
+      break; 
+    }
   }
+  return return_string;
+}
+
+void InitBool(uint32_t sz) {
+    BoolValue = ReadBitUInt(8);
+    BoolRange = 255;
+    BoolMaxBits = (8 * sz) - 8;
+}
+
+void ExitBool() {
+  uint32_t padding_value = ReadBitUInt(BoolMaxBits);
+}
+
+uint32_t ReadBool(uint32_t p) {
+    uint32_t split = 1 + (((BoolRange - 1) * p) >> 8);
+    uint32_t bit = 0;
+    if (BoolValue < split)
+    {
+        BoolRange = split;
+        bit = 0;
+    }
+    else
+    {
+        BoolRange -= split;
+        BoolValue -= split;
+        bit = 1;
+    }
+
+    if (BoolRange < 128)
+    {
+        uint32_t newBit = 0;
+        if (BoolMaxBits > 0)
+        {
+            newBit = ReadBitUInt(1);
+            BoolMaxBits -= 1;
+        }
+        else
+        {
+            newBit = 0;
+        }
+
+        BoolRange = BoolRange << 1;
+        BoolValue = (BoolValue << 1) + newBit;
+    }
+
+    return bit;
+}
+
+uint64_t ReadLiteral(uint32_t bits) {
+  uint64_t return_num = 0;
+  for (int i = 0; i < bits; i++) {
+    return_num = (return_num << 1) + ReadBool(128);
+  }
+  return return_num;
 }
 
 VP9SignedInteger* ReadVP9SignedInteger(uint32_t number_bits) {
@@ -126,11 +146,27 @@ UncompressedHeader_ColorConfig* ReadVP9ColorConfig() {
   return color_config;
 }
 
+void ComputeImageSize() {
+  MiCols = (FrameWidth + 7) >> 3;
+  MiRows = (FrameHeight + 7) >> 3;
+  Sb64Cols = (MiCols + 7) >> 3;
+  Sb64Rows = (MiRows + 7) >> 3;
+  return;
+}
+
 UncompressedHeader_FrameSize* ReadVP9FrameSize() {
   auto frame_size = new UncompressedHeader_FrameSize();
 
-  frame_size->set_frame_width_minus_1(ReadBitUInt(16));
-  frame_size->set_frame_height_minus_1(ReadBitUInt(16));
+  uint32_t frame_width_minus_1 = ReadBitUInt(16);
+  uint32_t frame_height_minus_1 = ReadBitUInt(16);
+
+  frame_size->set_frame_width_minus_1(frame_width_minus_1);
+  frame_size->set_frame_height_minus_1(frame_height_minus_1);
+
+  FrameWidth = frame_width_minus_1 + 1;
+  FrameHeight = frame_height_minus_1 + 1;
+
+  ComputeImageSize();
 
   return frame_size;
 }
@@ -172,6 +208,7 @@ UncompressedHeader_LoopFilterParams* ReadVP9LoopFilterParams() {
         if (update_ref_delta == 1) {
           loop_filter_params->mutable_ref_delta(i)->set_allocated_loop_filter_ref_deltas(ReadVP9SignedInteger(6));
         }
+        std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
       }
       for (int i = 0; i < 2; i++) {
         loop_filter_params->add_mode_delta();
@@ -192,6 +229,7 @@ UncompressedHeader_QuantizationParams_ReadDeltaQ* ReadVP9ReadDeltaQ() {
 
   VP9BitField delta_coded = (VP9BitField) ReadBitUInt(1);
   read_delta_q->set_delta_coded(delta_coded);
+  std::cout << "Delta Coded: " << delta_coded << std::endl;
   if (delta_coded) {
     read_delta_q->set_allocated_delta_q(ReadVP9SignedInteger(4));
   }
@@ -205,6 +243,11 @@ UncompressedHeader_QuantizationParams* ReadVP9QuantizationParams() {
   auto delta_q_y_dc = ReadVP9ReadDeltaQ();
   auto delta_q_uv_dc = ReadVP9ReadDeltaQ();
   auto delta_q_uv_ac = ReadVP9ReadDeltaQ();
+
+  quantization_params->set_base_q_idx(base_q_idx);
+  quantization_params->set_allocated_delta_q_y_dc(delta_q_y_dc);
+  quantization_params->set_allocated_delta_q_uv_dc(delta_q_uv_dc);
+  quantization_params->set_allocated_delta_q_uv_ac(delta_q_uv_ac);
 
   Lossless = (base_q_idx == 0 
               && delta_q_y_dc->delta_q().value().empty() 
@@ -281,19 +324,43 @@ UncompressedHeader_SegmentationParams* ReadVP9SegmentationParams() {
   return segmentation_params;
 }
 
+uint32_t CalcMinLog2TileCols() {
+  uint32_t minLog2 = 0;
+  while ((MAX_TILE_WIDTH_B64 << minLog2) < Sb64Cols) {
+    ++minLog2;
+  }
+  return minLog2;
+}
+
+uint32_t CalcMaxLog2TileCols() {
+  uint32_t maxLog2 = 1;
+  while ((Sb64Cols >> maxLog2) >= MIN_TILE_WIDTH_B64 ) {
+    ++maxLog2;
+  }
+  return maxLog2 - 1;
+}
+
 UncompressedHeader_TileInfo* ReadVP9TileInfo() {
-  // TODO: Rewrite this as it's clearly not working properly
+  // TODO: Revise this, although a full ref tracking system would be needed to make 100% accurate
   auto tile_info = new UncompressedHeader_TileInfo();
-  // Read all 1 bits for increment_tile_cols_log2 (unsupported in protobuf so we ignore)
-  // We would have to calculate tile cols/rows to get right 100% of the time but a max of 6 is good enough for now
-  uint32_t count = 0;
-  while ((ReadBitUInt(1) == 1) && (count++ < 6));
+  uint32_t minLog2TileCols = CalcMinLog2TileCols();  
+  uint32_t maxLog2TileCols = CalcMaxLog2TileCols();
+  uint32_t tile_cols_log2 = minLog2TileCols;
+  while (tile_cols_log2 < maxLog2TileCols) {
+    VP9BitField increment_tile_cols_log2 = (VP9BitField) ReadBitUInt(1);
+    tile_info->add_increment_tile_cols_log2(increment_tile_cols_log2);
+    if (increment_tile_cols_log2 == 1) {
+      ++tile_cols_log2;
+    }
+    else break;
+  } 
   // Read tile_rows_log2
   VP9BitField tile_rows_log2 = (VP9BitField) ReadBitUInt(1);
   tile_info->set_tile_rows_log2(tile_rows_log2);
   // Read increment bit if tile_rows_log2 is set
   if (tile_rows_log2 == 1) {
-    tile_info->set_increment_tile_rows_log2((VP9BitField) ReadBitUInt(1));
+    VP9BitField increment_tile_rows_log2 = (VP9BitField) ReadBitUInt(1);
+    tile_info->set_increment_tile_rows_log2(increment_tile_rows_log2);
   }
   return tile_info;
 }
@@ -440,10 +507,10 @@ CompressedHeader_ReadTxMode* ReadVP9ReadTxMode() {
     tx_mode = CompressedHeader_TxMode_ONLY_4X4;
   }
   else {
-    tx_mode = ReadBitUInt(2);
+    tx_mode = ReadLiteral(2);
     read_tx_mode->set_tx_mode((CompressedHeader_TxMode) tx_mode);
     if (tx_mode == CompressedHeader_TxMode_ALLOW_32X32) {
-      VP9BitField tx_mode_select = (VP9BitField) ReadBitUInt(1);
+      VP9BitField tx_mode_select = (VP9BitField) ReadLiteral(1);
       read_tx_mode->set_tx_mode_select(tx_mode_select);
       tx_mode += tx_mode_select;
     }
@@ -455,40 +522,40 @@ CompressedHeader_ReadTxMode* ReadVP9ReadTxMode() {
 CompressedHeader_DecodeTermSubexp* ReadVP9DecodeTermSubexp() {
   auto decode_term_subexp = new CompressedHeader_DecodeTermSubexp();
 
-  VP9BitField bit_1 = (VP9BitField) ReadBitUInt(1);
+  VP9BitField bit_1 = (VP9BitField) ReadLiteral(1);
   decode_term_subexp->set_bit_1(bit_1);
   if (bit_1 == 0) {
-    decode_term_subexp->set_sub_exp_val(ReadBitUInt(4));
+    decode_term_subexp->set_sub_exp_val(ReadLiteral(4));
     return decode_term_subexp;
   }
 
-  VP9BitField bit_2 = (VP9BitField) ReadBitUInt(1);
+  VP9BitField bit_2 = (VP9BitField) ReadLiteral(1);
   decode_term_subexp->set_bit_2(bit_2);
   if (bit_2 == 0) {
-    decode_term_subexp->set_sub_exp_val_minus_16(ReadBitUInt(4));
+    decode_term_subexp->set_sub_exp_val_minus_16(ReadLiteral(4));
     return decode_term_subexp;
   }
 
-  VP9BitField bit_3 = (VP9BitField) ReadBitUInt(1);
+  VP9BitField bit_3 = (VP9BitField) ReadLiteral(1);
   decode_term_subexp->set_bit_3(bit_3);
   if (bit_3 == 0) {
-    decode_term_subexp->set_sub_exp_val_minus_32(ReadBitUInt(5));
+    decode_term_subexp->set_sub_exp_val_minus_32(ReadLiteral(5));
     return decode_term_subexp;
   }
 
-  uint32_t v = ReadBitUInt(7);
+  uint32_t v = ReadLiteral(7);
   if (v < 65) {
     return decode_term_subexp;
   }
 
-  decode_term_subexp->set_bit_4((VP9BitField) ReadBitUInt(1));
+  decode_term_subexp->set_bit_4((VP9BitField) ReadLiteral(1));
 
   return decode_term_subexp;
 }
 
 void ReadVP9DiffUpdateProb(CompressedHeader_DiffUpdateProb* diff_update_prob) {
   // Reads values into ptr arg because of how repeated ptr fields work in protobuf lib
-  VP9BitField update_prob = (VP9BitField) ReadBitUInt(1);
+  VP9BitField update_prob = (VP9BitField) ReadBool(252);
   diff_update_prob->set_update_prob(update_prob);
   if (update_prob == 1) {
     diff_update_prob->set_allocated_decode_term_subexp(ReadVP9DecodeTermSubexp());
@@ -514,7 +581,8 @@ CompressedHeader_ReadCoefProbs* ReadVP9ReadCoefProbs() {
     auto loop_obj = read_coef_probs->mutable_read_coef_probs(txSz);
 
     // Write the update_probs indicator bit
-    VP9BitField update_probs = (VP9BitField) ReadBitUInt(1);
+    VP9BitField update_probs = (VP9BitField) ReadLiteral(1);
+    std::cout << "Update Read Coef Probs: " << update_probs << std::endl;
     loop_obj->set_update_probs(update_probs);
     if (update_probs == 1) {
       for (uint32_t i = 0; i < 396; i ++) {
@@ -551,7 +619,7 @@ CompressedHeader_ReadInterModeProbs* ReadVP9ReadInterModeProbs() {
 CompressedHeader_ReadInterpFilterProbs* ReadVP9ReadInterpFilterProbs() {
   auto read_interp_filter_probs = new CompressedHeader_ReadInterpFilterProbs();
 
-  for (uint32_t i = 0; i < 8; i++) {
+  for (uint32_t i = 0; i < 14; i++) {
     read_interp_filter_probs->add_diff_update_prob();
     ReadVP9DiffUpdateProb(read_interp_filter_probs->mutable_diff_update_prob(i));
   } 
@@ -573,15 +641,17 @@ CompressedHeader_ReadIsInterProbs* ReadVP9ReadIsInterProbs() {
 CompressedHeader_FrameReferenceMode* ReadVP9FrameReferenceMode() {
   auto frame_reference_mode = new CompressedHeader_FrameReferenceMode();
 
+  std::cout << "Compound Reference Allowed: " << compoundReferenceAllowed << std::endl;
+
   if (compoundReferenceAllowed == 1) {
-    VP9BitField non_single_reference = (VP9BitField) ReadBitUInt(1);
+    VP9BitField non_single_reference = (VP9BitField) ReadLiteral(1);
     frame_reference_mode->set_non_single_reference(non_single_reference);
 
     if (non_single_reference == 0) {
       reference_mode = SINGLE_REFERENCE;
     }
     else {
-      VP9BitField reference_select = (VP9BitField) ReadBitUInt(1);
+      VP9BitField reference_select = (VP9BitField) ReadLiteral(1);
       frame_reference_mode->set_reference_select(reference_select);
 
       if (reference_select == 0) {
@@ -648,23 +718,23 @@ CompressedHeader_ReadPartitionProbs* ReadVP9ReadPartitionProbs() {
 }
 
 void ReadVP9MvProbsLoop(CompressedHeader_MvProbs_MvProbsLoop* mv_probs_loop) {
-  VP9BitField update_mv_prob = (VP9BitField) ReadBitUInt(1);
+  VP9BitField update_mv_prob = (VP9BitField) ReadBool(252);
   mv_probs_loop->set_update_mv_prob(update_mv_prob);
   if (update_mv_prob == 1) {
-    mv_probs_loop->set_mv_prob(ReadBitUInt(7));
+    mv_probs_loop->set_mv_prob(ReadLiteral(7));
   }
 }
 
 CompressedHeader_MvProbs* ReadVP9MvProbs() {
   auto mv_probs = new CompressedHeader_MvProbs();
 
-  for (uint32_t i = 0; i < 45; i++) {
+  for (uint32_t i = 0; i < 65; i++) {
     mv_probs->add_mv_probs();
     ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i));
   }
 
   if (allow_high_precision_mv) {
-    for (uint32_t i = 45; i < (45 + 4); i++) {
+    for (uint32_t i = 65; i < (65 + 4); i++) {
       mv_probs->add_mv_probs();
       ReadVP9MvProbsLoop(mv_probs->mutable_mv_probs(i));
     }
@@ -677,6 +747,8 @@ CompressedHeader* ReadVP9CompressedHeader() {
   auto compressed_header = new CompressedHeader();
 
   compressed_header->set_allocated_read_tx_mode(ReadVP9ReadTxMode());
+  
+  std::cout << "Compressed Header TxMode: " << tx_mode << std::endl;
 
   if (tx_mode == CompressedHeader_TxMode_TX_MODE_SELECT) {
     compressed_header->set_allocated_tx_mode_probs(ReadVP9TxModeProbs());
@@ -685,8 +757,13 @@ CompressedHeader* ReadVP9CompressedHeader() {
   compressed_header->set_allocated_read_coef_probs(ReadVP9ReadCoefProbs());
   compressed_header->set_allocated_read_skip_prob(ReadVP9ReadSkipProb());
 
-  if (FrameIsIntra == false) {
+  std::cout << "FrameIsIntra: " << FrameIsIntra << std::endl;
+
+  if (FrameIsIntra == 0) {
     compressed_header->set_allocated_read_inter_mode_probs(ReadVP9ReadInterModeProbs());
+
+    std::cout << "Interpolation Filter: " << interpolation_filter << std::endl;
+
     if (interpolation_filter == UncompressedHeader_InterpolationFilter_SWITCHABLE) {
       compressed_header->set_allocated_read_interp_filter_probs(ReadVP9ReadInterpFilterProbs());
     }
@@ -707,12 +784,42 @@ void ReadVP9TrailingBits() {
   }
 }
 
-void ReadVP9Tile(Tile* tile) {
-  uint32_t tile_size = ReadBitUInt(32);
-  std::cout << "Tile Size: " << tile_size << std::endl;
-  tile->set_tile_size(tile_size);
-  tile->set_partition(ReadBitString(tile_size * 8));
-}
+// void ReadVP9Tile(Tile* tile) {
+//   uint32_t remaining_bytes = floor((bit_buffer.size() - bit_counter) / 8);
+//   // Check if this is the last tile
+//   //  32 bytes for tile_size and 12 for at least 1 bool-coded tile
+//   uint32_t tile_size;
+//   if (remaining_bytes < 44) {
+//     tile_size = remaining_bytes;
+//   }
+//   else {
+//     tile_size = ReadBitUInt(32);
+//   }
+//   // Decode tile
+//   std::cout << "Tile Size: " << tile_size << std::endl;
+//   tile->set_tile_size(tile_size);
+
+//   InitBool(tile_size);
+
+//   std::string bool_buffer;
+//   while (BoolMaxBits != 0) {
+//     uint8_t bool_data = 0;
+//     for (uint32_t i = 0; i < 8; i++) {
+//       if (BoolMaxBits != 0) {
+//         bool_data = (bool_data << 1) + ReadBool(1);
+//         BoolMaxBits -= 1;
+//       }
+//       else {
+//         bool_data <<= 1;
+//       }
+//     }
+//     bool_buffer.push_back(bool_data);
+//   }
+//   uint8_t bool_data = 0;
+//   tile->set_partition(bool_buffer);
+
+//   ExitBool();
+// }
 
 VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
   // Create VP9 Protobuf Object
@@ -736,28 +843,37 @@ VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
   vp9_frame->set_allocated_uncompressed_header(ReadVP9UncompressedHeader());
   std::cout << "Wrote Uncompressed Header" << std::endl;
   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  
   ReadVP9TrailingBits();
+
   if (header_size_in_bytes == 0) {
     std::cout << "Repeat Frame, " << bit_counter << " / " << bit_buffer.size() << std::endl;
     return vp9_frame;
   }
+
+  InitBool(header_size_in_bytes);
   vp9_frame->set_allocated_compressed_header(ReadVP9CompressedHeader());
+  ExitBool();
+
   std::cout << "Wrote Compressed Header" << std::endl;
   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
-  // // Read Tiles
+  // Read Tiles
+
+  vp9_frame->set_tiles(ReadBitString(bit_buffer.size() - bit_counter));
   // uint32_t tile_count = 0;
-  // while (bit_counter <= bit_buffer.size()) {
+  // while (bit_counter < bit_buffer.size()) {
   //   vp9_frame->add_tiles();
-  //   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
   //   ReadVP9Tile(vp9_frame->mutable_tiles(tile_count++));
+  //   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
   // }
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
 
   return vp9_frame;
 }
 
 int main(int argc, char** argv) {
   // Convert vp9 binary frame to protobuf
-  VP9Frame* vp9_frame = VP9ToProto("/home/mitchbuntu/Documents/Github/vp9-proto/frames/test_frame.vp9");
+  VP9Frame* vp9_frame = VP9ToProto("./test_frame_in");
 
   // Serialize protobuf and store to file
   std::ofstream ofs("./test_frame_protobuf", std::ios_base::out | std::ios_base::binary);

@@ -110,10 +110,10 @@ message UncompressedHeader {
 
   message TileInfo {
     // Currently not implemented as it would require for full tile size calculation
-    // repeated VP9BitField increment_tile_cols_log2 = 1; // 1 bit
+    repeated VP9BitField increment_tile_cols_log2 = 1; // 1 bit
 
-    VP9BitField tile_rows_log2 = 1; // 1 bit
-    VP9BitField increment_tile_rows_log2 = 2; // 1 bit
+    VP9BitField tile_rows_log2 = 2; // 1 bit
+    VP9BitField increment_tile_rows_log2 = 3; // 1 bit
   }
   
   message SegmentationParams {
@@ -257,7 +257,7 @@ message CompressedHeader {
   }
 
   message ReadInterpFilterProbs {
-    // Loop iterates 4 * 2 (8) times
+    // Loop iterates 7 * 2 (14) times
     repeated DiffUpdateProb diff_update_prob = 1; // 6-28 * n bits
   }
 
@@ -295,10 +295,10 @@ message CompressedHeader {
       uint32 mv_prob = 2; // 7 bits
     }
     // First loop iterates 3 times
-    // Second loop iterates 2*2 + 2*10 + 2*10 (24) times
-    // Third loop iterates 2*2*3 + 2*3 (18) times
+    // Second loop iterates 2*2 + 2*(11-1) + 2*10 (44) times
+    // Third loop iterates 2*2*(4-1) + 2*(4-1) (18) times
     // Fourth loop iterates 2*2 (4) times
-    // Total 49 loops
+    // Total 69 loops
     repeated MvProbsLoop mv_probs = 1; // 8 * n bits
   }
 
@@ -359,20 +359,16 @@ message CompressedHeader {
 //   Block block = 2;
 // }
 
-message Tile {
-  uint32 tile_size = 1; // 32 bits
+// message Tile {
+//   uint32 tile_size = 1; // 32 bits
 
-  bytes partition = 2;
-}
+//   bytes partition = 2;
+// }
 
 message VP9Frame {
   UncompressedHeader uncompressed_header = 1; // uncompressed_header() in spec
 
-  // uint32 trailing_bits = 2; // trailing_bits() in spec
-
-  // uint32 padding_bit = 3; // padding for if header is 0 bytes large
-
   CompressedHeader compressed_header = 2; // compressed_header() in spec
 
-  repeated Tile tiles = 3; // decode_tiles() in spec
+  bytes tiles = 3;
 }

@@ -1,0 +1,1010 @@
+uncompressed_header {
+  show_frame: ONE
+  frame_sync_code: 4817730
+  color_config {
+  }
+  frame_size {
+    frame_width_minus_1: 959
+    frame_height_minus_1: 539
+  }
+  render_size {
+  }
+  refresh_frame_flags: 1
+  frame_parallel_decoding_mode: ONE
+  loop_filter_params {
+    loop_filter_level: 2
+    loop_filter_delta_enabled: ONE
+    loop_filter_delta_update: ONE
+    ref_delta {
+      update_ref_delta: ONE
+      loop_filter_ref_deltas {
+        value: "\001"
+      }
+    }
+    ref_delta {
+    }
+    ref_delta {
+      update_ref_delta: ONE
+      loop_filter_ref_deltas {
+        value: "\001"
+        sign: ONE
+      }
+    }
+    ref_delta {
+      update_ref_delta: ONE
+      loop_filter_ref_deltas {
+        value: "\001"
+        sign: ONE
+      }
+    }
+    mode_delta {
+    }
+    mode_delta {
+    }
+  }
+  quantization_params {
+  }
+  segmentation_params {
+  }
+  tile_info {
+    increment_tile_cols_log2: ONE
+  }
+  header_size_in_bytes: 37
+}
+compressed_header {
+  read_tx_mode {
+    tx_mode: ALLOW_8X8
+  }
+  read_coef_probs {
+    read_coef_probs {
+      update_probs: ONE
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 7
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 13
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 7
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 15
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 9
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          sub_exp_Val_minus_16: 2
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          sub_exp_Val_minus_16: 9
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          bit_3: ONE
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          sub_exp_Val_minus_16: 15
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          sub_exp_val_minus_32: 1
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 11
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 9
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 10
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          bit_3: ONE
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 6
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 6
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 13
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 9
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 10
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          sub_exp_val_minus_32: 21
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 9
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 10
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 14
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          sub_exp_Val_minus_16: 12
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 12
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          sub_exp_Val_minus_16: 5
+        }
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 2
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          sub_exp_val_minus_32: 27
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 11
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          bit_1: ONE
+          bit_2: ONE
+          bit_3: ONE
+        }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+    }
+  }
+  read_skip_prob {
+    diff_update_prob {
+    }
+    diff_update_prob {
+    }
+    diff_update_prob {
+    }
+  }
+}
+tiles: "\000\000\000\300|\220--B\313\311\nwp\277+V\266\377v-@!9\"\226\270]d\267\216\017\203x\354\261\270\341\266\214 \005@\307L\347\004\177P\312\001\231\303\255?S\337\2046\0037\300\234\343\375\347\025\t\366\235\256-\357\313\031!\002O\233XY\220\002\223\327\327\000\007\340\"\226\323\261\322\240\320n\200\000\326\240\242#\235C5%\020\275X\036`\025\244\213G\017\235\001J\215\373X\372\322E\2446/=\332\340\330\256\254\316\nY\330A/\233\274B&y\304\265\247y\244\315\316_\037\0102\246\305\370\214\240\037P\t)k\362c\031e\204i\252\243\355\031\363LR\001l\001\226\033\002\325\203\241&k_\326\3606\200|\2201\n\003\177\353\034iH%\3722;\335\346\243\373I\324Q\366b/\351\014\360\002W\351y\326\\j\377\374\322\336\"\320\374\354\024\303_\205\305)rY\227:\353I\033\326\242/\037\226\370*\267>V\034\200\000g_\360\035a\021\037\032[\314\230Iv\354[\004\346\253\252\306\020\324\177\335d\245\373\252\351WY\361\276\315\004\342J\034\250\035HE\247, a\367&T\201\324\241\376W\024\353\306\000\356*\237\373\337j;\327+0\342\274\240\330\032zz\035UO\345\377n\214)\256\343d?\3762<\316\342\273\262\303\316\340\035I\357\301\224\254\363u=\247]\016\203S!\315\231z$\243}\212NB\314\372\360?\324PW\367\017\247[:\273\',\212c\'$\242\014\303\2512\341L\032v\242Q=x\037\352(+\373\207\211\002r$cV(\324\377Z\355\355\3477\234]\"KhD\030,\274\310r\244\326^i\220\266\267\317\257P%\202\301E\201\345e\266\211Td5\313\207]\204\266\200\241ku\000"

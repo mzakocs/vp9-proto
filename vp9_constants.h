@@ -1,6 +1,9 @@
 #define TX_MODES 5
 #define SEG_LVL_MAX 4
 
+#define MIN_TILE_WIDTH_B64 4
+#define MAX_TILE_WIDTH_B64 64
+
 enum TxSize {
   TX_4X4,
   TX_8X8,
