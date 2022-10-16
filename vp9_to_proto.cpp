@@ -30,9 +30,9 @@ uint32_t MiRows = 0;
 uint32_t Sb64Cols = 0;
 uint32_t Sb64Rows = 0;
 
-uint32_t BoolValue = 0;
-uint32_t BoolRange = 0;
-uint32_t BoolMaxBits = 0;
+uint64_t BoolValue = 0;
+uint64_t BoolRange = 0;
+int64_t BoolMaxBits = 0;
 
 uint64_t ReadBitUInt(int bits) {
   uint64_t return_num = 0;
@@ -61,53 +61,49 @@ std::string ReadBitString(uint32_t bits) {
   return return_string;
 }
 
+uint32_t ReadBool(uint32_t p) {
+    uint32_t split = 1 + (((BoolRange - 1) * p) >> 8);
+    uint32_t bit = 0;
+    if (BoolValue < split) {
+      BoolRange = split;
+      bit = 0;
+    }
+    else {
+      BoolRange -= split;
+      BoolValue -= split;
+      bit = 1;
+    }
+
+    if (BoolRange < 128) {
+      uint32_t newBit = 0;
+      if (BoolMaxBits > 0) {
+        newBit = ReadBitUInt(1);
+        BoolMaxBits -= 1;
+      }
+      else {
+        newBit = 0;
+      }
+
+      BoolRange *= 2;
+      BoolValue = (BoolValue << 1) + newBit;
+    }
+
+    return bit;
+}
+
 void InitBool(uint32_t sz) {
-    BoolValue = ReadBitUInt(8);
-    BoolRange = 255;
-    BoolMaxBits = (8 * sz) - 8;
+  BoolValue = ReadBitUInt(8);
+  BoolRange = 255;
+  BoolMaxBits = (8 * sz) - 8;
+  ReadBool(128);
 }
 
 void ExitBool() {
   uint32_t padding_value = ReadBitUInt(BoolMaxBits);
 }
 
-uint32_t ReadBool(uint32_t p) {
-    uint32_t split = 1 + (((BoolRange - 1) * p) >> 8);
-    uint32_t bit = 0;
-    if (BoolValue < split)
-    {
-        BoolRange = split;
-        bit = 0;
-    }
-    else
-    {
-        BoolRange -= split;
-        BoolValue -= split;
-        bit = 1;
-    }
-
-    if (BoolRange < 128)
-    {
-        uint32_t newBit = 0;
-        if (BoolMaxBits > 0)
-        {
-            newBit = ReadBitUInt(1);
-            BoolMaxBits -= 1;
-        }
-        else
-        {
-            newBit = 0;
-        }
-
-        BoolRange = BoolRange << 1;
-        BoolValue = (BoolValue << 1) + newBit;
-    }
-
-    return bit;
-}
-
-uint64_t ReadLiteral(uint32_t bits) {
-  uint64_t return_num = 0;
+int64_t ReadLiteral(int32_t bits) {
+  int64_t return_num = 0;
   for (int i = 0; i < bits; i++) {
     return_num = (return_num << 1) + ReadBool(128);
   }
@@ -519,6 +515,13 @@ CompressedHeader_ReadTxMode* ReadVP9ReadTxMode() {
   return read_tx_mode;
 }
 
+uint32_t ReadVP9Uniform() {
+  const int l = 8;
+  const int m = (1 << l) - 191;
+  const int v = ReadLiteral(l - 1);
+  return v < m ? v : (v << 1) - m + ReadBool(128);
+}
+
 CompressedHeader_DecodeTermSubexp* ReadVP9DecodeTermSubexp() {
   auto decode_term_subexp = new CompressedHeader_DecodeTermSubexp();
 
@@ -543,7 +546,8 @@ CompressedHeader_DecodeTermSubexp* ReadVP9DecodeTermSubexp() {
     return decode_term_subexp;
   }
 
-  uint32_t v = ReadLiteral(7);
+  uint32_t v = ReadVP9Uniform();
+  decode_term_subexp->set_v(v);
   if (v < 65) {
     return decode_term_subexp;
   }

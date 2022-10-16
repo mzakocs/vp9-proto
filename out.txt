@@ -43,6 +43,13 @@ uncompressed_header {
     }
   }
   quantization_params {
+    base_q_idx: 74
+    delta_q_y_dc {
+    }
+    delta_q_uv_dc {
+    }
+    delta_q_uv_ac {
+    }
   }
   segmentation_params {
   }
@@ -63,66 +70,24 @@ compressed_header {
       diff_update_prob {
       }
       diff_update_prob {
+      }
+      diff_update_prob {
         update_prob: ONE
         decode_term_subexp {
-          sub_exp_val: 7
+          sub_exp_val: 14
         }
       }
       diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 15
+        }
       }
       diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
+        update_prob: ONE
+        decode_term_subexp {
+          sub_exp_val: 12
+        }
       }
       diff_update_prob {
       }
@@ -131,66 +96,11 @@ compressed_header {
       diff_update_prob {
         update_prob: ONE
         decode_term_subexp {
-          sub_exp_val: 13
+          bit_1: ONE
+          bit_2: ONE
+          bit_3: ONE
+          v: 56
         }
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-        update_prob: ONE
-        decode_term_subexp {
-          sub_exp_val: 7
-        }
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
-      }
-      diff_update_prob {
       }
       diff_update_prob {
         update_prob: ONE
@@ -245,6 +155,7 @@ compressed_header {
           bit_1: ONE
           bit_2: ONE
           bit_3: ONE
+          v: 51
         }
       }
       diff_update_prob {
@@ -292,6 +203,7 @@ compressed_header {
           bit_1: ONE
           bit_2: ONE
           bit_3: ONE
+          v: 20
         }
       }
       diff_update_prob {
@@ -452,7 +364,112 @@ compressed_header {
           bit_1: ONE
           bit_2: ONE
           bit_3: ONE
+          v: 56
         }
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
+      }
+      diff_update_prob {
       }
       diff_update_prob {
       }
@@ -1007,4 +1024,4 @@ compressed_header {
     }
   }
 }
-tiles: "\000\000\000\300|\220--B\313\311\nwp\277+V\266\377v-@!9\"\226\270]d\267\216\017\203x\354\261\270\341\266\214 \005@\307L\347\004\177P\312\001\231\303\255?S\337\2046\0037\300\234\343\375\347\025\t\366\235\256-\357\313\031!\002O\233XY\220\002\223\327\327\000\007\340\"\226\323\261\322\240\320n\200\000\326\240\242#\235C5%\020\275X\036`\025\244\213G\017\235\001J\215\373X\372\322E\2446/=\332\340\330\256\254\316\nY\330A/\233\274B&y\304\265\247y\244\315\316_\037\0102\246\305\370\214\240\037P\t)k\362c\031e\204i\252\243\355\031\363LR\001l\001\226\033\002\325\203\241&k_\326\3606\200|\2201\n\003\177\353\034iH%\3722;\335\346\243\373I\324Q\366b/\351\014\360\002W\351y\326\\j\377\374\322\336\"\320\374\354\024\303_\205\305)rY\227:\353I\033\326\242/\037\226\370*\267>V\034\200\000g_\360\035a\021\037\032[\314\230Iv\354[\004\346\253\252\306\020\324\177\335d\245\373\252\351WY\361\276\315\004\342J\034\250\035HE\247, a\367&T\201\324\241\376W\024\353\306\000\356*\237\373\337j;\327+0\342\274\240\330\032zz\035UO\345\377n\214)\256\343d?\3762<\316\342\273\262\303\316\340\035I\357\301\224\254\363u=\247]\016\203S!\315\231z$\243}\212NB\314\372\360?\324PW\367\017\247[:\273\',\212c\'$\242\014\303\2512\341L\032v\242Q=x\037\352(+\373\207\211\002r$cV(\324\377Z\355\355\3477\234]\"KhD\030,\274\310r\244\326^i\220\266\267\317\257P%\202\301E\201\345e\266\211Td5\313\207]\204\266\200\241ku\000"
+tiles: "\000\000\001\200\371 ZZ\205\227\222\024\356\341~V\255m\376\354Z\200BrE-p\272\311o\034\037\006\361\331cq\303m\030@\n\201\216\231\316\010\376\241\224\0033\207Z~\247\277\010l\006o\2019\307\373\316*\023\355;\\[\337\2262B\004\2376\260\263 \005\'\257\256\000\017\300E-\247c\245A\240\335\000\001\255ADG:\206jJ!z\260<\300+I\026\216\037:\002\225\033\366\261\365\244\213Hl^{\265\301\261]Y\234\024\263\260\202_7x\204L\363\211kN\363I\233\234\276>\020eM\213\361\031@>\240\022R\327\344\3062\313\010\323UG\3323\346\230\244\002\330\003,6\005\253\007BL\326\277\255\340m\000\371 b\024\006\377\3268\322\220K\364dw\273\315G\366\223\250\243\354\304_\322\031\340\004\257\322\363\254\270\325\377\371\245\274E\241\371\330)\206\277\013\212R\344\263.u\326\2227\255D^?-\360Un|\2549\000\000\316\277\340:\302\">4\267\2310\222\355\330\266\t\315WU\214!\250\377\272\311K\367U\322\256\263\343}\232\t\304\2249P:\220\213NX@\303\356L\251\003\251C\374\256)\327\214\001\334U?\367\276\324w\256Va\305yA\2604\364\364:\252\237\313\376\335\030S]\306\310\177\374dy\235\305we\207\235\300:\223\337\203)Y\346\352{N\272\035\006\246C\2332\364IF\373\024\234\205\231\365\340\177\250\240\257\356\037N\266uvNY\024\306NID\031\207Re\302\2304\355D\242z\360?\324PW\367\017\022\004\344H\306\254Q\251\376\265\333\333\316o8\272D\226\320\2100Yy\220\345I\254\274\323!mo\237^\240K\005\202\213\003\312\313m\022\250\310k\227\016\273\tm\001B\326\352\000"

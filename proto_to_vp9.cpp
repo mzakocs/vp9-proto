@@ -28,6 +28,12 @@ uint32_t MiRows = 0;
 uint32_t Sb64Cols = 0;
 uint32_t Sb64Rows = 0;
 
+std::string BoolBuffer;
+uint32_t BoolLowValue = 0;
+uint32_t BoolRange = 0;
+int32_t BoolCount = 0;
+uint32_t BoolPos = 0;
+
 // uint64_t BindBitUInt(uint64_t number, uint32_t bits) {
 //   // Calculate max number for bit count
 //   uint64_t max_number = pow(2, bits) - 1;
@@ -52,7 +58,7 @@ void WriteBitString(std::string string, uint32_t bits) {
   const char* bytes = string.c_str();
   // Write bytes to bit buffer
   uint32_t byte_count = ceil(bits / 8.0);
-  for (uint32_t byte_index = byte_count; byte_index --> 0;) {
+  for (uint32_t byte_index = 0; byte_index < byte_count; byte_index++) {
     
     uint32_t bit_limit = (byte_index > 0) ? 8 : 8 - ((byte_count * 8) - bits);
     uint8_t current_byte = byte_index < string.size() ? bytes[byte_index] : 0;
@@ -61,8 +67,82 @@ void WriteBitString(std::string string, uint32_t bits) {
       bool bit = (current_byte >> bit_index) & 0b1;
       bit_buffer.push_back(bit);
     }
-    
   }
+}
+
+void WriteBool(int32_t bit, int32_t p) {
+
+  // std::cout << "Bool Bit: " << bit << " Prob: " << p << std::endl;
+
+  unsigned int split;
+  int count = BoolCount;
+  unsigned int range = BoolRange;
+  unsigned int lowvalue = BoolLowValue;
+  int shift;
+
+  split = 1 + (((range - 1) * p) >> 8);
+
+  range = split;
+
+  if (bit) {
+    lowvalue += split;
+    range = BoolRange - split;
+  }
+
+  shift = vpx_norm[range];
+
+  range <<= shift;
+  count += shift;
+
+  if (count >= 0) {
+    int offset = shift - count;
+
+    if ((lowvalue << (offset - 1)) & 0x80000000) {
+      int x = BoolPos - 1;
+
+      while (x >= 0 && BoolBuffer[x] == 0xff) {
+        BoolBuffer[x] = 0;
+        x--;
+      }
+
+      BoolBuffer[x] += 1;
+    }
+
+    BoolBuffer[BoolPos++] = (lowvalue >> (24 - offset)) & 0xff;
+    lowvalue <<= offset;
+    shift = count;
+    lowvalue &= 0xffffff;
+    count -= 8;
+  }
+
+  lowvalue <<= shift;
+  BoolCount = count;
+  BoolLowValue = lowvalue;
+  BoolRange = range;
+}
+
+void InitBool() {
+  // Stolen from bitwriter.c in libvpx
+  BoolLowValue = 0;
+  BoolRange = 255;
+  BoolCount = -24;
+  BoolPos = 0;
+  BoolBuffer = std::string(0x10000, 0);
+  WriteBool(0, 128);
+}
+
+void ExitBool() {
+  for (uint32_t i = 0; i < 32; i++) WriteBool(0, 128);
+
+  if ((BoolBuffer[BoolPos - 1] & 0xe0) == 0xc0) BoolBuffer[BoolPos++] = 0;
+ 
+  WriteBitString(BoolBuffer, BoolPos * 8);
+  std::cout << "End Bool Bytes: " << BoolPos << std::endl;
+}
+
+void WriteLiteral(uint64_t number, uint32_t bits) {
+  int bit;
+  for (bit = bits - 1; bit >= 0; bit--) WriteBool(1 & (number >> bit), 128);
 }
 
 void WriteVP9SignedInteger(const VP9SignedInteger *number, uint32_t number_bits) {
@@ -432,7 +512,6 @@ void WriteVP9UncompressedHeader(const UncompressedHeader *uncompressed_header) {
   WriteVP9LoopFilterParams(uncompressed_header);
   WriteVP9QuantizationParams(uncompressed_header);
   WriteVP9SegmentationParams(uncompressed_header);
-  std::cout << "Bits Read: " << bit_buffer.size() << std::endl;
   WriteVP9TileInfo(uncompressed_header);
   // Write header size
   // TODO: Maybe try something more interesting here
@@ -447,40 +526,52 @@ void WriteVP9ReadTxMode(const CompressedHeader *compressed_header) {
   }
   else {
     tx_mode = compressed_header->read_tx_mode().tx_mode();
-    WriteBitUInt(tx_mode, 2);
+    WriteLiteral(tx_mode, 2);
     if (tx_mode == CompressedHeader_TxMode_ALLOW_32X32) {
-      WriteBitUInt(compressed_header->read_tx_mode().tx_mode_select(), 1);
+      WriteLiteral(compressed_header->read_tx_mode().tx_mode_select(), 1);
       tx_mode += (uint32_t) compressed_header->read_tx_mode().tx_mode_select();
     }
   }
 }
 
+void WriteVP9Uniform(uint32_t v) {
+  // for v field in decode_term_subexp
+  const int l = 8;
+  const int m = (1 << l) - 191;
+  if (v < m) {
+    WriteLiteral(v, l - 1);
+  } else {
+    WriteLiteral(m + ((v - m) >> 1), l - 1);
+    WriteLiteral((v - m) & 1, 1);
+  }
+}
+
 void WriteVP9DecodeTermSubexp(const CompressedHeader_DecodeTermSubexp *decode_term_subexp) {
-  WriteBitUInt(decode_term_subexp->bit_1(), 1);
+  WriteLiteral(decode_term_subexp->bit_1(), 1);
   if (decode_term_subexp->bit_1() == 0) {
-    WriteBitUInt(decode_term_subexp->sub_exp_val(), 4);
+    WriteLiteral(decode_term_subexp->sub_exp_val(), 4);
     return;
   }
-  WriteBitUInt(decode_term_subexp->bit_2(), 1);
+  WriteLiteral(decode_term_subexp->bit_2(), 1);
   if (decode_term_subexp->bit_2() == 0) {
-    WriteBitUInt(decode_term_subexp->sub_exp_val_minus_16(), 4);
+    WriteLiteral(decode_term_subexp->sub_exp_val_minus_16(), 4);
     return;
   }
-  WriteBitUInt(decode_term_subexp->bit_3(), 1);
+  WriteLiteral(decode_term_subexp->bit_3(), 1);
   if (decode_term_subexp->bit_3() == 0) {
-    WriteBitUInt(decode_term_subexp->sub_exp_val_minus_32(), 5);
+    WriteLiteral(decode_term_subexp->sub_exp_val_minus_32(), 5);
     return;
   }
-  WriteBitUInt(decode_term_subexp->v(), 7);
+  WriteVP9Uniform(decode_term_subexp->v());
   if (decode_term_subexp->v() < 65) {
     return;
   }
-  WriteBitUInt(decode_term_subexp->bit_4(), 1);
+  WriteLiteral(decode_term_subexp->bit_4(), 1);
 }
 
 void WriteVP9DiffUpdateProb(CompressedHeader_DiffUpdateProb *diff_update_prob) {
   // Write Update Prob bit
-  WriteBitUInt(diff_update_prob->update_prob(), 1);
+  WriteBool(diff_update_prob->update_prob(), 252);
   // Write term subexp if we want to update probs
   if (diff_update_prob->update_prob() == 1) {
     WriteVP9DecodeTermSubexp(&diff_update_prob->decode_term_subexp());
@@ -496,10 +587,12 @@ void WriteVP9DiffUpdateProbs(const google::protobuf::RepeatedPtrField<Compressed
       CompressedHeader_DiffUpdateProb diff_update_prob = diff_update_probs->at(i);
       // Write the object
       WriteVP9DiffUpdateProb(&diff_update_prob);
+      std::cout << "Diff Bool Bytes: " << BoolPos << std::endl;
+
     }
     // If we have no more diff_update_prob objects to write, just write empty objects
     else {
-      WriteBitUInt(0, 1);
+      WriteLiteral(0, 1);
     }
   }
 }
@@ -516,7 +609,7 @@ void WriteVP9ReadCoefProbs(const CompressedHeader *compressed_header) {
       // If so, grab the object
       auto loop_obj = compressed_header->read_coef_probs().read_coef_probs().at(txSz);
       // Write the update_probs indicator bit
-      WriteBitUInt(loop_obj.update_probs(), 1);
+      WriteLiteral(loop_obj.update_probs(), 1);
       if (loop_obj.update_probs() == 1) {
         // Write diff_update_probs objects
         WriteVP9DiffUpdateProbs(&loop_obj.diff_update_prob(), 396);
@@ -524,7 +617,7 @@ void WriteVP9ReadCoefProbs(const CompressedHeader *compressed_header) {
     }
     // Otherwise just write 1 0b0 bit to indicate we don't want to update probs
     else {
-      WriteBitUInt(0, 1);
+      WriteLiteral(0, 1);
     }
   }
 }
@@ -538,7 +631,7 @@ void WriteVP9ReadInterModeProbs(const CompressedHeader *compressed_header) {
 }
 
 void WriteVP9ReadInterpFilterProbs(const CompressedHeader *compressed_header) {
-  WriteVP9DiffUpdateProbs(&compressed_header->read_interp_filter_probs().diff_update_prob(), 8);
+  WriteVP9DiffUpdateProbs(&compressed_header->read_interp_filter_probs().diff_update_prob(), 14);
 }
 
 void WriteVP9ReadIsInterProbs(const CompressedHeader *compressed_header) {
@@ -547,13 +640,13 @@ void WriteVP9ReadIsInterProbs(const CompressedHeader *compressed_header) {
 
 void WriteVP9FrameReferenceMode(const CompressedHeader *compressed_header) {
   if (compoundReferenceAllowed == 1) {
-    WriteBitUInt(compressed_header->frame_reference_mode().non_single_reference(), 1);
+    WriteLiteral(compressed_header->frame_reference_mode().non_single_reference(), 1);
     // Set reference mode state variable
     if (compressed_header->frame_reference_mode().non_single_reference() == 0) {
       reference_mode = SINGLE_REFERENCE;
     }
     else {
-      WriteBitUInt(compressed_header->frame_reference_mode().reference_select(), 1);
+      WriteLiteral(compressed_header->frame_reference_mode().reference_select(), 1);
       if (compressed_header->frame_reference_mode().reference_select() == 0) {
         reference_mode = COMPOUND_REFERENCE;
       }
@@ -589,9 +682,9 @@ void WriteVP9ReadPartitionProbs(const CompressedHeader *compressed_header) {
 }
 
 void WriteVP9MvProbsLoop(VP9BitField update_mv_prob, uint32_t mv_prob) {
-  WriteBitUInt(update_mv_prob, 1);
+  WriteBool(update_mv_prob, 252);
   if (update_mv_prob == 1) {
-    WriteBitUInt(mv_prob, 7);
+    WriteLiteral(mv_prob, 7);
   }
 }
 
@@ -628,13 +721,21 @@ void WriteVP9MvProbs(const CompressedHeader *compressed_header) {
 void WriteVP9CompressedHeader(const CompressedHeader *compressed_header) {
   // Write read_tx_mode
   WriteVP9ReadTxMode(compressed_header);
+  std::cout << "Starting Bits: " << bit_buffer.size() << std::endl;
+  std::cout << "Bool Bytes: " << BoolPos << std::endl;
   // Write tx mode probability info if select tx mode is enabled
   if (tx_mode == CompressedHeader_TxMode_TX_MODE_SELECT) {
     WriteVP9TxModeProbs(compressed_header);
   }
+  std::cout << "Bool Bytes: " << BoolPos << std::endl;
   // Write read probabilities
   WriteVP9ReadCoefProbs(compressed_header);
   WriteVP9ReadSkipProb(compressed_header);
+
+  std::cout << "Bool Bytes: " << BoolPos << std::endl;
+
+  std::cout << "FrameIsIntra: "<< FrameIsIntra << std::endl;
+
   if (FrameIsIntra == false) {
     WriteVP9ReadInterModeProbs(compressed_header);
     if (interpolation_filter == UncompressedHeader_InterpolationFilter_SWITCHABLE) {
@@ -704,10 +805,15 @@ std::string ProtoToVP9(const VP9Frame *frame) {
   if (header_size_in_bytes == 0) {
     return BitVectorToBytes(bit_buffer);
   }
+
+
   // Write VP9 compressed header
-  // WriteVP9CompressedHeader(&frame->compressed_header());
+  InitBool();
+  WriteVP9CompressedHeader(&frame->compressed_header());
+  ExitBool();
+
   // Write video frame tiles
-  // WriteBitString(frame->tiles(), (frame->tiles().size() * 8));
+  WriteBitString(frame->tiles(), (frame->tiles().size() * 8));
   // uint32_t tile_count = 0;
   // for (const Tile tile : frame->tiles()) {
   //   WriteVP9Tile(&tile);
