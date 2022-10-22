@@ -10,7 +10,6 @@
 std::ifstream file;
 std::vector<bool> bit_buffer;
 uint64_t bit_counter = 0;
-VP9Frame* vp9_frame;
 
 UncompressedHeader_FrameType frame_type = (UncompressedHeader_FrameType) 0;
 uint32_t profile = 0;
@@ -30,9 +29,12 @@ uint32_t MiRows = 0;
 uint32_t Sb64Cols = 0;
 uint32_t Sb64Rows = 0;
 
+std::string StringBoolBuffer;
+const uint8_t* BoolBuffer = 0;
+const uint8_t* BoolBufferEnd = 0;
 uint64_t BoolValue = 0;
 uint64_t BoolRange = 0;
-int64_t BoolMaxBits = 0;
+int64_t BoolCount = 0;
 
 uint64_t ReadBitUInt(int bits) {
   uint64_t return_num = 0;
@@ -61,53 +63,116 @@ std::string ReadBitString(uint32_t bits) {
   return return_string;
 }
 
-uint32_t ReadBool(uint32_t p) {
-    uint32_t split = 1 + (((BoolRange - 1) * p) >> 8);
-    uint32_t bit = 0;
-    if (BoolValue < split) {
-      BoolRange = split;
-      bit = 0;
-    }
-    else {
-      BoolRange -= split;
-      BoolValue -= split;
-      bit = 1;
+uint32_t BoolReaderFill() {
+  // stolen from bitreader.c in libvpx
+  const uint8_t *const buffer_end = BoolBufferEnd;
+  const uint8_t *buffer = BoolBuffer;
+  const uint8_t *buffer_start = buffer;
+  uint64_t value = BoolValue;
+  int count = BoolCount;
+  const size_t bytes_left = buffer_end - buffer;
+  const size_t bits_left = bytes_left * CHAR_BIT;
+  int shift = BD_VALUE_SIZE - CHAR_BIT - (count + CHAR_BIT);
+  
+  if (bits_left > BD_VALUE_SIZE) {
+    const int bits = (shift & 0xfffffff8) + CHAR_BIT;
+    BD_VALUE nv;
+    BD_VALUE big_endian_values;
+    memcpy(&big_endian_values, buffer, sizeof(BD_VALUE));
+    big_endian_values = bswap_64(big_endian_values);
+    nv = big_endian_values >> (BD_VALUE_SIZE - bits);
+    count += bits;
+    buffer += (bits >> 3);
+    value = BoolValue | (nv << (shift & 0x7));
+  } 
+  else {
+    const int bits_over = (int)(shift + CHAR_BIT - (int)bits_left);
+    int loop_end = 0;
+    if (bits_over >= 0) {
+      count += LOTS_OF_BITS;
+      loop_end = bits_over;
     }
 
-    if (BoolRange < 128) {
-      uint32_t newBit = 0;
-      if (BoolMaxBits > 0) {
-        newBit = ReadBitUInt(1);
-        BoolMaxBits -= 1;
+    if (bits_over < 0 || bits_left) {
+      while (shift >= loop_end) {
+        count += CHAR_BIT;
+        value |= (BD_VALUE)*buffer++ << shift;
+        shift -= CHAR_BIT;
       }
-      else {
-        newBit = 0;
-      }
-
-      BoolRange *= 2;
-      BoolValue = (BoolValue << 1) + newBit;
     }
+  }
 
-    return bit;
+  BoolBuffer += buffer - buffer_start;
+  BoolValue = value;
+  BoolCount = count;
+}
+
+int64_t ReadBool(int64_t p) {
+  unsigned int bit = 0;
+  BD_VALUE value;
+  BD_VALUE bigsplit;
+  int count;
+  unsigned int range;
+  unsigned int split = (BoolRange * p + (256 - p)) >> CHAR_BIT;
+
+  if (BoolCount < 0) BoolReaderFill();
+
+  value = BoolValue;
+  count = BoolCount;
+
+  bigsplit = (BD_VALUE)split << (BD_VALUE_SIZE - CHAR_BIT);
+
+  range = split;
+
+  if (value >= bigsplit) {
+    range = BoolRange - split;
+    value = value - bigsplit;
+    bit = 1;
+  }
+
+  {
+    const unsigned char shift = vpx_norm[(unsigned char)range];
+    range <<= shift;
+    value <<= shift;
+    count -= shift;
+  }
+  BoolValue = value;
+  BoolCount = count;
+  BoolRange = range;
+
+  return bit;
 }
 
 void InitBool(uint32_t sz) {
-  BoolValue = ReadBitUInt(8);
+  StringBoolBuffer = std::string(sz, 0);
+
+  // Fill bool buffer
+  for (uint32_t i = 0; i < sz; i++) {
+    StringBoolBuffer[i] = (const uint8_t) ReadBitUInt(8);
+  }
+
+  // initialize the rest of the bool reader
+  BoolBuffer = (const uint8_t*) StringBoolBuffer.c_str();
+  BoolBufferEnd = BoolBuffer + sz;
+  BoolValue = 0;
   BoolRange = 255;
-  BoolMaxBits = (8 * sz) - 8;
+  BoolCount = -8;
+
+  BoolReaderFill();
   ReadBool(128);
 }
 
 void ExitBool() {
-  uint32_t padding_value = ReadBitUInt(BoolMaxBits);
+  std::cout << "Bytes Left: " << std::hex << (BoolBufferEnd - BoolBuffer) << std::dec << std::endl;
+  // uint32_t padding_value = ReadBitUInt(BoolMaxBits);
 }
 
 int64_t ReadLiteral(int32_t bits) {
-  int64_t return_num = 0;
-  for (int i = 0; i < bits; i++) {
-    return_num = (return_num << 1) + ReadBool(128);
-  }
-  return return_num;
+  int64_t literal = 0, bit;
+
+  for (bit = bits - 1; bit >= 0; bit--) literal |= ReadBool(128) << bit;
+
+  return literal;
 }
 
 VP9SignedInteger* ReadVP9SignedInteger(uint32_t number_bits) {
@@ -473,7 +538,6 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
       uncompressed_header->set_allow_high_precision_mv((VP9BitField) allow_high_precision_mv);
       uncompressed_header->set_allocated_read_interpolation_filter(ReadVP9ReadInterpolationFilter());
     }
-
   }
 
   std::cout << "Error Resilient Mode: " << error_resilient_mode << std::endl;
@@ -491,7 +555,7 @@ UncompressedHeader* ReadVP9UncompressedHeader() {
 
   header_size_in_bytes = ReadBitUInt(16);
   std::cout << "Compressed Header Size: " << header_size_in_bytes << std::endl;
-  uncompressed_header->set_header_size_in_bytes(header_size_in_bytes);
+  // uncompressed_header->set_header_size_in_bytes(header_size_in_bytes);
 
   return uncompressed_header;
 }
@@ -579,8 +643,7 @@ CompressedHeader_TxModeProbs* ReadVP9TxModeProbs() {
 
 CompressedHeader_ReadCoefProbs* ReadVP9ReadCoefProbs() {
   auto read_coef_probs = new CompressedHeader_ReadCoefProbs();
-
-  for (uint32_t txSz = TX_4X4; txSz < tx_mode_to_biggest_tx_size[tx_mode]; txSz++) {
+  for (uint32_t txSz = TX_4X4; txSz <= tx_mode_to_biggest_tx_size[tx_mode]; ++txSz) {
     read_coef_probs->add_read_coef_probs();
     auto loop_obj = read_coef_probs->mutable_read_coef_probs(txSz);
 
@@ -750,6 +813,8 @@ CompressedHeader_MvProbs* ReadVP9MvProbs() {
 CompressedHeader* ReadVP9CompressedHeader() {
   auto compressed_header = new CompressedHeader();
 
+  std::cout << "Bytes Left: " << (BoolBufferEnd - BoolBuffer) << std::endl;
+
   compressed_header->set_allocated_read_tx_mode(ReadVP9ReadTxMode());
   
   std::cout << "Compressed Header TxMode: " << tx_mode << std::endl;
@@ -758,8 +823,12 @@ CompressedHeader* ReadVP9CompressedHeader() {
     compressed_header->set_allocated_tx_mode_probs(ReadVP9TxModeProbs());
   }
 
+  std::cout << "Bytes Left: " << (BoolBufferEnd - BoolBuffer) << std::endl;
+
   compressed_header->set_allocated_read_coef_probs(ReadVP9ReadCoefProbs());
   compressed_header->set_allocated_read_skip_prob(ReadVP9ReadSkipProb());
+
+  
 
   std::cout << "FrameIsIntra: " << FrameIsIntra << std::endl;
 
@@ -788,48 +857,84 @@ void ReadVP9TrailingBits() {
   }
 }
 
-// void ReadVP9Tile(Tile* tile) {
-//   uint32_t remaining_bytes = floor((bit_buffer.size() - bit_counter) / 8);
-//   // Check if this is the last tile
-//   //  32 bytes for tile_size and 12 for at least 1 bool-coded tile
-//   uint32_t tile_size;
-//   if (remaining_bytes < 44) {
-//     tile_size = remaining_bytes;
-//   }
-//   else {
-//     tile_size = ReadBitUInt(32);
-//   }
-//   // Decode tile
-//   std::cout << "Tile Size: " << tile_size << std::endl;
-//   tile->set_tile_size(tile_size);
+void ReadVP9Tile(Tile* tile, uint32_t frame_size_in_bits) {
+  uint32_t remaining_bytes = floor((frame_size_in_bits - bit_counter) / 8);
+  // Check if this is the last tile
+  //  32 bytes for tile_size and 12 for at least 1 bool-coded tile
+  uint32_t tile_size = ReadBitUInt(32);
+  if (tile_size > remaining_bytes) {
+    tile_size = remaining_bytes;
+    bit_counter -= 32;
+  }
+  // Decode tile
+  // tile->set_tile_size(tile_size);
 
-//   InitBool(tile_size);
+  std::cout << "Tile Size: " << tile_size << std::endl;
+  
+  tile->set_partition(ReadBitString(tile_size * 8));
+}
 
-//   std::string bool_buffer;
-//   while (BoolMaxBits != 0) {
-//     uint8_t bool_data = 0;
-//     for (uint32_t i = 0; i < 8; i++) {
-//       if (BoolMaxBits != 0) {
-//         bool_data = (bool_data << 1) + ReadBool(1);
-//         BoolMaxBits -= 1;
-//       }
-//       else {
-//         bool_data <<= 1;
-//       }
-//     }
-//     bool_buffer.push_back(bool_data);
-//   }
-//   uint8_t bool_data = 0;
-//   tile->set_partition(bool_buffer);
+void ReadVP9Frame(VP9Frame* vp9_frame, uint32_t frame_size) {
+  // Read Headers
+  vp9_frame->set_allocated_uncompressed_header(ReadVP9UncompressedHeader());
+  std::cout << "Wrote Uncompressed Header" << std::endl;
+  
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  
+  ReadVP9TrailingBits();
 
-//   ExitBool();
-// }
+  if (header_size_in_bytes == 0) {
+    std::cout << "Repeat Frame, " << bit_counter << " / " << bit_buffer.size() << std::endl;
+    return;
+  }
 
-VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
-  // Create VP9 Protobuf Object
-  vp9_frame = new VP9Frame();
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+
+  InitBool(header_size_in_bytes);
+  vp9_frame->set_allocated_compressed_header(ReadVP9CompressedHeader());
+  ExitBool();
+
+  std::cout << "Wrote Compressed Header" << std::endl;
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  // Read Tiles
+  uint32_t tile_count = 0;
+  uint32_t frame_size_in_bits = (frame_size * 8);
+  while (bit_counter < frame_size_in_bits) {
+    vp9_frame->add_tile();
+    ReadVP9Tile(vp9_frame->mutable_tile(tile_count++), frame_size_in_bits);
+    std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+  }
+  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
+}
+
+void ReadVP9Frames(VP9IVF* ivf) {
+  // https://wiki.multimedia.cx/index.php/Duck_IVF
+  // Reads the first frame of an IVF file
+  // Reads 32-byte IVF header
+  bit_counter += (32 * 8);
+  // Read first IVF frame
+  uint32_t frame_size = 0;
+  std::string frame_size_bytes = ReadBitString(32);
+  memcpy(&frame_size, frame_size_bytes.c_str(), sizeof(uint32_t));
+  // Read rest of frame header
+  bit_counter += 64;
+  // Read frame
+  auto vp9_frame = new VP9Frame();
+  ReadVP9Frame(vp9_frame, frame_size);
+  ivf->set_allocated_vp9_frame_1(vp9_frame);
+  return;
+}
+
+int main(int argc, char** argv) {
+
+  // Check args
+  if (argc < 3) {
+    std::cout << "usage: " << argv[0] << " <in_file> <out_file>" << std::endl;
+    return 0;
+  }
+
   // Open file
-  file = std::ifstream(vp9_frame_file_path, std::ios::binary);
+  file = std::ifstream(argv[1], std::ios::binary);
   // Read into bit vector
   bit_buffer = std::vector<bool>();
   uint8_t data;
@@ -839,48 +944,20 @@ VP9Frame* VP9ToProto(std::string vp9_frame_file_path) {
     }
   }
   // Check that we have data to parse
-  if (bit_buffer.size() < 5) {
-    std::cerr << "Failed to read file: " << vp9_frame_file_path << std::endl; 
+  if (bit_buffer.empty()) {
+    std::cerr << "Failed to read file: " << argv[1] << std::endl; 
     exit(0);
   }
-  // Read Headers
-  vp9_frame->set_allocated_uncompressed_header(ReadVP9UncompressedHeader());
-  std::cout << "Wrote Uncompressed Header" << std::endl;
-  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
-  
-  ReadVP9TrailingBits();
 
-  if (header_size_in_bytes == 0) {
-    std::cout << "Repeat Frame, " << bit_counter << " / " << bit_buffer.size() << std::endl;
-    return vp9_frame;
-  }
-
-  InitBool(header_size_in_bytes);
-  vp9_frame->set_allocated_compressed_header(ReadVP9CompressedHeader());
-  ExitBool();
-
-  std::cout << "Wrote Compressed Header" << std::endl;
-  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
-  // Read Tiles
-
-  vp9_frame->set_tiles(ReadBitString(bit_buffer.size() - bit_counter));
-  // uint32_t tile_count = 0;
-  // while (bit_counter < bit_buffer.size()) {
-  //   vp9_frame->add_tiles();
-  //   ReadVP9Tile(vp9_frame->mutable_tiles(tile_count++));
-  //   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
-  // }
-  std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
-
-  return vp9_frame;
-}
-
-int main(int argc, char** argv) {
+  // Create VP9 Protobuf Object
+  auto vp9_ivf = new VP9IVF();
   // Convert vp9 binary frame to protobuf
-  VP9Frame* vp9_frame = VP9ToProto("./test_frame_in");
+  ReadVP9Frames(vp9_ivf);
 
   // Serialize protobuf and store to file
-  std::ofstream ofs("./test_frame_protobuf", std::ios_base::out | std::ios_base::binary);
-  vp9_frame->SerializeToOstream(&ofs);
+  std::ofstream ofs(argv[2], std::ios_base::out | std::ios_base::binary);
+  vp9_ivf->SerializeToOstream(&ofs);
+
+  std::cout << "Writing to file " << argv[2] << std::endl;
   return 0;
 }

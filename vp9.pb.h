@@ -102,6 +102,9 @@ extern CompressedHeader_ReadYModeProbsDefaultTypeInternal _CompressedHeader_Read
 class CompressedHeader_TxModeProbs;
 struct CompressedHeader_TxModeProbsDefaultTypeInternal;
 extern CompressedHeader_TxModeProbsDefaultTypeInternal _CompressedHeader_TxModeProbs_default_instance_;
+class Tile;
+struct TileDefaultTypeInternal;
+extern TileDefaultTypeInternal _Tile_default_instance_;
 class UncompressedHeader;
 struct UncompressedHeaderDefaultTypeInternal;
 extern UncompressedHeaderDefaultTypeInternal _UncompressedHeader_default_instance_;
@@ -147,6 +150,9 @@ extern UncompressedHeader_TileInfoDefaultTypeInternal _UncompressedHeader_TileIn
 class VP9Frame;
 struct VP9FrameDefaultTypeInternal;
 extern VP9FrameDefaultTypeInternal _VP9Frame_default_instance_;
+class VP9IVF;
+struct VP9IVFDefaultTypeInternal;
+extern VP9IVFDefaultTypeInternal _VP9IVF_default_instance_;
 class VP9SignedInteger;
 struct VP9SignedIntegerDefaultTypeInternal;
 extern VP9SignedIntegerDefaultTypeInternal _VP9SignedInteger_default_instance_;
@@ -186,6 +192,8 @@ template <>
 template <>
 ::CompressedHeader_TxModeProbs* Arena::CreateMaybeMessage<::CompressedHeader_TxModeProbs>(Arena*);
 template <>
+::Tile* Arena::CreateMaybeMessage<::Tile>(Arena*);
+template <>
 ::UncompressedHeader* Arena::CreateMaybeMessage<::UncompressedHeader>(Arena*);
 template <>
 ::UncompressedHeader_ColorConfig* Arena::CreateMaybeMessage<::UncompressedHeader_ColorConfig>(Arena*);
@@ -215,6 +223,8 @@ template <>
 ::UncompressedHeader_TileInfo* Arena::CreateMaybeMessage<::UncompressedHeader_TileInfo>(Arena*);
 template <>
 ::VP9Frame* Arena::CreateMaybeMessage<::VP9Frame>(Arena*);
+template <>
+::VP9IVF* Arena::CreateMaybeMessage<::VP9IVF>(Arena*);
 template <>
 ::VP9SignedInteger* Arena::CreateMaybeMessage<::VP9SignedInteger>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
@@ -3174,7 +3184,6 @@ class UncompressedHeader final :
     kRefreshFrameContextFieldNumber = 21,
     kFrameParallelDecodingModeFieldNumber = 22,
     kFrameContextIdxFieldNumber = 23,
-    kHeaderSizeInBytesFieldNumber = 28,
   };
   // repeated uint32 ref_frame_idx = 17;
   int ref_frame_idx_size() const;
@@ -3512,15 +3521,6 @@ class UncompressedHeader final :
   void _internal_set_frame_context_idx(uint32_t value);
   public:
 
-  // uint32 header_size_in_bytes = 28;
-  void clear_header_size_in_bytes();
-  uint32_t header_size_in_bytes() const;
-  void set_header_size_in_bytes(uint32_t value);
-  private:
-  uint32_t _internal_header_size_in_bytes() const;
-  void _internal_set_header_size_in_bytes(uint32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:UncompressedHeader)
  private:
   class _Internal;
@@ -3558,7 +3558,6 @@ class UncompressedHeader final :
     int refresh_frame_context_;
     int frame_parallel_decoding_mode_;
     uint32_t frame_context_idx_;
-    uint32_t header_size_in_bytes_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -6588,6 +6587,158 @@ class CompressedHeader final :
   friend struct ::TableStruct_vp9_2eproto;
 };// -------------------------------------------------------------------
 
+class Tile final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Tile) */ {
+ public:
+  inline Tile() : Tile(nullptr) {}
+  ~Tile() override;
+  explicit PROTOBUF_CONSTEXPR Tile(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Tile(const Tile& from);
+  Tile(Tile&& from) noexcept
+    : Tile() {
+    *this = ::std::move(from);
+  }
+
+  inline Tile& operator=(const Tile& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Tile& operator=(Tile&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Tile& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Tile* internal_default_instance() {
+    return reinterpret_cast<const Tile*>(
+               &_Tile_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    32;
+
+  friend void swap(Tile& a, Tile& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Tile* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Tile* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Tile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Tile>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Tile& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Tile& from) {
+    Tile::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Tile* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Tile";
+  }
+  protected:
+  explicit Tile(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPartitionFieldNumber = 1,
+  };
+  // bytes partition = 1;
+  void clear_partition();
+  const std::string& partition() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_partition(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_partition();
+  PROTOBUF_NODISCARD std::string* release_partition();
+  void set_allocated_partition(std::string* partition);
+  private:
+  const std::string& _internal_partition() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_partition(const std::string& value);
+  std::string* _internal_mutable_partition();
+  public:
+
+  // @@protoc_insertion_point(class_scope:Tile)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr partition_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vp9_2eproto;
+};// -------------------------------------------------------------------
+
 class VP9Frame final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9Frame) */ {
  public:
@@ -6636,7 +6787,7 @@ class VP9Frame final :
                &_VP9Frame_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    32;
+    33;
 
   friend void swap(VP9Frame& a, VP9Frame& b) {
     a.Swap(&b);
@@ -6709,23 +6860,27 @@ class VP9Frame final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kTilesFieldNumber = 3,
+    kTileFieldNumber = 3,
     kUncompressedHeaderFieldNumber = 1,
     kCompressedHeaderFieldNumber = 2,
   };
-  // bytes tiles = 3;
-  void clear_tiles();
-  const std::string& tiles() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_tiles(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_tiles();
-  PROTOBUF_NODISCARD std::string* release_tiles();
-  void set_allocated_tiles(std::string* tiles);
+  // repeated .Tile tile = 3;
+  int tile_size() const;
   private:
-  const std::string& _internal_tiles() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_tiles(const std::string& value);
-  std::string* _internal_mutable_tiles();
+  int _internal_tile_size() const;
   public:
+  void clear_tile();
+  ::Tile* mutable_tile(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >*
+      mutable_tile();
+  private:
+  const ::Tile& _internal_tile(int index) const;
+  ::Tile* _internal_add_tile();
+  public:
+  const ::Tile& tile(int index) const;
+  ::Tile* add_tile();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >&
+      tile() const;
 
   // .UncompressedHeader uncompressed_header = 1;
   bool has_uncompressed_header() const;
@@ -6771,9 +6926,205 @@ class VP9Frame final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr tiles_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile > tile_;
     ::UncompressedHeader* uncompressed_header_;
     ::CompressedHeader* compressed_header_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vp9_2eproto;
+};// -------------------------------------------------------------------
+
+class VP9IVF final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9IVF) */ {
+ public:
+  inline VP9IVF() : VP9IVF(nullptr) {}
+  ~VP9IVF() override;
+  explicit PROTOBUF_CONSTEXPR VP9IVF(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VP9IVF(const VP9IVF& from);
+  VP9IVF(VP9IVF&& from) noexcept
+    : VP9IVF() {
+    *this = ::std::move(from);
+  }
+
+  inline VP9IVF& operator=(const VP9IVF& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VP9IVF& operator=(VP9IVF&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const VP9IVF& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VP9IVF* internal_default_instance() {
+    return reinterpret_cast<const VP9IVF*>(
+               &_VP9IVF_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    34;
+
+  friend void swap(VP9IVF& a, VP9IVF& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VP9IVF* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VP9IVF* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  VP9IVF* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<VP9IVF>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const VP9IVF& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const VP9IVF& from) {
+    VP9IVF::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(VP9IVF* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "VP9IVF";
+  }
+  protected:
+  explicit VP9IVF(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kVp9Frame1FieldNumber = 1,
+    kVp9Frame2FieldNumber = 2,
+    kVp9Frame3FieldNumber = 3,
+  };
+  // .VP9Frame vp9_frame_1 = 1;
+  bool has_vp9_frame_1() const;
+  private:
+  bool _internal_has_vp9_frame_1() const;
+  public:
+  void clear_vp9_frame_1();
+  const ::VP9Frame& vp9_frame_1() const;
+  PROTOBUF_NODISCARD ::VP9Frame* release_vp9_frame_1();
+  ::VP9Frame* mutable_vp9_frame_1();
+  void set_allocated_vp9_frame_1(::VP9Frame* vp9_frame_1);
+  private:
+  const ::VP9Frame& _internal_vp9_frame_1() const;
+  ::VP9Frame* _internal_mutable_vp9_frame_1();
+  public:
+  void unsafe_arena_set_allocated_vp9_frame_1(
+      ::VP9Frame* vp9_frame_1);
+  ::VP9Frame* unsafe_arena_release_vp9_frame_1();
+
+  // .VP9Frame vp9_frame_2 = 2;
+  bool has_vp9_frame_2() const;
+  private:
+  bool _internal_has_vp9_frame_2() const;
+  public:
+  void clear_vp9_frame_2();
+  const ::VP9Frame& vp9_frame_2() const;
+  PROTOBUF_NODISCARD ::VP9Frame* release_vp9_frame_2();
+  ::VP9Frame* mutable_vp9_frame_2();
+  void set_allocated_vp9_frame_2(::VP9Frame* vp9_frame_2);
+  private:
+  const ::VP9Frame& _internal_vp9_frame_2() const;
+  ::VP9Frame* _internal_mutable_vp9_frame_2();
+  public:
+  void unsafe_arena_set_allocated_vp9_frame_2(
+      ::VP9Frame* vp9_frame_2);
+  ::VP9Frame* unsafe_arena_release_vp9_frame_2();
+
+  // .VP9Frame vp9_frame_3 = 3;
+  bool has_vp9_frame_3() const;
+  private:
+  bool _internal_has_vp9_frame_3() const;
+  public:
+  void clear_vp9_frame_3();
+  const ::VP9Frame& vp9_frame_3() const;
+  PROTOBUF_NODISCARD ::VP9Frame* release_vp9_frame_3();
+  ::VP9Frame* mutable_vp9_frame_3();
+  void set_allocated_vp9_frame_3(::VP9Frame* vp9_frame_3);
+  private:
+  const ::VP9Frame& _internal_vp9_frame_3() const;
+  ::VP9Frame* _internal_mutable_vp9_frame_3();
+  public:
+  void unsafe_arena_set_allocated_vp9_frame_3(
+      ::VP9Frame* vp9_frame_3);
+  ::VP9Frame* unsafe_arena_release_vp9_frame_3();
+
+  // @@protoc_insertion_point(class_scope:VP9IVF)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::VP9Frame* vp9_frame_1_;
+    ::VP9Frame* vp9_frame_2_;
+    ::VP9Frame* vp9_frame_3_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -9504,26 +9855,6 @@ inline void UncompressedHeader::set_allocated_tile_info(::UncompressedHeader_Til
   // @@protoc_insertion_point(field_set_allocated:UncompressedHeader.tile_info)
 }
 
-// uint32 header_size_in_bytes = 28;
-inline void UncompressedHeader::clear_header_size_in_bytes() {
-  _impl_.header_size_in_bytes_ = 0u;
-}
-inline uint32_t UncompressedHeader::_internal_header_size_in_bytes() const {
-  return _impl_.header_size_in_bytes_;
-}
-inline uint32_t UncompressedHeader::header_size_in_bytes() const {
-  // @@protoc_insertion_point(field_get:UncompressedHeader.header_size_in_bytes)
-  return _internal_header_size_in_bytes();
-}
-inline void UncompressedHeader::_internal_set_header_size_in_bytes(uint32_t value) {
-
-  _impl_.header_size_in_bytes_ = value;
-}
-inline void UncompressedHeader::set_header_size_in_bytes(uint32_t value) {
-  _internal_set_header_size_in_bytes(value);
-  // @@protoc_insertion_point(field_set:UncompressedHeader.header_size_in_bytes)
-}
-
 // -------------------------------------------------------------------
 
 // CompressedHeader_ReadTxMode
@@ -11524,6 +11855,60 @@ inline void CompressedHeader::set_allocated_mv_probs(::CompressedHeader_MvProbs*
 
 // -------------------------------------------------------------------
 
+// Tile
+
+// bytes partition = 1;
+inline void Tile::clear_partition() {
+  _impl_.partition_.ClearToEmpty();
+}
+inline const std::string& Tile::partition() const {
+  // @@protoc_insertion_point(field_get:Tile.partition)
+  return _internal_partition();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void Tile::set_partition(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.partition_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Tile.partition)
+}
+inline std::string* Tile::mutable_partition() {
+  std::string* _s = _internal_mutable_partition();
+  // @@protoc_insertion_point(field_mutable:Tile.partition)
+  return _s;
+}
+inline const std::string& Tile::_internal_partition() const {
+  return _impl_.partition_.Get();
+}
+inline void Tile::_internal_set_partition(const std::string& value) {
+
+  _impl_.partition_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Tile::_internal_mutable_partition() {
+
+  return _impl_.partition_.Mutable(GetArenaForAllocation());
+}
+inline std::string* Tile::release_partition() {
+  // @@protoc_insertion_point(field_release:Tile.partition)
+  return _impl_.partition_.Release();
+}
+inline void Tile::set_allocated_partition(std::string* partition) {
+  if (partition != nullptr) {
+
+  } else {
+
+  }
+  _impl_.partition_.SetAllocated(partition, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.partition_.IsDefault()) {
+    _impl_.partition_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Tile.partition)
+}
+
+// -------------------------------------------------------------------
+
 // VP9Frame
 
 // .UncompressedHeader uncompressed_header = 1;
@@ -11706,54 +12091,318 @@ inline void VP9Frame::set_allocated_compressed_header(::CompressedHeader* compre
   // @@protoc_insertion_point(field_set_allocated:VP9Frame.compressed_header)
 }
 
-// bytes tiles = 3;
-inline void VP9Frame::clear_tiles() {
-  _impl_.tiles_.ClearToEmpty();
+// repeated .Tile tile = 3;
+inline int VP9Frame::_internal_tile_size() const {
+  return _impl_.tile_.size();
 }
-inline const std::string& VP9Frame::tiles() const {
-  // @@protoc_insertion_point(field_get:VP9Frame.tiles)
-  return _internal_tiles();
+inline int VP9Frame::tile_size() const {
+  return _internal_tile_size();
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void VP9Frame::set_tiles(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.tiles_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:VP9Frame.tiles)
+inline void VP9Frame::clear_tile() {
+  _impl_.tile_.Clear();
 }
-inline std::string* VP9Frame::mutable_tiles() {
-  std::string* _s = _internal_mutable_tiles();
-  // @@protoc_insertion_point(field_mutable:VP9Frame.tiles)
-  return _s;
+inline ::Tile* VP9Frame::mutable_tile(int index) {
+  // @@protoc_insertion_point(field_mutable:VP9Frame.tile)
+  return _impl_.tile_.Mutable(index);
 }
-inline const std::string& VP9Frame::_internal_tiles() const {
-  return _impl_.tiles_.Get();
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >*
+VP9Frame::mutable_tile() {
+  // @@protoc_insertion_point(field_mutable_list:VP9Frame.tile)
+  return &_impl_.tile_;
 }
-inline void VP9Frame::_internal_set_tiles(const std::string& value) {
+inline const ::Tile& VP9Frame::_internal_tile(int index) const {
+  return _impl_.tile_.Get(index);
+}
+inline const ::Tile& VP9Frame::tile(int index) const {
+  // @@protoc_insertion_point(field_get:VP9Frame.tile)
+  return _internal_tile(index);
+}
+inline ::Tile* VP9Frame::_internal_add_tile() {
+  return _impl_.tile_.Add();
+}
+inline ::Tile* VP9Frame::add_tile() {
+  ::Tile* _add = _internal_add_tile();
+  // @@protoc_insertion_point(field_add:VP9Frame.tile)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Tile >&
+VP9Frame::tile() const {
+  // @@protoc_insertion_point(field_list:VP9Frame.tile)
+  return _impl_.tile_;
+}
 
-  _impl_.tiles_.Set(value, GetArenaForAllocation());
-}
-inline std::string* VP9Frame::_internal_mutable_tiles() {
+// -------------------------------------------------------------------
 
-  return _impl_.tiles_.Mutable(GetArenaForAllocation());
+// VP9IVF
+
+// .VP9Frame vp9_frame_1 = 1;
+inline bool VP9IVF::_internal_has_vp9_frame_1() const {
+  return this != internal_default_instance() && _impl_.vp9_frame_1_ != nullptr;
 }
-inline std::string* VP9Frame::release_tiles() {
-  // @@protoc_insertion_point(field_release:VP9Frame.tiles)
-  return _impl_.tiles_.Release();
+inline bool VP9IVF::has_vp9_frame_1() const {
+  return _internal_has_vp9_frame_1();
 }
-inline void VP9Frame::set_allocated_tiles(std::string* tiles) {
-  if (tiles != nullptr) {
+inline void VP9IVF::clear_vp9_frame_1() {
+  if (GetArenaForAllocation() == nullptr && _impl_.vp9_frame_1_ != nullptr) {
+    delete _impl_.vp9_frame_1_;
+  }
+  _impl_.vp9_frame_1_ = nullptr;
+}
+inline const ::VP9Frame& VP9IVF::_internal_vp9_frame_1() const {
+  const ::VP9Frame* p = _impl_.vp9_frame_1_;
+  return p != nullptr ? *p : reinterpret_cast<const ::VP9Frame&>(
+      ::_VP9Frame_default_instance_);
+}
+inline const ::VP9Frame& VP9IVF::vp9_frame_1() const {
+  // @@protoc_insertion_point(field_get:VP9IVF.vp9_frame_1)
+  return _internal_vp9_frame_1();
+}
+inline void VP9IVF::unsafe_arena_set_allocated_vp9_frame_1(
+    ::VP9Frame* vp9_frame_1) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.vp9_frame_1_);
+  }
+  _impl_.vp9_frame_1_ = vp9_frame_1;
+  if (vp9_frame_1) {
 
   } else {
 
   }
-  _impl_.tiles_.SetAllocated(tiles, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.tiles_.IsDefault()) {
-    _impl_.tiles_.Set("", GetArenaForAllocation());
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:VP9IVF.vp9_frame_1)
+}
+inline ::VP9Frame* VP9IVF::release_vp9_frame_1() {
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_1_;
+  _impl_.vp9_frame_1_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
   }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:VP9Frame.tiles)
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::unsafe_arena_release_vp9_frame_1() {
+  // @@protoc_insertion_point(field_release:VP9IVF.vp9_frame_1)
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_1_;
+  _impl_.vp9_frame_1_ = nullptr;
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::_internal_mutable_vp9_frame_1() {
+  
+  if (_impl_.vp9_frame_1_ == nullptr) {
+    auto* p = CreateMaybeMessage<::VP9Frame>(GetArenaForAllocation());
+    _impl_.vp9_frame_1_ = p;
+  }
+  return _impl_.vp9_frame_1_;
+}
+inline ::VP9Frame* VP9IVF::mutable_vp9_frame_1() {
+  ::VP9Frame* _msg = _internal_mutable_vp9_frame_1();
+  // @@protoc_insertion_point(field_mutable:VP9IVF.vp9_frame_1)
+  return _msg;
+}
+inline void VP9IVF::set_allocated_vp9_frame_1(::VP9Frame* vp9_frame_1) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.vp9_frame_1_;
+  }
+  if (vp9_frame_1) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(vp9_frame_1);
+    if (message_arena != submessage_arena) {
+      vp9_frame_1 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, vp9_frame_1, submessage_arena);
+    }
+
+  } else {
+
+  }
+  _impl_.vp9_frame_1_ = vp9_frame_1;
+  // @@protoc_insertion_point(field_set_allocated:VP9IVF.vp9_frame_1)
+}
+
+// .VP9Frame vp9_frame_2 = 2;
+inline bool VP9IVF::_internal_has_vp9_frame_2() const {
+  return this != internal_default_instance() && _impl_.vp9_frame_2_ != nullptr;
+}
+inline bool VP9IVF::has_vp9_frame_2() const {
+  return _internal_has_vp9_frame_2();
+}
+inline void VP9IVF::clear_vp9_frame_2() {
+  if (GetArenaForAllocation() == nullptr && _impl_.vp9_frame_2_ != nullptr) {
+    delete _impl_.vp9_frame_2_;
+  }
+  _impl_.vp9_frame_2_ = nullptr;
+}
+inline const ::VP9Frame& VP9IVF::_internal_vp9_frame_2() const {
+  const ::VP9Frame* p = _impl_.vp9_frame_2_;
+  return p != nullptr ? *p : reinterpret_cast<const ::VP9Frame&>(
+      ::_VP9Frame_default_instance_);
+}
+inline const ::VP9Frame& VP9IVF::vp9_frame_2() const {
+  // @@protoc_insertion_point(field_get:VP9IVF.vp9_frame_2)
+  return _internal_vp9_frame_2();
+}
+inline void VP9IVF::unsafe_arena_set_allocated_vp9_frame_2(
+    ::VP9Frame* vp9_frame_2) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.vp9_frame_2_);
+  }
+  _impl_.vp9_frame_2_ = vp9_frame_2;
+  if (vp9_frame_2) {
+
+  } else {
+
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:VP9IVF.vp9_frame_2)
+}
+inline ::VP9Frame* VP9IVF::release_vp9_frame_2() {
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_2_;
+  _impl_.vp9_frame_2_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::unsafe_arena_release_vp9_frame_2() {
+  // @@protoc_insertion_point(field_release:VP9IVF.vp9_frame_2)
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_2_;
+  _impl_.vp9_frame_2_ = nullptr;
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::_internal_mutable_vp9_frame_2() {
+  
+  if (_impl_.vp9_frame_2_ == nullptr) {
+    auto* p = CreateMaybeMessage<::VP9Frame>(GetArenaForAllocation());
+    _impl_.vp9_frame_2_ = p;
+  }
+  return _impl_.vp9_frame_2_;
+}
+inline ::VP9Frame* VP9IVF::mutable_vp9_frame_2() {
+  ::VP9Frame* _msg = _internal_mutable_vp9_frame_2();
+  // @@protoc_insertion_point(field_mutable:VP9IVF.vp9_frame_2)
+  return _msg;
+}
+inline void VP9IVF::set_allocated_vp9_frame_2(::VP9Frame* vp9_frame_2) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.vp9_frame_2_;
+  }
+  if (vp9_frame_2) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(vp9_frame_2);
+    if (message_arena != submessage_arena) {
+      vp9_frame_2 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, vp9_frame_2, submessage_arena);
+    }
+
+  } else {
+
+  }
+  _impl_.vp9_frame_2_ = vp9_frame_2;
+  // @@protoc_insertion_point(field_set_allocated:VP9IVF.vp9_frame_2)
+}
+
+// .VP9Frame vp9_frame_3 = 3;
+inline bool VP9IVF::_internal_has_vp9_frame_3() const {
+  return this != internal_default_instance() && _impl_.vp9_frame_3_ != nullptr;
+}
+inline bool VP9IVF::has_vp9_frame_3() const {
+  return _internal_has_vp9_frame_3();
+}
+inline void VP9IVF::clear_vp9_frame_3() {
+  if (GetArenaForAllocation() == nullptr && _impl_.vp9_frame_3_ != nullptr) {
+    delete _impl_.vp9_frame_3_;
+  }
+  _impl_.vp9_frame_3_ = nullptr;
+}
+inline const ::VP9Frame& VP9IVF::_internal_vp9_frame_3() const {
+  const ::VP9Frame* p = _impl_.vp9_frame_3_;
+  return p != nullptr ? *p : reinterpret_cast<const ::VP9Frame&>(
+      ::_VP9Frame_default_instance_);
+}
+inline const ::VP9Frame& VP9IVF::vp9_frame_3() const {
+  // @@protoc_insertion_point(field_get:VP9IVF.vp9_frame_3)
+  return _internal_vp9_frame_3();
+}
+inline void VP9IVF::unsafe_arena_set_allocated_vp9_frame_3(
+    ::VP9Frame* vp9_frame_3) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.vp9_frame_3_);
+  }
+  _impl_.vp9_frame_3_ = vp9_frame_3;
+  if (vp9_frame_3) {
+
+  } else {
+
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:VP9IVF.vp9_frame_3)
+}
+inline ::VP9Frame* VP9IVF::release_vp9_frame_3() {
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_3_;
+  _impl_.vp9_frame_3_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::unsafe_arena_release_vp9_frame_3() {
+  // @@protoc_insertion_point(field_release:VP9IVF.vp9_frame_3)
+  
+  ::VP9Frame* temp = _impl_.vp9_frame_3_;
+  _impl_.vp9_frame_3_ = nullptr;
+  return temp;
+}
+inline ::VP9Frame* VP9IVF::_internal_mutable_vp9_frame_3() {
+  
+  if (_impl_.vp9_frame_3_ == nullptr) {
+    auto* p = CreateMaybeMessage<::VP9Frame>(GetArenaForAllocation());
+    _impl_.vp9_frame_3_ = p;
+  }
+  return _impl_.vp9_frame_3_;
+}
+inline ::VP9Frame* VP9IVF::mutable_vp9_frame_3() {
+  ::VP9Frame* _msg = _internal_mutable_vp9_frame_3();
+  // @@protoc_insertion_point(field_mutable:VP9IVF.vp9_frame_3)
+  return _msg;
+}
+inline void VP9IVF::set_allocated_vp9_frame_3(::VP9Frame* vp9_frame_3) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.vp9_frame_3_;
+  }
+  if (vp9_frame_3) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(vp9_frame_3);
+    if (message_arena != submessage_arena) {
+      vp9_frame_3 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, vp9_frame_3, submessage_arena);
+    }
+
+  } else {
+
+  }
+  _impl_.vp9_frame_3_ = vp9_frame_3;
+  // @@protoc_insertion_point(field_set_allocated:VP9IVF.vp9_frame_3)
 }
 
 #ifdef __GNUC__

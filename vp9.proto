@@ -194,7 +194,9 @@ message UncompressedHeader {
   SegmentationParams segmentation_params = 26; // ? bits, segmentation_params() in spec
   TileInfo tile_info = 27; // ? bits, tile_info() in spec 
 
-  uint32 header_size_in_bytes = 28; // 16 bits
+  // add a boolean field that tells the fuzzer to use a random value for the size
+
+  // uint32 header_size_in_bytes = 28; // 16 bits
 }
 
 message CompressedHeader {
@@ -359,16 +361,24 @@ message CompressedHeader {
 //   Block block = 2;
 // }
 
-// message Tile {
-//   uint32 tile_size = 1; // 32 bits
+message Tile {
+  // uint32 tile_size = 1; // 32 bits
 
-//   bytes partition = 2;
-// }
+  // add a boolean field that tells the fuzzer to use a random value for the size
+
+  bytes partition = 1;
+}
 
 message VP9Frame {
   UncompressedHeader uncompressed_header = 1; // uncompressed_header() in spec
 
   CompressedHeader compressed_header = 2; // compressed_header() in spec
 
-  bytes tiles = 3;
+  repeated Tile tile = 3;
+}
+
+message VP9IVF {
+  VP9Frame vp9_frame_1 = 1;
+  VP9Frame vp9_frame_2 = 2;
+  VP9Frame vp9_frame_3 = 3;
 }
