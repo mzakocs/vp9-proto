@@ -1,1 +1,1 @@
-protoc --decode=VP9Frame vp9.proto < test_frame_protobuf
+protoc --decode=VP9Frame vp9.proto < $1
