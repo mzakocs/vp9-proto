@@ -1,6 +1,4 @@
-namespace VP9Fuzzer {
-
-#define MAX_TILES 3 // max tiles the vp9 converter can read/write from/to an ivf file
+#define MAX_TILES 3
 
 #define TX_MODES 5
 #define SEG_LVL_MAX 4
@@ -11,6 +9,8 @@ typedef size_t BD_VALUE;
 
 #define MIN_TILE_WIDTH_B64 4
 #define MAX_TILE_WIDTH_B64 64
+
+namespace VP9Fuzzer {
 
 enum TxSize {
   TX_4X4,

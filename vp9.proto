@@ -1,5 +1,4 @@
 syntax = "proto3";
-option optimize_for = LITE_RUNTIME;
 
 /* 
   Protobuf Specification for the VP9 Video Codec 
@@ -378,8 +377,29 @@ message VP9Frame {
   repeated Tile tile = 3;
 }
 
+message VideoColorSpace {
+  uint32 primaries = 1;
+  uint32 transfer = 2;
+  uint32 matrix = 3;
+  VP9BitField range = 4;
+}
+
 message VP9IVF {
   VP9Frame vp9_frame_1 = 1;
   VP9Frame vp9_frame_2 = 2;
   VP9Frame vp9_frame_3 = 3;
+}
+
+message VP9Fuzz {
+  VP9BitField has_alpha = 1;
+  uint32 profile = 2;
+  VideoColorSpace color_space = 3;
+  uint32 rotation = 4;
+  uint32 coded_size_width = 5;
+  uint32 coded_size_height = 6;
+  uint32 natural_size_width = 7;
+  uint32 natural_size_height = 8;
+  uint32 reflection = 9;
+
+  VP9IVF ivf = 10;
 }

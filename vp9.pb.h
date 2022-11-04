@@ -26,12 +26,10 @@
 #include "google/protobuf/arenastring.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/generated_enum_util.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -49,8 +47,6 @@ PROTOBUF_NAMESPACE_CLOSE
 struct TableStruct_vp9_2eproto {
   static const uint32_t offsets[];
 };
-extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable
-    descriptor_table_vp9_2eproto;
 class CompressedHeader;
 struct CompressedHeaderDefaultTypeInternal;
 extern CompressedHeaderDefaultTypeInternal _CompressedHeader_default_instance_;
@@ -150,12 +146,18 @@ extern UncompressedHeader_TileInfoDefaultTypeInternal _UncompressedHeader_TileIn
 class VP9Frame;
 struct VP9FrameDefaultTypeInternal;
 extern VP9FrameDefaultTypeInternal _VP9Frame_default_instance_;
+class VP9Fuzz;
+struct VP9FuzzDefaultTypeInternal;
+extern VP9FuzzDefaultTypeInternal _VP9Fuzz_default_instance_;
 class VP9IVF;
 struct VP9IVFDefaultTypeInternal;
 extern VP9IVFDefaultTypeInternal _VP9IVF_default_instance_;
 class VP9SignedInteger;
 struct VP9SignedIntegerDefaultTypeInternal;
 extern VP9SignedIntegerDefaultTypeInternal _VP9SignedInteger_default_instance_;
+class VideoColorSpace;
+struct VideoColorSpaceDefaultTypeInternal;
+extern VideoColorSpaceDefaultTypeInternal _VideoColorSpace_default_instance_;
 PROTOBUF_NAMESPACE_OPEN
 template <>
 ::CompressedHeader* Arena::CreateMaybeMessage<::CompressedHeader>(Arena*);
@@ -224,9 +226,13 @@ template <>
 template <>
 ::VP9Frame* Arena::CreateMaybeMessage<::VP9Frame>(Arena*);
 template <>
+::VP9Fuzz* Arena::CreateMaybeMessage<::VP9Fuzz>(Arena*);
+template <>
 ::VP9IVF* Arena::CreateMaybeMessage<::VP9IVF>(Arena*);
 template <>
 ::VP9SignedInteger* Arena::CreateMaybeMessage<::VP9SignedInteger>(Arena*);
+template <>
+::VideoColorSpace* Arena::CreateMaybeMessage<::VideoColorSpace>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
 enum UncompressedHeader_ColorConfig_ColorSpace : int {
@@ -246,7 +252,7 @@ constexpr UncompressedHeader_ColorConfig_ColorSpace UncompressedHeader_ColorConf
 constexpr UncompressedHeader_ColorConfig_ColorSpace UncompressedHeader_ColorConfig_ColorSpace_ColorSpace_MAX = UncompressedHeader_ColorConfig_ColorSpace_CS_RGB;
 constexpr int UncompressedHeader_ColorConfig_ColorSpace_ColorSpace_ARRAYSIZE = UncompressedHeader_ColorConfig_ColorSpace_ColorSpace_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UncompressedHeader_ColorConfig_ColorSpace_descriptor();
+const std::string& UncompressedHeader_ColorConfig_ColorSpace_Name(UncompressedHeader_ColorConfig_ColorSpace value);
 template<typename T>
 inline const std::string& UncompressedHeader_ColorConfig_ColorSpace_Name(T enum_t_value) {
   static_assert(::std::is_same<T, UncompressedHeader_ColorConfig_ColorSpace>::value ||
@@ -254,16 +260,8 @@ inline const std::string& UncompressedHeader_ColorConfig_ColorSpace_Name(T enum_
     "Incorrect type passed to function UncompressedHeader_ColorConfig_ColorSpace_Name.");
   return UncompressedHeader_ColorConfig_ColorSpace_Name(static_cast<UncompressedHeader_ColorConfig_ColorSpace>(enum_t_value));
 }
-template<>
-inline const std::string& UncompressedHeader_ColorConfig_ColorSpace_Name(UncompressedHeader_ColorConfig_ColorSpace value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <UncompressedHeader_ColorConfig_ColorSpace_descriptor, 0, 7>(static_cast<int>(value));
-}
-inline bool UncompressedHeader_ColorConfig_ColorSpace_Parse(
-    ::absl::string_view name, UncompressedHeader_ColorConfig_ColorSpace* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UncompressedHeader_ColorConfig_ColorSpace>(
-    UncompressedHeader_ColorConfig_ColorSpace_descriptor(), name, value);
-}
+bool UncompressedHeader_ColorConfig_ColorSpace_Parse(
+    ::absl::string_view name, UncompressedHeader_ColorConfig_ColorSpace* value);
 enum UncompressedHeader_FrameType : int {
   UncompressedHeader_FrameType_KEY_FRAME = 0,
   UncompressedHeader_FrameType_NON_KEY_FRAME = 1,
@@ -275,7 +273,7 @@ constexpr UncompressedHeader_FrameType UncompressedHeader_FrameType_FrameType_MI
 constexpr UncompressedHeader_FrameType UncompressedHeader_FrameType_FrameType_MAX = UncompressedHeader_FrameType_NON_KEY_FRAME;
 constexpr int UncompressedHeader_FrameType_FrameType_ARRAYSIZE = UncompressedHeader_FrameType_FrameType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UncompressedHeader_FrameType_descriptor();
+const std::string& UncompressedHeader_FrameType_Name(UncompressedHeader_FrameType value);
 template<typename T>
 inline const std::string& UncompressedHeader_FrameType_Name(T enum_t_value) {
   static_assert(::std::is_same<T, UncompressedHeader_FrameType>::value ||
@@ -283,16 +281,8 @@ inline const std::string& UncompressedHeader_FrameType_Name(T enum_t_value) {
     "Incorrect type passed to function UncompressedHeader_FrameType_Name.");
   return UncompressedHeader_FrameType_Name(static_cast<UncompressedHeader_FrameType>(enum_t_value));
 }
-template<>
-inline const std::string& UncompressedHeader_FrameType_Name(UncompressedHeader_FrameType value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <UncompressedHeader_FrameType_descriptor, 0, 1>(static_cast<int>(value));
-}
-inline bool UncompressedHeader_FrameType_Parse(
-    ::absl::string_view name, UncompressedHeader_FrameType* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UncompressedHeader_FrameType>(
-    UncompressedHeader_FrameType_descriptor(), name, value);
-}
+bool UncompressedHeader_FrameType_Parse(
+    ::absl::string_view name, UncompressedHeader_FrameType* value);
 enum UncompressedHeader_InterpolationFilter : int {
   UncompressedHeader_InterpolationFilter_EIGHTTAP = 0,
   UncompressedHeader_InterpolationFilter_EIGHTTAP_SMOOTH = 1,
@@ -307,7 +297,7 @@ constexpr UncompressedHeader_InterpolationFilter UncompressedHeader_Interpolatio
 constexpr UncompressedHeader_InterpolationFilter UncompressedHeader_InterpolationFilter_InterpolationFilter_MAX = UncompressedHeader_InterpolationFilter_SWITCHABLE;
 constexpr int UncompressedHeader_InterpolationFilter_InterpolationFilter_ARRAYSIZE = UncompressedHeader_InterpolationFilter_InterpolationFilter_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* UncompressedHeader_InterpolationFilter_descriptor();
+const std::string& UncompressedHeader_InterpolationFilter_Name(UncompressedHeader_InterpolationFilter value);
 template<typename T>
 inline const std::string& UncompressedHeader_InterpolationFilter_Name(T enum_t_value) {
   static_assert(::std::is_same<T, UncompressedHeader_InterpolationFilter>::value ||
@@ -315,16 +305,8 @@ inline const std::string& UncompressedHeader_InterpolationFilter_Name(T enum_t_v
     "Incorrect type passed to function UncompressedHeader_InterpolationFilter_Name.");
   return UncompressedHeader_InterpolationFilter_Name(static_cast<UncompressedHeader_InterpolationFilter>(enum_t_value));
 }
-template<>
-inline const std::string& UncompressedHeader_InterpolationFilter_Name(UncompressedHeader_InterpolationFilter value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <UncompressedHeader_InterpolationFilter_descriptor, 0, 4>(static_cast<int>(value));
-}
-inline bool UncompressedHeader_InterpolationFilter_Parse(
-    ::absl::string_view name, UncompressedHeader_InterpolationFilter* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<UncompressedHeader_InterpolationFilter>(
-    UncompressedHeader_InterpolationFilter_descriptor(), name, value);
-}
+bool UncompressedHeader_InterpolationFilter_Parse(
+    ::absl::string_view name, UncompressedHeader_InterpolationFilter* value);
 enum CompressedHeader_TxMode : int {
   CompressedHeader_TxMode_ONLY_4X4 = 0,
   CompressedHeader_TxMode_ALLOW_8X8 = 1,
@@ -339,7 +321,7 @@ constexpr CompressedHeader_TxMode CompressedHeader_TxMode_TxMode_MIN = Compresse
 constexpr CompressedHeader_TxMode CompressedHeader_TxMode_TxMode_MAX = CompressedHeader_TxMode_TX_MODE_SELECT;
 constexpr int CompressedHeader_TxMode_TxMode_ARRAYSIZE = CompressedHeader_TxMode_TxMode_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* CompressedHeader_TxMode_descriptor();
+const std::string& CompressedHeader_TxMode_Name(CompressedHeader_TxMode value);
 template<typename T>
 inline const std::string& CompressedHeader_TxMode_Name(T enum_t_value) {
   static_assert(::std::is_same<T, CompressedHeader_TxMode>::value ||
@@ -347,16 +329,8 @@ inline const std::string& CompressedHeader_TxMode_Name(T enum_t_value) {
     "Incorrect type passed to function CompressedHeader_TxMode_Name.");
   return CompressedHeader_TxMode_Name(static_cast<CompressedHeader_TxMode>(enum_t_value));
 }
-template<>
-inline const std::string& CompressedHeader_TxMode_Name(CompressedHeader_TxMode value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <CompressedHeader_TxMode_descriptor, 0, 4>(static_cast<int>(value));
-}
-inline bool CompressedHeader_TxMode_Parse(
-    ::absl::string_view name, CompressedHeader_TxMode* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<CompressedHeader_TxMode>(
-    CompressedHeader_TxMode_descriptor(), name, value);
-}
+bool CompressedHeader_TxMode_Parse(
+    ::absl::string_view name, CompressedHeader_TxMode* value);
 enum VP9BitField : int {
   ZERO = 0,
   ONE = 1,
@@ -368,7 +342,7 @@ constexpr VP9BitField VP9BitField_MIN = ZERO;
 constexpr VP9BitField VP9BitField_MAX = ONE;
 constexpr int VP9BitField_ARRAYSIZE = VP9BitField_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* VP9BitField_descriptor();
+const std::string& VP9BitField_Name(VP9BitField value);
 template<typename T>
 inline const std::string& VP9BitField_Name(T enum_t_value) {
   static_assert(::std::is_same<T, VP9BitField>::value ||
@@ -376,16 +350,8 @@ inline const std::string& VP9BitField_Name(T enum_t_value) {
     "Incorrect type passed to function VP9BitField_Name.");
   return VP9BitField_Name(static_cast<VP9BitField>(enum_t_value));
 }
-template<>
-inline const std::string& VP9BitField_Name(VP9BitField value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfDenseEnum
-    <VP9BitField_descriptor, 0, 1>(static_cast<int>(value));
-}
-inline bool VP9BitField_Parse(
-    ::absl::string_view name, VP9BitField* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<VP9BitField>(
-    VP9BitField_descriptor(), name, value);
-}
+bool VP9BitField_Parse(
+    ::absl::string_view name, VP9BitField* value);
 
 // ===================================================================
 
@@ -393,7 +359,7 @@ inline bool VP9BitField_Parse(
 // -------------------------------------------------------------------
 
 class VP9SignedInteger final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9SignedInteger) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:VP9SignedInteger) */ {
  public:
   inline VP9SignedInteger() : VP9SignedInteger(nullptr) {}
   ~VP9SignedInteger() override;
@@ -423,15 +389,6 @@ class VP9SignedInteger final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const VP9SignedInteger& default_instance() {
     return *internal_default_instance();
   }
@@ -469,15 +426,9 @@ class VP9SignedInteger final :
   VP9SignedInteger* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<VP9SignedInteger>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const VP9SignedInteger& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const VP9SignedInteger& from) {
-    VP9SignedInteger::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const VP9SignedInteger& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -490,7 +441,7 @@ class VP9SignedInteger final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(VP9SignedInteger* other);
 
   private:
@@ -503,10 +454,7 @@ class VP9SignedInteger final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -556,7 +504,7 @@ class VP9SignedInteger final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_ColorConfig final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.ColorConfig) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.ColorConfig) */ {
  public:
   inline UncompressedHeader_ColorConfig() : UncompressedHeader_ColorConfig(nullptr) {}
   ~UncompressedHeader_ColorConfig() override;
@@ -586,15 +534,6 @@ class UncompressedHeader_ColorConfig final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_ColorConfig& default_instance() {
     return *internal_default_instance();
   }
@@ -632,15 +571,9 @@ class UncompressedHeader_ColorConfig final :
   UncompressedHeader_ColorConfig* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_ColorConfig>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_ColorConfig& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_ColorConfig& from) {
-    UncompressedHeader_ColorConfig::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_ColorConfig& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -653,7 +586,7 @@ class UncompressedHeader_ColorConfig final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_ColorConfig* other);
 
   private:
@@ -666,10 +599,7 @@ class UncompressedHeader_ColorConfig final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -699,10 +629,6 @@ class UncompressedHeader_ColorConfig final :
     UncompressedHeader_ColorConfig_ColorSpace_ColorSpace_MAX;
   static constexpr int ColorSpace_ARRAYSIZE =
     UncompressedHeader_ColorConfig_ColorSpace_ColorSpace_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  ColorSpace_descriptor() {
-    return UncompressedHeader_ColorConfig_ColorSpace_descriptor();
-  }
   template<typename T>
   static inline const std::string& ColorSpace_Name(T enum_t_value) {
     static_assert(::std::is_same<T, ColorSpace>::value ||
@@ -800,7 +726,7 @@ class UncompressedHeader_ColorConfig final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_FrameSize final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.FrameSize) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.FrameSize) */ {
  public:
   inline UncompressedHeader_FrameSize() : UncompressedHeader_FrameSize(nullptr) {}
   ~UncompressedHeader_FrameSize() override;
@@ -830,15 +756,6 @@ class UncompressedHeader_FrameSize final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_FrameSize& default_instance() {
     return *internal_default_instance();
   }
@@ -876,15 +793,9 @@ class UncompressedHeader_FrameSize final :
   UncompressedHeader_FrameSize* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_FrameSize>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_FrameSize& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_FrameSize& from) {
-    UncompressedHeader_FrameSize::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_FrameSize& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -897,7 +808,7 @@ class UncompressedHeader_FrameSize final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_FrameSize* other);
 
   private:
@@ -910,10 +821,7 @@ class UncompressedHeader_FrameSize final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -958,7 +866,7 @@ class UncompressedHeader_FrameSize final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_RenderSize final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.RenderSize) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.RenderSize) */ {
  public:
   inline UncompressedHeader_RenderSize() : UncompressedHeader_RenderSize(nullptr) {}
   ~UncompressedHeader_RenderSize() override;
@@ -988,15 +896,6 @@ class UncompressedHeader_RenderSize final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_RenderSize& default_instance() {
     return *internal_default_instance();
   }
@@ -1034,15 +933,9 @@ class UncompressedHeader_RenderSize final :
   UncompressedHeader_RenderSize* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_RenderSize>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_RenderSize& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_RenderSize& from) {
-    UncompressedHeader_RenderSize::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_RenderSize& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1055,7 +948,7 @@ class UncompressedHeader_RenderSize final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_RenderSize* other);
 
   private:
@@ -1068,10 +961,7 @@ class UncompressedHeader_RenderSize final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1127,7 +1017,7 @@ class UncompressedHeader_RenderSize final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_ReadInterpolationFilter final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.ReadInterpolationFilter) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.ReadInterpolationFilter) */ {
  public:
   inline UncompressedHeader_ReadInterpolationFilter() : UncompressedHeader_ReadInterpolationFilter(nullptr) {}
   ~UncompressedHeader_ReadInterpolationFilter() override;
@@ -1157,15 +1047,6 @@ class UncompressedHeader_ReadInterpolationFilter final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_ReadInterpolationFilter& default_instance() {
     return *internal_default_instance();
   }
@@ -1203,15 +1084,9 @@ class UncompressedHeader_ReadInterpolationFilter final :
   UncompressedHeader_ReadInterpolationFilter* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_ReadInterpolationFilter>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_ReadInterpolationFilter& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_ReadInterpolationFilter& from) {
-    UncompressedHeader_ReadInterpolationFilter::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_ReadInterpolationFilter& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1224,7 +1099,7 @@ class UncompressedHeader_ReadInterpolationFilter final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_ReadInterpolationFilter* other);
 
   private:
@@ -1237,10 +1112,7 @@ class UncompressedHeader_ReadInterpolationFilter final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1285,7 +1157,7 @@ class UncompressedHeader_ReadInterpolationFilter final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_LoopFilterParams_RefDelta final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams.RefDelta) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams.RefDelta) */ {
  public:
   inline UncompressedHeader_LoopFilterParams_RefDelta() : UncompressedHeader_LoopFilterParams_RefDelta(nullptr) {}
   ~UncompressedHeader_LoopFilterParams_RefDelta() override;
@@ -1315,15 +1187,6 @@ class UncompressedHeader_LoopFilterParams_RefDelta final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_LoopFilterParams_RefDelta& default_instance() {
     return *internal_default_instance();
   }
@@ -1361,15 +1224,9 @@ class UncompressedHeader_LoopFilterParams_RefDelta final :
   UncompressedHeader_LoopFilterParams_RefDelta* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_LoopFilterParams_RefDelta>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_LoopFilterParams_RefDelta& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_LoopFilterParams_RefDelta& from) {
-    UncompressedHeader_LoopFilterParams_RefDelta::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_LoopFilterParams_RefDelta& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1382,7 +1239,7 @@ class UncompressedHeader_LoopFilterParams_RefDelta final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_LoopFilterParams_RefDelta* other);
 
   private:
@@ -1395,10 +1252,7 @@ class UncompressedHeader_LoopFilterParams_RefDelta final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1452,7 +1306,7 @@ class UncompressedHeader_LoopFilterParams_RefDelta final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_LoopFilterParams_ModeDelta final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams.ModeDelta) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams.ModeDelta) */ {
  public:
   inline UncompressedHeader_LoopFilterParams_ModeDelta() : UncompressedHeader_LoopFilterParams_ModeDelta(nullptr) {}
   ~UncompressedHeader_LoopFilterParams_ModeDelta() override;
@@ -1482,15 +1336,6 @@ class UncompressedHeader_LoopFilterParams_ModeDelta final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_LoopFilterParams_ModeDelta& default_instance() {
     return *internal_default_instance();
   }
@@ -1528,15 +1373,9 @@ class UncompressedHeader_LoopFilterParams_ModeDelta final :
   UncompressedHeader_LoopFilterParams_ModeDelta* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_LoopFilterParams_ModeDelta>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_LoopFilterParams_ModeDelta& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_LoopFilterParams_ModeDelta& from) {
-    UncompressedHeader_LoopFilterParams_ModeDelta::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_LoopFilterParams_ModeDelta& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1549,7 +1388,7 @@ class UncompressedHeader_LoopFilterParams_ModeDelta final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_LoopFilterParams_ModeDelta* other);
 
   private:
@@ -1562,10 +1401,7 @@ class UncompressedHeader_LoopFilterParams_ModeDelta final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1619,7 +1455,7 @@ class UncompressedHeader_LoopFilterParams_ModeDelta final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_LoopFilterParams final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.LoopFilterParams) */ {
  public:
   inline UncompressedHeader_LoopFilterParams() : UncompressedHeader_LoopFilterParams(nullptr) {}
   ~UncompressedHeader_LoopFilterParams() override;
@@ -1649,15 +1485,6 @@ class UncompressedHeader_LoopFilterParams final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_LoopFilterParams& default_instance() {
     return *internal_default_instance();
   }
@@ -1695,15 +1522,9 @@ class UncompressedHeader_LoopFilterParams final :
   UncompressedHeader_LoopFilterParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_LoopFilterParams>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_LoopFilterParams& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_LoopFilterParams& from) {
-    UncompressedHeader_LoopFilterParams::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_LoopFilterParams& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1716,7 +1537,7 @@ class UncompressedHeader_LoopFilterParams final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_LoopFilterParams* other);
 
   private:
@@ -1729,10 +1550,7 @@ class UncompressedHeader_LoopFilterParams final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1842,7 +1660,7 @@ class UncompressedHeader_LoopFilterParams final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.QuantizationParams.ReadDeltaQ) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.QuantizationParams.ReadDeltaQ) */ {
  public:
   inline UncompressedHeader_QuantizationParams_ReadDeltaQ() : UncompressedHeader_QuantizationParams_ReadDeltaQ(nullptr) {}
   ~UncompressedHeader_QuantizationParams_ReadDeltaQ() override;
@@ -1872,15 +1690,6 @@ class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_QuantizationParams_ReadDeltaQ& default_instance() {
     return *internal_default_instance();
   }
@@ -1918,15 +1727,9 @@ class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
   UncompressedHeader_QuantizationParams_ReadDeltaQ* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_QuantizationParams_ReadDeltaQ>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_QuantizationParams_ReadDeltaQ& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_QuantizationParams_ReadDeltaQ& from) {
-    UncompressedHeader_QuantizationParams_ReadDeltaQ::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_QuantizationParams_ReadDeltaQ& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1939,7 +1742,7 @@ class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_QuantizationParams_ReadDeltaQ* other);
 
   private:
@@ -1952,10 +1755,7 @@ class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2009,7 +1809,7 @@ class UncompressedHeader_QuantizationParams_ReadDeltaQ final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_QuantizationParams final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.QuantizationParams) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.QuantizationParams) */ {
  public:
   inline UncompressedHeader_QuantizationParams() : UncompressedHeader_QuantizationParams(nullptr) {}
   ~UncompressedHeader_QuantizationParams() override;
@@ -2039,15 +1839,6 @@ class UncompressedHeader_QuantizationParams final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_QuantizationParams& default_instance() {
     return *internal_default_instance();
   }
@@ -2085,15 +1876,9 @@ class UncompressedHeader_QuantizationParams final :
   UncompressedHeader_QuantizationParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_QuantizationParams>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_QuantizationParams& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_QuantizationParams& from) {
-    UncompressedHeader_QuantizationParams::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_QuantizationParams& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2106,7 +1891,7 @@ class UncompressedHeader_QuantizationParams final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_QuantizationParams* other);
 
   private:
@@ -2119,10 +1904,7 @@ class UncompressedHeader_QuantizationParams final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2218,7 +2000,7 @@ class UncompressedHeader_QuantizationParams final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_TileInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.TileInfo) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.TileInfo) */ {
  public:
   inline UncompressedHeader_TileInfo() : UncompressedHeader_TileInfo(nullptr) {}
   ~UncompressedHeader_TileInfo() override;
@@ -2248,15 +2030,6 @@ class UncompressedHeader_TileInfo final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_TileInfo& default_instance() {
     return *internal_default_instance();
   }
@@ -2294,15 +2067,9 @@ class UncompressedHeader_TileInfo final :
   UncompressedHeader_TileInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_TileInfo>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_TileInfo& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_TileInfo& from) {
-    UncompressedHeader_TileInfo::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_TileInfo& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2315,7 +2082,7 @@ class UncompressedHeader_TileInfo final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_TileInfo* other);
 
   private:
@@ -2328,10 +2095,7 @@ class UncompressedHeader_TileInfo final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2396,7 +2160,7 @@ class UncompressedHeader_TileInfo final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_SegmentationParams_ReadProb final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.ReadProb) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.ReadProb) */ {
  public:
   inline UncompressedHeader_SegmentationParams_ReadProb() : UncompressedHeader_SegmentationParams_ReadProb(nullptr) {}
   ~UncompressedHeader_SegmentationParams_ReadProb() override;
@@ -2426,15 +2190,6 @@ class UncompressedHeader_SegmentationParams_ReadProb final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_SegmentationParams_ReadProb& default_instance() {
     return *internal_default_instance();
   }
@@ -2472,15 +2227,9 @@ class UncompressedHeader_SegmentationParams_ReadProb final :
   UncompressedHeader_SegmentationParams_ReadProb* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_SegmentationParams_ReadProb>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_SegmentationParams_ReadProb& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_SegmentationParams_ReadProb& from) {
-    UncompressedHeader_SegmentationParams_ReadProb::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_SegmentationParams_ReadProb& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2493,7 +2242,7 @@ class UncompressedHeader_SegmentationParams_ReadProb final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_SegmentationParams_ReadProb* other);
 
   private:
@@ -2506,10 +2255,7 @@ class UncompressedHeader_SegmentationParams_ReadProb final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2554,7 +2300,7 @@ class UncompressedHeader_SegmentationParams_ReadProb final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_SegmentationParams_Feature final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.Feature) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams.Feature) */ {
  public:
   inline UncompressedHeader_SegmentationParams_Feature() : UncompressedHeader_SegmentationParams_Feature(nullptr) {}
   ~UncompressedHeader_SegmentationParams_Feature() override;
@@ -2584,15 +2330,6 @@ class UncompressedHeader_SegmentationParams_Feature final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_SegmentationParams_Feature& default_instance() {
     return *internal_default_instance();
   }
@@ -2630,15 +2367,9 @@ class UncompressedHeader_SegmentationParams_Feature final :
   UncompressedHeader_SegmentationParams_Feature* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_SegmentationParams_Feature>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_SegmentationParams_Feature& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_SegmentationParams_Feature& from) {
-    UncompressedHeader_SegmentationParams_Feature::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_SegmentationParams_Feature& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2651,7 +2382,7 @@ class UncompressedHeader_SegmentationParams_Feature final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_SegmentationParams_Feature* other);
 
   private:
@@ -2664,10 +2395,7 @@ class UncompressedHeader_SegmentationParams_Feature final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2728,7 +2456,7 @@ class UncompressedHeader_SegmentationParams_Feature final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader_SegmentationParams final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader.SegmentationParams) */ {
  public:
   inline UncompressedHeader_SegmentationParams() : UncompressedHeader_SegmentationParams(nullptr) {}
   ~UncompressedHeader_SegmentationParams() override;
@@ -2758,15 +2486,6 @@ class UncompressedHeader_SegmentationParams final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader_SegmentationParams& default_instance() {
     return *internal_default_instance();
   }
@@ -2804,15 +2523,9 @@ class UncompressedHeader_SegmentationParams final :
   UncompressedHeader_SegmentationParams* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader_SegmentationParams>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader_SegmentationParams& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader_SegmentationParams& from) {
-    UncompressedHeader_SegmentationParams::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader_SegmentationParams& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2825,7 +2538,7 @@ class UncompressedHeader_SegmentationParams final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader_SegmentationParams* other);
 
   private:
@@ -2838,10 +2551,7 @@ class UncompressedHeader_SegmentationParams final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2962,7 +2672,7 @@ class UncompressedHeader_SegmentationParams final :
 };// -------------------------------------------------------------------
 
 class UncompressedHeader final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:UncompressedHeader) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:UncompressedHeader) */ {
  public:
   inline UncompressedHeader() : UncompressedHeader(nullptr) {}
   ~UncompressedHeader() override;
@@ -2992,15 +2702,6 @@ class UncompressedHeader final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const UncompressedHeader& default_instance() {
     return *internal_default_instance();
   }
@@ -3038,15 +2739,9 @@ class UncompressedHeader final :
   UncompressedHeader* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<UncompressedHeader>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const UncompressedHeader& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const UncompressedHeader& from) {
-    UncompressedHeader::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const UncompressedHeader& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3059,7 +2754,7 @@ class UncompressedHeader final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(UncompressedHeader* other);
 
   private:
@@ -3072,10 +2767,7 @@ class UncompressedHeader final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3102,10 +2794,6 @@ class UncompressedHeader final :
     UncompressedHeader_FrameType_FrameType_MAX;
   static constexpr int FrameType_ARRAYSIZE =
     UncompressedHeader_FrameType_FrameType_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  FrameType_descriptor() {
-    return UncompressedHeader_FrameType_descriptor();
-  }
   template<typename T>
   static inline const std::string& FrameType_Name(T enum_t_value) {
     static_assert(::std::is_same<T, FrameType>::value ||
@@ -3138,10 +2826,6 @@ class UncompressedHeader final :
     UncompressedHeader_InterpolationFilter_InterpolationFilter_MAX;
   static constexpr int InterpolationFilter_ARRAYSIZE =
     UncompressedHeader_InterpolationFilter_InterpolationFilter_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  InterpolationFilter_descriptor() {
-    return UncompressedHeader_InterpolationFilter_descriptor();
-  }
   template<typename T>
   static inline const std::string& InterpolationFilter_Name(T enum_t_value) {
     static_assert(::std::is_same<T, InterpolationFilter>::value ||
@@ -3565,7 +3249,7 @@ class UncompressedHeader final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadTxMode final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadTxMode) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadTxMode) */ {
  public:
   inline CompressedHeader_ReadTxMode() : CompressedHeader_ReadTxMode(nullptr) {}
   ~CompressedHeader_ReadTxMode() override;
@@ -3595,15 +3279,6 @@ class CompressedHeader_ReadTxMode final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadTxMode& default_instance() {
     return *internal_default_instance();
   }
@@ -3641,15 +3316,9 @@ class CompressedHeader_ReadTxMode final :
   CompressedHeader_ReadTxMode* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadTxMode>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadTxMode& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadTxMode& from) {
-    CompressedHeader_ReadTxMode::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadTxMode& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3662,7 +3331,7 @@ class CompressedHeader_ReadTxMode final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadTxMode* other);
 
   private:
@@ -3675,10 +3344,7 @@ class CompressedHeader_ReadTxMode final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3723,7 +3389,7 @@ class CompressedHeader_ReadTxMode final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_DecodeTermSubexp final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.DecodeTermSubexp) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.DecodeTermSubexp) */ {
  public:
   inline CompressedHeader_DecodeTermSubexp() : CompressedHeader_DecodeTermSubexp(nullptr) {}
   ~CompressedHeader_DecodeTermSubexp() override;
@@ -3753,15 +3419,6 @@ class CompressedHeader_DecodeTermSubexp final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_DecodeTermSubexp& default_instance() {
     return *internal_default_instance();
   }
@@ -3799,15 +3456,9 @@ class CompressedHeader_DecodeTermSubexp final :
   CompressedHeader_DecodeTermSubexp* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_DecodeTermSubexp>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_DecodeTermSubexp& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_DecodeTermSubexp& from) {
-    CompressedHeader_DecodeTermSubexp::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_DecodeTermSubexp& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3820,7 +3471,7 @@ class CompressedHeader_DecodeTermSubexp final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_DecodeTermSubexp* other);
 
   private:
@@ -3833,10 +3484,7 @@ class CompressedHeader_DecodeTermSubexp final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3947,7 +3595,7 @@ class CompressedHeader_DecodeTermSubexp final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_DiffUpdateProb final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.DiffUpdateProb) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.DiffUpdateProb) */ {
  public:
   inline CompressedHeader_DiffUpdateProb() : CompressedHeader_DiffUpdateProb(nullptr) {}
   ~CompressedHeader_DiffUpdateProb() override;
@@ -3977,15 +3625,6 @@ class CompressedHeader_DiffUpdateProb final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_DiffUpdateProb& default_instance() {
     return *internal_default_instance();
   }
@@ -4023,15 +3662,9 @@ class CompressedHeader_DiffUpdateProb final :
   CompressedHeader_DiffUpdateProb* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_DiffUpdateProb>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_DiffUpdateProb& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_DiffUpdateProb& from) {
-    CompressedHeader_DiffUpdateProb::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_DiffUpdateProb& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4044,7 +3677,7 @@ class CompressedHeader_DiffUpdateProb final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_DiffUpdateProb* other);
 
   private:
@@ -4057,10 +3690,7 @@ class CompressedHeader_DiffUpdateProb final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4114,7 +3744,7 @@ class CompressedHeader_DiffUpdateProb final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_TxModeProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.TxModeProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.TxModeProbs) */ {
  public:
   inline CompressedHeader_TxModeProbs() : CompressedHeader_TxModeProbs(nullptr) {}
   ~CompressedHeader_TxModeProbs() override;
@@ -4144,15 +3774,6 @@ class CompressedHeader_TxModeProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_TxModeProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -4190,15 +3811,9 @@ class CompressedHeader_TxModeProbs final :
   CompressedHeader_TxModeProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_TxModeProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_TxModeProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_TxModeProbs& from) {
-    CompressedHeader_TxModeProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_TxModeProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4211,7 +3826,7 @@ class CompressedHeader_TxModeProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_TxModeProbs* other);
 
   private:
@@ -4224,10 +3839,7 @@ class CompressedHeader_TxModeProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4270,7 +3882,7 @@ class CompressedHeader_TxModeProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadCoefProbs.ReadCoefProbsLoop) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadCoefProbs.ReadCoefProbsLoop) */ {
  public:
   inline CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop() : CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop(nullptr) {}
   ~CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop() override;
@@ -4300,15 +3912,6 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& default_instance() {
     return *internal_default_instance();
   }
@@ -4346,15 +3949,9 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
   CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& from) {
-    CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4367,7 +3964,7 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop* other);
 
   private:
@@ -4380,10 +3977,7 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4437,7 +4031,7 @@ class CompressedHeader_ReadCoefProbs_ReadCoefProbsLoop final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadCoefProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadCoefProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadCoefProbs) */ {
  public:
   inline CompressedHeader_ReadCoefProbs() : CompressedHeader_ReadCoefProbs(nullptr) {}
   ~CompressedHeader_ReadCoefProbs() override;
@@ -4467,15 +4061,6 @@ class CompressedHeader_ReadCoefProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadCoefProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -4513,15 +4098,9 @@ class CompressedHeader_ReadCoefProbs final :
   CompressedHeader_ReadCoefProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadCoefProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadCoefProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadCoefProbs& from) {
-    CompressedHeader_ReadCoefProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadCoefProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4534,7 +4113,7 @@ class CompressedHeader_ReadCoefProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadCoefProbs* other);
 
   private:
@@ -4547,10 +4126,7 @@ class CompressedHeader_ReadCoefProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4595,7 +4171,7 @@ class CompressedHeader_ReadCoefProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadSkipProb final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadSkipProb) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadSkipProb) */ {
  public:
   inline CompressedHeader_ReadSkipProb() : CompressedHeader_ReadSkipProb(nullptr) {}
   ~CompressedHeader_ReadSkipProb() override;
@@ -4625,15 +4201,6 @@ class CompressedHeader_ReadSkipProb final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadSkipProb& default_instance() {
     return *internal_default_instance();
   }
@@ -4671,15 +4238,9 @@ class CompressedHeader_ReadSkipProb final :
   CompressedHeader_ReadSkipProb* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadSkipProb>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadSkipProb& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadSkipProb& from) {
-    CompressedHeader_ReadSkipProb::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadSkipProb& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4692,7 +4253,7 @@ class CompressedHeader_ReadSkipProb final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadSkipProb* other);
 
   private:
@@ -4705,10 +4266,7 @@ class CompressedHeader_ReadSkipProb final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4751,7 +4309,7 @@ class CompressedHeader_ReadSkipProb final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadInterModeProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadInterModeProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadInterModeProbs) */ {
  public:
   inline CompressedHeader_ReadInterModeProbs() : CompressedHeader_ReadInterModeProbs(nullptr) {}
   ~CompressedHeader_ReadInterModeProbs() override;
@@ -4781,15 +4339,6 @@ class CompressedHeader_ReadInterModeProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadInterModeProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -4827,15 +4376,9 @@ class CompressedHeader_ReadInterModeProbs final :
   CompressedHeader_ReadInterModeProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadInterModeProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadInterModeProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadInterModeProbs& from) {
-    CompressedHeader_ReadInterModeProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadInterModeProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4848,7 +4391,7 @@ class CompressedHeader_ReadInterModeProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadInterModeProbs* other);
 
   private:
@@ -4861,10 +4404,7 @@ class CompressedHeader_ReadInterModeProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4907,7 +4447,7 @@ class CompressedHeader_ReadInterModeProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadInterpFilterProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadInterpFilterProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadInterpFilterProbs) */ {
  public:
   inline CompressedHeader_ReadInterpFilterProbs() : CompressedHeader_ReadInterpFilterProbs(nullptr) {}
   ~CompressedHeader_ReadInterpFilterProbs() override;
@@ -4937,15 +4477,6 @@ class CompressedHeader_ReadInterpFilterProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadInterpFilterProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -4983,15 +4514,9 @@ class CompressedHeader_ReadInterpFilterProbs final :
   CompressedHeader_ReadInterpFilterProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadInterpFilterProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadInterpFilterProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadInterpFilterProbs& from) {
-    CompressedHeader_ReadInterpFilterProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadInterpFilterProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5004,7 +4529,7 @@ class CompressedHeader_ReadInterpFilterProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadInterpFilterProbs* other);
 
   private:
@@ -5017,10 +4542,7 @@ class CompressedHeader_ReadInterpFilterProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5063,7 +4585,7 @@ class CompressedHeader_ReadInterpFilterProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadIsInterProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadIsInterProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadIsInterProbs) */ {
  public:
   inline CompressedHeader_ReadIsInterProbs() : CompressedHeader_ReadIsInterProbs(nullptr) {}
   ~CompressedHeader_ReadIsInterProbs() override;
@@ -5093,15 +4615,6 @@ class CompressedHeader_ReadIsInterProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadIsInterProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -5139,15 +4652,9 @@ class CompressedHeader_ReadIsInterProbs final :
   CompressedHeader_ReadIsInterProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadIsInterProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadIsInterProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadIsInterProbs& from) {
-    CompressedHeader_ReadIsInterProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadIsInterProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5160,7 +4667,7 @@ class CompressedHeader_ReadIsInterProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadIsInterProbs* other);
 
   private:
@@ -5173,10 +4680,7 @@ class CompressedHeader_ReadIsInterProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5219,7 +4723,7 @@ class CompressedHeader_ReadIsInterProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_FrameReferenceMode final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.FrameReferenceMode) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.FrameReferenceMode) */ {
  public:
   inline CompressedHeader_FrameReferenceMode() : CompressedHeader_FrameReferenceMode(nullptr) {}
   ~CompressedHeader_FrameReferenceMode() override;
@@ -5249,15 +4753,6 @@ class CompressedHeader_FrameReferenceMode final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_FrameReferenceMode& default_instance() {
     return *internal_default_instance();
   }
@@ -5295,15 +4790,9 @@ class CompressedHeader_FrameReferenceMode final :
   CompressedHeader_FrameReferenceMode* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_FrameReferenceMode>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_FrameReferenceMode& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_FrameReferenceMode& from) {
-    CompressedHeader_FrameReferenceMode::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_FrameReferenceMode& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5316,7 +4805,7 @@ class CompressedHeader_FrameReferenceMode final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_FrameReferenceMode* other);
 
   private:
@@ -5329,10 +4818,7 @@ class CompressedHeader_FrameReferenceMode final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5377,7 +4863,7 @@ class CompressedHeader_FrameReferenceMode final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_FrameReferenceModeProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.FrameReferenceModeProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.FrameReferenceModeProbs) */ {
  public:
   inline CompressedHeader_FrameReferenceModeProbs() : CompressedHeader_FrameReferenceModeProbs(nullptr) {}
   ~CompressedHeader_FrameReferenceModeProbs() override;
@@ -5407,15 +4893,6 @@ class CompressedHeader_FrameReferenceModeProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_FrameReferenceModeProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -5453,15 +4930,9 @@ class CompressedHeader_FrameReferenceModeProbs final :
   CompressedHeader_FrameReferenceModeProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_FrameReferenceModeProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_FrameReferenceModeProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_FrameReferenceModeProbs& from) {
-    CompressedHeader_FrameReferenceModeProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_FrameReferenceModeProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5474,7 +4945,7 @@ class CompressedHeader_FrameReferenceModeProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_FrameReferenceModeProbs* other);
 
   private:
@@ -5487,10 +4958,7 @@ class CompressedHeader_FrameReferenceModeProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5533,7 +5001,7 @@ class CompressedHeader_FrameReferenceModeProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadYModeProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadYModeProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadYModeProbs) */ {
  public:
   inline CompressedHeader_ReadYModeProbs() : CompressedHeader_ReadYModeProbs(nullptr) {}
   ~CompressedHeader_ReadYModeProbs() override;
@@ -5563,15 +5031,6 @@ class CompressedHeader_ReadYModeProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadYModeProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -5609,15 +5068,9 @@ class CompressedHeader_ReadYModeProbs final :
   CompressedHeader_ReadYModeProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadYModeProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadYModeProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadYModeProbs& from) {
-    CompressedHeader_ReadYModeProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadYModeProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5630,7 +5083,7 @@ class CompressedHeader_ReadYModeProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadYModeProbs* other);
 
   private:
@@ -5643,10 +5096,7 @@ class CompressedHeader_ReadYModeProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5689,7 +5139,7 @@ class CompressedHeader_ReadYModeProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_ReadPartitionProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadPartitionProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.ReadPartitionProbs) */ {
  public:
   inline CompressedHeader_ReadPartitionProbs() : CompressedHeader_ReadPartitionProbs(nullptr) {}
   ~CompressedHeader_ReadPartitionProbs() override;
@@ -5719,15 +5169,6 @@ class CompressedHeader_ReadPartitionProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_ReadPartitionProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -5765,15 +5206,9 @@ class CompressedHeader_ReadPartitionProbs final :
   CompressedHeader_ReadPartitionProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_ReadPartitionProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_ReadPartitionProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_ReadPartitionProbs& from) {
-    CompressedHeader_ReadPartitionProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_ReadPartitionProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5786,7 +5221,7 @@ class CompressedHeader_ReadPartitionProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_ReadPartitionProbs* other);
 
   private:
@@ -5799,10 +5234,7 @@ class CompressedHeader_ReadPartitionProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5845,7 +5277,7 @@ class CompressedHeader_ReadPartitionProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_MvProbs_MvProbsLoop final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.MvProbs.MvProbsLoop) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.MvProbs.MvProbsLoop) */ {
  public:
   inline CompressedHeader_MvProbs_MvProbsLoop() : CompressedHeader_MvProbs_MvProbsLoop(nullptr) {}
   ~CompressedHeader_MvProbs_MvProbsLoop() override;
@@ -5875,15 +5307,6 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_MvProbs_MvProbsLoop& default_instance() {
     return *internal_default_instance();
   }
@@ -5921,15 +5344,9 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
   CompressedHeader_MvProbs_MvProbsLoop* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_MvProbs_MvProbsLoop>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_MvProbs_MvProbsLoop& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_MvProbs_MvProbsLoop& from) {
-    CompressedHeader_MvProbs_MvProbsLoop::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_MvProbs_MvProbsLoop& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5942,7 +5359,7 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_MvProbs_MvProbsLoop* other);
 
   private:
@@ -5955,10 +5372,7 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6003,7 +5417,7 @@ class CompressedHeader_MvProbs_MvProbsLoop final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader_MvProbs final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader.MvProbs) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader.MvProbs) */ {
  public:
   inline CompressedHeader_MvProbs() : CompressedHeader_MvProbs(nullptr) {}
   ~CompressedHeader_MvProbs() override;
@@ -6033,15 +5447,6 @@ class CompressedHeader_MvProbs final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader_MvProbs& default_instance() {
     return *internal_default_instance();
   }
@@ -6079,15 +5484,9 @@ class CompressedHeader_MvProbs final :
   CompressedHeader_MvProbs* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader_MvProbs>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader_MvProbs& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader_MvProbs& from) {
-    CompressedHeader_MvProbs::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader_MvProbs& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6100,7 +5499,7 @@ class CompressedHeader_MvProbs final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader_MvProbs* other);
 
   private:
@@ -6113,10 +5512,7 @@ class CompressedHeader_MvProbs final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6161,7 +5557,7 @@ class CompressedHeader_MvProbs final :
 };// -------------------------------------------------------------------
 
 class CompressedHeader final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:CompressedHeader) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:CompressedHeader) */ {
  public:
   inline CompressedHeader() : CompressedHeader(nullptr) {}
   ~CompressedHeader() override;
@@ -6191,15 +5587,6 @@ class CompressedHeader final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CompressedHeader& default_instance() {
     return *internal_default_instance();
   }
@@ -6237,15 +5624,9 @@ class CompressedHeader final :
   CompressedHeader* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CompressedHeader>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const CompressedHeader& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const CompressedHeader& from) {
-    CompressedHeader::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const CompressedHeader& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6258,7 +5639,7 @@ class CompressedHeader final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CompressedHeader* other);
 
   private:
@@ -6271,10 +5652,7 @@ class CompressedHeader final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6313,10 +5691,6 @@ class CompressedHeader final :
     CompressedHeader_TxMode_TxMode_MAX;
   static constexpr int TxMode_ARRAYSIZE =
     CompressedHeader_TxMode_TxMode_ARRAYSIZE;
-  static inline const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor*
-  TxMode_descriptor() {
-    return CompressedHeader_TxMode_descriptor();
-  }
   template<typename T>
   static inline const std::string& TxMode_Name(T enum_t_value) {
     static_assert(::std::is_same<T, TxMode>::value ||
@@ -6588,7 +5962,7 @@ class CompressedHeader final :
 };// -------------------------------------------------------------------
 
 class Tile final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Tile) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:Tile) */ {
  public:
   inline Tile() : Tile(nullptr) {}
   ~Tile() override;
@@ -6618,15 +5992,6 @@ class Tile final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Tile& default_instance() {
     return *internal_default_instance();
   }
@@ -6664,15 +6029,9 @@ class Tile final :
   Tile* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Tile>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const Tile& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Tile& from) {
-    Tile::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const Tile& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6685,7 +6044,7 @@ class Tile final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Tile* other);
 
   private:
@@ -6698,10 +6057,7 @@ class Tile final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6740,7 +6096,7 @@ class Tile final :
 };// -------------------------------------------------------------------
 
 class VP9Frame final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9Frame) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:VP9Frame) */ {
  public:
   inline VP9Frame() : VP9Frame(nullptr) {}
   ~VP9Frame() override;
@@ -6770,15 +6126,6 @@ class VP9Frame final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const VP9Frame& default_instance() {
     return *internal_default_instance();
   }
@@ -6816,15 +6163,9 @@ class VP9Frame final :
   VP9Frame* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<VP9Frame>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const VP9Frame& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const VP9Frame& from) {
-    VP9Frame::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const VP9Frame& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6837,7 +6178,7 @@ class VP9Frame final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(VP9Frame* other);
 
   private:
@@ -6850,10 +6191,7 @@ class VP9Frame final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6935,8 +6273,170 @@ class VP9Frame final :
   friend struct ::TableStruct_vp9_2eproto;
 };// -------------------------------------------------------------------
 
+class VideoColorSpace final :
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:VideoColorSpace) */ {
+ public:
+  inline VideoColorSpace() : VideoColorSpace(nullptr) {}
+  ~VideoColorSpace() override;
+  explicit PROTOBUF_CONSTEXPR VideoColorSpace(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VideoColorSpace(const VideoColorSpace& from);
+  VideoColorSpace(VideoColorSpace&& from) noexcept
+    : VideoColorSpace() {
+    *this = ::std::move(from);
+  }
+
+  inline VideoColorSpace& operator=(const VideoColorSpace& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VideoColorSpace& operator=(VideoColorSpace&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const VideoColorSpace& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VideoColorSpace* internal_default_instance() {
+    return reinterpret_cast<const VideoColorSpace*>(
+               &_VideoColorSpace_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    34;
+
+  friend void swap(VideoColorSpace& a, VideoColorSpace& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VideoColorSpace* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VideoColorSpace* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  VideoColorSpace* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<VideoColorSpace>(arena);
+  }
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
+  void CopyFrom(const VideoColorSpace& from);
+  void MergeFrom(const VideoColorSpace& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(VideoColorSpace* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "VideoColorSpace";
+  }
+  protected:
+  explicit VideoColorSpace(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  std::string GetTypeName() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPrimariesFieldNumber = 1,
+    kTransferFieldNumber = 2,
+    kMatrixFieldNumber = 3,
+    kRangeFieldNumber = 4,
+  };
+  // uint32 primaries = 1;
+  void clear_primaries();
+  uint32_t primaries() const;
+  void set_primaries(uint32_t value);
+  private:
+  uint32_t _internal_primaries() const;
+  void _internal_set_primaries(uint32_t value);
+  public:
+
+  // uint32 transfer = 2;
+  void clear_transfer();
+  uint32_t transfer() const;
+  void set_transfer(uint32_t value);
+  private:
+  uint32_t _internal_transfer() const;
+  void _internal_set_transfer(uint32_t value);
+  public:
+
+  // uint32 matrix = 3;
+  void clear_matrix();
+  uint32_t matrix() const;
+  void set_matrix(uint32_t value);
+  private:
+  uint32_t _internal_matrix() const;
+  void _internal_set_matrix(uint32_t value);
+  public:
+
+  // .VP9BitField range = 4;
+  void clear_range();
+  ::VP9BitField range() const;
+  void set_range(::VP9BitField value);
+  private:
+  ::VP9BitField _internal_range() const;
+  void _internal_set_range(::VP9BitField value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:VideoColorSpace)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint32_t primaries_;
+    uint32_t transfer_;
+    uint32_t matrix_;
+    int range_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vp9_2eproto;
+};// -------------------------------------------------------------------
+
 class VP9IVF final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:VP9IVF) */ {
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:VP9IVF) */ {
  public:
   inline VP9IVF() : VP9IVF(nullptr) {}
   ~VP9IVF() override;
@@ -6966,15 +6466,6 @@ class VP9IVF final :
     return *this;
   }
 
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const VP9IVF& default_instance() {
     return *internal_default_instance();
   }
@@ -6983,7 +6474,7 @@ class VP9IVF final :
                &_VP9IVF_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    34;
+    35;
 
   friend void swap(VP9IVF& a, VP9IVF& b) {
     a.Swap(&b);
@@ -7012,15 +6503,9 @@ class VP9IVF final :
   VP9IVF* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<VP9IVF>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
   void CopyFrom(const VP9IVF& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const VP9IVF& from) {
-    VP9IVF::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
+  void MergeFrom(const VP9IVF& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -7033,7 +6518,7 @@ class VP9IVF final :
   private:
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(VP9IVF* other);
 
   private:
@@ -7046,10 +6531,7 @@ class VP9IVF final :
                        bool is_message_owned = false);
   public:
 
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -7125,6 +6607,252 @@ class VP9IVF final :
     ::VP9Frame* vp9_frame_1_;
     ::VP9Frame* vp9_frame_2_;
     ::VP9Frame* vp9_frame_3_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_vp9_2eproto;
+};// -------------------------------------------------------------------
+
+class VP9Fuzz final :
+    public ::PROTOBUF_NAMESPACE_ID::MessageLite /* @@protoc_insertion_point(class_definition:VP9Fuzz) */ {
+ public:
+  inline VP9Fuzz() : VP9Fuzz(nullptr) {}
+  ~VP9Fuzz() override;
+  explicit PROTOBUF_CONSTEXPR VP9Fuzz(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  VP9Fuzz(const VP9Fuzz& from);
+  VP9Fuzz(VP9Fuzz&& from) noexcept
+    : VP9Fuzz() {
+    *this = ::std::move(from);
+  }
+
+  inline VP9Fuzz& operator=(const VP9Fuzz& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline VP9Fuzz& operator=(VP9Fuzz&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const VP9Fuzz& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const VP9Fuzz* internal_default_instance() {
+    return reinterpret_cast<const VP9Fuzz*>(
+               &_VP9Fuzz_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    36;
+
+  friend void swap(VP9Fuzz& a, VP9Fuzz& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(VP9Fuzz* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(VP9Fuzz* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  VP9Fuzz* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<VP9Fuzz>(arena);
+  }
+  void CheckTypeAndMergeFrom(const ::PROTOBUF_NAMESPACE_ID::MessageLite& from)  final;
+  void CopyFrom(const VP9Fuzz& from);
+  void MergeFrom(const VP9Fuzz& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(VP9Fuzz* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "VP9Fuzz";
+  }
+  protected:
+  explicit VP9Fuzz(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  std::string GetTypeName() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kColorSpaceFieldNumber = 3,
+    kIvfFieldNumber = 10,
+    kHasAlphaFieldNumber = 1,
+    kProfileFieldNumber = 2,
+    kRotationFieldNumber = 4,
+    kCodedSizeWidthFieldNumber = 5,
+    kCodedSizeHeightFieldNumber = 6,
+    kNaturalSizeWidthFieldNumber = 7,
+    kNaturalSizeHeightFieldNumber = 8,
+    kReflectionFieldNumber = 9,
+  };
+  // .VideoColorSpace color_space = 3;
+  bool has_color_space() const;
+  private:
+  bool _internal_has_color_space() const;
+  public:
+  void clear_color_space();
+  const ::VideoColorSpace& color_space() const;
+  PROTOBUF_NODISCARD ::VideoColorSpace* release_color_space();
+  ::VideoColorSpace* mutable_color_space();
+  void set_allocated_color_space(::VideoColorSpace* color_space);
+  private:
+  const ::VideoColorSpace& _internal_color_space() const;
+  ::VideoColorSpace* _internal_mutable_color_space();
+  public:
+  void unsafe_arena_set_allocated_color_space(
+      ::VideoColorSpace* color_space);
+  ::VideoColorSpace* unsafe_arena_release_color_space();
+
+  // .VP9IVF ivf = 10;
+  bool has_ivf() const;
+  private:
+  bool _internal_has_ivf() const;
+  public:
+  void clear_ivf();
+  const ::VP9IVF& ivf() const;
+  PROTOBUF_NODISCARD ::VP9IVF* release_ivf();
+  ::VP9IVF* mutable_ivf();
+  void set_allocated_ivf(::VP9IVF* ivf);
+  private:
+  const ::VP9IVF& _internal_ivf() const;
+  ::VP9IVF* _internal_mutable_ivf();
+  public:
+  void unsafe_arena_set_allocated_ivf(
+      ::VP9IVF* ivf);
+  ::VP9IVF* unsafe_arena_release_ivf();
+
+  // .VP9BitField has_alpha = 1;
+  void clear_has_alpha();
+  ::VP9BitField has_alpha() const;
+  void set_has_alpha(::VP9BitField value);
+  private:
+  ::VP9BitField _internal_has_alpha() const;
+  void _internal_set_has_alpha(::VP9BitField value);
+  public:
+
+  // uint32 profile = 2;
+  void clear_profile();
+  uint32_t profile() const;
+  void set_profile(uint32_t value);
+  private:
+  uint32_t _internal_profile() const;
+  void _internal_set_profile(uint32_t value);
+  public:
+
+  // uint32 rotation = 4;
+  void clear_rotation();
+  uint32_t rotation() const;
+  void set_rotation(uint32_t value);
+  private:
+  uint32_t _internal_rotation() const;
+  void _internal_set_rotation(uint32_t value);
+  public:
+
+  // uint32 coded_size_width = 5;
+  void clear_coded_size_width();
+  uint32_t coded_size_width() const;
+  void set_coded_size_width(uint32_t value);
+  private:
+  uint32_t _internal_coded_size_width() const;
+  void _internal_set_coded_size_width(uint32_t value);
+  public:
+
+  // uint32 coded_size_height = 6;
+  void clear_coded_size_height();
+  uint32_t coded_size_height() const;
+  void set_coded_size_height(uint32_t value);
+  private:
+  uint32_t _internal_coded_size_height() const;
+  void _internal_set_coded_size_height(uint32_t value);
+  public:
+
+  // uint32 natural_size_width = 7;
+  void clear_natural_size_width();
+  uint32_t natural_size_width() const;
+  void set_natural_size_width(uint32_t value);
+  private:
+  uint32_t _internal_natural_size_width() const;
+  void _internal_set_natural_size_width(uint32_t value);
+  public:
+
+  // uint32 natural_size_height = 8;
+  void clear_natural_size_height();
+  uint32_t natural_size_height() const;
+  void set_natural_size_height(uint32_t value);
+  private:
+  uint32_t _internal_natural_size_height() const;
+  void _internal_set_natural_size_height(uint32_t value);
+  public:
+
+  // uint32 reflection = 9;
+  void clear_reflection();
+  uint32_t reflection() const;
+  void set_reflection(uint32_t value);
+  private:
+  uint32_t _internal_reflection() const;
+  void _internal_set_reflection(uint32_t value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:VP9Fuzz)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::VideoColorSpace* color_space_;
+    ::VP9IVF* ivf_;
+    int has_alpha_;
+    uint32_t profile_;
+    uint32_t rotation_;
+    uint32_t coded_size_width_;
+    uint32_t coded_size_height_;
+    uint32_t natural_size_width_;
+    uint32_t natural_size_height_;
+    uint32_t reflection_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -12133,6 +11861,90 @@ VP9Frame::tile() const {
 
 // -------------------------------------------------------------------
 
+// VideoColorSpace
+
+// uint32 primaries = 1;
+inline void VideoColorSpace::clear_primaries() {
+  _impl_.primaries_ = 0u;
+}
+inline uint32_t VideoColorSpace::_internal_primaries() const {
+  return _impl_.primaries_;
+}
+inline uint32_t VideoColorSpace::primaries() const {
+  // @@protoc_insertion_point(field_get:VideoColorSpace.primaries)
+  return _internal_primaries();
+}
+inline void VideoColorSpace::_internal_set_primaries(uint32_t value) {
+
+  _impl_.primaries_ = value;
+}
+inline void VideoColorSpace::set_primaries(uint32_t value) {
+  _internal_set_primaries(value);
+  // @@protoc_insertion_point(field_set:VideoColorSpace.primaries)
+}
+
+// uint32 transfer = 2;
+inline void VideoColorSpace::clear_transfer() {
+  _impl_.transfer_ = 0u;
+}
+inline uint32_t VideoColorSpace::_internal_transfer() const {
+  return _impl_.transfer_;
+}
+inline uint32_t VideoColorSpace::transfer() const {
+  // @@protoc_insertion_point(field_get:VideoColorSpace.transfer)
+  return _internal_transfer();
+}
+inline void VideoColorSpace::_internal_set_transfer(uint32_t value) {
+
+  _impl_.transfer_ = value;
+}
+inline void VideoColorSpace::set_transfer(uint32_t value) {
+  _internal_set_transfer(value);
+  // @@protoc_insertion_point(field_set:VideoColorSpace.transfer)
+}
+
+// uint32 matrix = 3;
+inline void VideoColorSpace::clear_matrix() {
+  _impl_.matrix_ = 0u;
+}
+inline uint32_t VideoColorSpace::_internal_matrix() const {
+  return _impl_.matrix_;
+}
+inline uint32_t VideoColorSpace::matrix() const {
+  // @@protoc_insertion_point(field_get:VideoColorSpace.matrix)
+  return _internal_matrix();
+}
+inline void VideoColorSpace::_internal_set_matrix(uint32_t value) {
+
+  _impl_.matrix_ = value;
+}
+inline void VideoColorSpace::set_matrix(uint32_t value) {
+  _internal_set_matrix(value);
+  // @@protoc_insertion_point(field_set:VideoColorSpace.matrix)
+}
+
+// .VP9BitField range = 4;
+inline void VideoColorSpace::clear_range() {
+  _impl_.range_ = 0;
+}
+inline ::VP9BitField VideoColorSpace::_internal_range() const {
+  return static_cast< ::VP9BitField >(_impl_.range_);
+}
+inline ::VP9BitField VideoColorSpace::range() const {
+  // @@protoc_insertion_point(field_get:VideoColorSpace.range)
+  return _internal_range();
+}
+inline void VideoColorSpace::_internal_set_range(::VP9BitField value) {
+  
+  _impl_.range_ = value;
+}
+inline void VideoColorSpace::set_range(::VP9BitField value) {
+  _internal_set_range(value);
+  // @@protoc_insertion_point(field_set:VideoColorSpace.range)
+}
+
+// -------------------------------------------------------------------
+
 // VP9IVF
 
 // .VP9Frame vp9_frame_1 = 1;
@@ -12405,6 +12217,350 @@ inline void VP9IVF::set_allocated_vp9_frame_3(::VP9Frame* vp9_frame_3) {
   // @@protoc_insertion_point(field_set_allocated:VP9IVF.vp9_frame_3)
 }
 
+// -------------------------------------------------------------------
+
+// VP9Fuzz
+
+// .VP9BitField has_alpha = 1;
+inline void VP9Fuzz::clear_has_alpha() {
+  _impl_.has_alpha_ = 0;
+}
+inline ::VP9BitField VP9Fuzz::_internal_has_alpha() const {
+  return static_cast< ::VP9BitField >(_impl_.has_alpha_);
+}
+inline ::VP9BitField VP9Fuzz::has_alpha() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.has_alpha)
+  return _internal_has_alpha();
+}
+inline void VP9Fuzz::_internal_set_has_alpha(::VP9BitField value) {
+  
+  _impl_.has_alpha_ = value;
+}
+inline void VP9Fuzz::set_has_alpha(::VP9BitField value) {
+  _internal_set_has_alpha(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.has_alpha)
+}
+
+// uint32 profile = 2;
+inline void VP9Fuzz::clear_profile() {
+  _impl_.profile_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_profile() const {
+  return _impl_.profile_;
+}
+inline uint32_t VP9Fuzz::profile() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.profile)
+  return _internal_profile();
+}
+inline void VP9Fuzz::_internal_set_profile(uint32_t value) {
+
+  _impl_.profile_ = value;
+}
+inline void VP9Fuzz::set_profile(uint32_t value) {
+  _internal_set_profile(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.profile)
+}
+
+// .VideoColorSpace color_space = 3;
+inline bool VP9Fuzz::_internal_has_color_space() const {
+  return this != internal_default_instance() && _impl_.color_space_ != nullptr;
+}
+inline bool VP9Fuzz::has_color_space() const {
+  return _internal_has_color_space();
+}
+inline void VP9Fuzz::clear_color_space() {
+  if (GetArenaForAllocation() == nullptr && _impl_.color_space_ != nullptr) {
+    delete _impl_.color_space_;
+  }
+  _impl_.color_space_ = nullptr;
+}
+inline const ::VideoColorSpace& VP9Fuzz::_internal_color_space() const {
+  const ::VideoColorSpace* p = _impl_.color_space_;
+  return p != nullptr ? *p : reinterpret_cast<const ::VideoColorSpace&>(
+      ::_VideoColorSpace_default_instance_);
+}
+inline const ::VideoColorSpace& VP9Fuzz::color_space() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.color_space)
+  return _internal_color_space();
+}
+inline void VP9Fuzz::unsafe_arena_set_allocated_color_space(
+    ::VideoColorSpace* color_space) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.color_space_);
+  }
+  _impl_.color_space_ = color_space;
+  if (color_space) {
+
+  } else {
+
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:VP9Fuzz.color_space)
+}
+inline ::VideoColorSpace* VP9Fuzz::release_color_space() {
+  
+  ::VideoColorSpace* temp = _impl_.color_space_;
+  _impl_.color_space_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::VideoColorSpace* VP9Fuzz::unsafe_arena_release_color_space() {
+  // @@protoc_insertion_point(field_release:VP9Fuzz.color_space)
+  
+  ::VideoColorSpace* temp = _impl_.color_space_;
+  _impl_.color_space_ = nullptr;
+  return temp;
+}
+inline ::VideoColorSpace* VP9Fuzz::_internal_mutable_color_space() {
+  
+  if (_impl_.color_space_ == nullptr) {
+    auto* p = CreateMaybeMessage<::VideoColorSpace>(GetArenaForAllocation());
+    _impl_.color_space_ = p;
+  }
+  return _impl_.color_space_;
+}
+inline ::VideoColorSpace* VP9Fuzz::mutable_color_space() {
+  ::VideoColorSpace* _msg = _internal_mutable_color_space();
+  // @@protoc_insertion_point(field_mutable:VP9Fuzz.color_space)
+  return _msg;
+}
+inline void VP9Fuzz::set_allocated_color_space(::VideoColorSpace* color_space) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.color_space_;
+  }
+  if (color_space) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(color_space);
+    if (message_arena != submessage_arena) {
+      color_space = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, color_space, submessage_arena);
+    }
+
+  } else {
+
+  }
+  _impl_.color_space_ = color_space;
+  // @@protoc_insertion_point(field_set_allocated:VP9Fuzz.color_space)
+}
+
+// uint32 rotation = 4;
+inline void VP9Fuzz::clear_rotation() {
+  _impl_.rotation_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_rotation() const {
+  return _impl_.rotation_;
+}
+inline uint32_t VP9Fuzz::rotation() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.rotation)
+  return _internal_rotation();
+}
+inline void VP9Fuzz::_internal_set_rotation(uint32_t value) {
+
+  _impl_.rotation_ = value;
+}
+inline void VP9Fuzz::set_rotation(uint32_t value) {
+  _internal_set_rotation(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.rotation)
+}
+
+// uint32 coded_size_width = 5;
+inline void VP9Fuzz::clear_coded_size_width() {
+  _impl_.coded_size_width_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_coded_size_width() const {
+  return _impl_.coded_size_width_;
+}
+inline uint32_t VP9Fuzz::coded_size_width() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.coded_size_width)
+  return _internal_coded_size_width();
+}
+inline void VP9Fuzz::_internal_set_coded_size_width(uint32_t value) {
+
+  _impl_.coded_size_width_ = value;
+}
+inline void VP9Fuzz::set_coded_size_width(uint32_t value) {
+  _internal_set_coded_size_width(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.coded_size_width)
+}
+
+// uint32 coded_size_height = 6;
+inline void VP9Fuzz::clear_coded_size_height() {
+  _impl_.coded_size_height_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_coded_size_height() const {
+  return _impl_.coded_size_height_;
+}
+inline uint32_t VP9Fuzz::coded_size_height() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.coded_size_height)
+  return _internal_coded_size_height();
+}
+inline void VP9Fuzz::_internal_set_coded_size_height(uint32_t value) {
+
+  _impl_.coded_size_height_ = value;
+}
+inline void VP9Fuzz::set_coded_size_height(uint32_t value) {
+  _internal_set_coded_size_height(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.coded_size_height)
+}
+
+// uint32 natural_size_width = 7;
+inline void VP9Fuzz::clear_natural_size_width() {
+  _impl_.natural_size_width_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_natural_size_width() const {
+  return _impl_.natural_size_width_;
+}
+inline uint32_t VP9Fuzz::natural_size_width() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.natural_size_width)
+  return _internal_natural_size_width();
+}
+inline void VP9Fuzz::_internal_set_natural_size_width(uint32_t value) {
+
+  _impl_.natural_size_width_ = value;
+}
+inline void VP9Fuzz::set_natural_size_width(uint32_t value) {
+  _internal_set_natural_size_width(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.natural_size_width)
+}
+
+// uint32 natural_size_height = 8;
+inline void VP9Fuzz::clear_natural_size_height() {
+  _impl_.natural_size_height_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_natural_size_height() const {
+  return _impl_.natural_size_height_;
+}
+inline uint32_t VP9Fuzz::natural_size_height() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.natural_size_height)
+  return _internal_natural_size_height();
+}
+inline void VP9Fuzz::_internal_set_natural_size_height(uint32_t value) {
+
+  _impl_.natural_size_height_ = value;
+}
+inline void VP9Fuzz::set_natural_size_height(uint32_t value) {
+  _internal_set_natural_size_height(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.natural_size_height)
+}
+
+// uint32 reflection = 9;
+inline void VP9Fuzz::clear_reflection() {
+  _impl_.reflection_ = 0u;
+}
+inline uint32_t VP9Fuzz::_internal_reflection() const {
+  return _impl_.reflection_;
+}
+inline uint32_t VP9Fuzz::reflection() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.reflection)
+  return _internal_reflection();
+}
+inline void VP9Fuzz::_internal_set_reflection(uint32_t value) {
+
+  _impl_.reflection_ = value;
+}
+inline void VP9Fuzz::set_reflection(uint32_t value) {
+  _internal_set_reflection(value);
+  // @@protoc_insertion_point(field_set:VP9Fuzz.reflection)
+}
+
+// .VP9IVF ivf = 10;
+inline bool VP9Fuzz::_internal_has_ivf() const {
+  return this != internal_default_instance() && _impl_.ivf_ != nullptr;
+}
+inline bool VP9Fuzz::has_ivf() const {
+  return _internal_has_ivf();
+}
+inline void VP9Fuzz::clear_ivf() {
+  if (GetArenaForAllocation() == nullptr && _impl_.ivf_ != nullptr) {
+    delete _impl_.ivf_;
+  }
+  _impl_.ivf_ = nullptr;
+}
+inline const ::VP9IVF& VP9Fuzz::_internal_ivf() const {
+  const ::VP9IVF* p = _impl_.ivf_;
+  return p != nullptr ? *p : reinterpret_cast<const ::VP9IVF&>(
+      ::_VP9IVF_default_instance_);
+}
+inline const ::VP9IVF& VP9Fuzz::ivf() const {
+  // @@protoc_insertion_point(field_get:VP9Fuzz.ivf)
+  return _internal_ivf();
+}
+inline void VP9Fuzz::unsafe_arena_set_allocated_ivf(
+    ::VP9IVF* ivf) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.ivf_);
+  }
+  _impl_.ivf_ = ivf;
+  if (ivf) {
+
+  } else {
+
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:VP9Fuzz.ivf)
+}
+inline ::VP9IVF* VP9Fuzz::release_ivf() {
+  
+  ::VP9IVF* temp = _impl_.ivf_;
+  _impl_.ivf_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
+}
+inline ::VP9IVF* VP9Fuzz::unsafe_arena_release_ivf() {
+  // @@protoc_insertion_point(field_release:VP9Fuzz.ivf)
+  
+  ::VP9IVF* temp = _impl_.ivf_;
+  _impl_.ivf_ = nullptr;
+  return temp;
+}
+inline ::VP9IVF* VP9Fuzz::_internal_mutable_ivf() {
+  
+  if (_impl_.ivf_ == nullptr) {
+    auto* p = CreateMaybeMessage<::VP9IVF>(GetArenaForAllocation());
+    _impl_.ivf_ = p;
+  }
+  return _impl_.ivf_;
+}
+inline ::VP9IVF* VP9Fuzz::mutable_ivf() {
+  ::VP9IVF* _msg = _internal_mutable_ivf();
+  // @@protoc_insertion_point(field_mutable:VP9Fuzz.ivf)
+  return _msg;
+}
+inline void VP9Fuzz::set_allocated_ivf(::VP9IVF* ivf) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete _impl_.ivf_;
+  }
+  if (ivf) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(ivf);
+    if (message_arena != submessage_arena) {
+      ivf = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, ivf, submessage_arena);
+    }
+
+  } else {
+
+  }
+  _impl_.ivf_ = ivf;
+  // @@protoc_insertion_point(field_set_allocated:VP9Fuzz.ivf)
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -12415,30 +12571,10 @@ inline void VP9IVF::set_allocated_vp9_frame_3(::VP9Frame* vp9_frame_3) {
 PROTOBUF_NAMESPACE_OPEN
 
 template <> struct is_proto_enum< ::UncompressedHeader_ColorConfig_ColorSpace> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::UncompressedHeader_ColorConfig_ColorSpace>() {
-  return ::UncompressedHeader_ColorConfig_ColorSpace_descriptor();
-}
 template <> struct is_proto_enum< ::UncompressedHeader_FrameType> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::UncompressedHeader_FrameType>() {
-  return ::UncompressedHeader_FrameType_descriptor();
-}
 template <> struct is_proto_enum< ::UncompressedHeader_InterpolationFilter> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::UncompressedHeader_InterpolationFilter>() {
-  return ::UncompressedHeader_InterpolationFilter_descriptor();
-}
 template <> struct is_proto_enum< ::CompressedHeader_TxMode> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::CompressedHeader_TxMode>() {
-  return ::CompressedHeader_TxMode_descriptor();
-}
 template <> struct is_proto_enum< ::VP9BitField> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::VP9BitField>() {
-  return ::VP9BitField_descriptor();
-}
 
 PROTOBUF_NAMESPACE_CLOSE
 

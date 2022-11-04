@@ -881,34 +881,34 @@ public:
     WriteBitUIntPos(((uint8_t*)&frame_size_bytes)[3], 8, start_pos + 24);
   }
 
-  void WriteVP9Frames(VP9IVF* vp9_ivf) {
-    // Write IVF marker
-    WriteBitString("DKIF", 32);
-    // Write Version Number
-    WriteBitString("\x00\x00", 16);
-    // Write length of header
-    WriteBitString("\x20\x00", 16);
-    // Write VP9 FourCC
-    WriteBitString("VP90", 32);
-    // Write Pixel Width
-    WriteBitString("\x00\x00", 16);
-    // Write Pixel Height
-    WriteBitString("\x00\x00", 16);
-    // Write Time Denominator (1000)
-    WriteBitString("\xE8\x03\x00\x00", 32);
-    // Write Time Numerator (1)
-    WriteBitString("\x01\x00\x00\x00", 32);
-    // Write number of frames in tile
-    uint32_t frame_count = vp9_ivf->has_vp9_frame_1() +
-                           vp9_ivf->has_vp9_frame_2() +
-                           vp9_ivf->has_vp9_frame_3();
-    WriteBitUInt(((uint8_t*) &frame_count)[0], 8); // little endian :P
-    WriteBitUInt(((uint8_t*) &frame_count)[1], 8);
-    // Write unused bytes
-    WriteBitString("MICH", 32);
-    // Write frames
-    if (vp9_ivf->has_vp9_frame_1()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_1());
-    if (vp9_ivf->has_vp9_frame_2()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_2());
-    if (vp9_ivf->has_vp9_frame_3()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_3());
-  }
+  // void WriteVP9Frames(VP9IVF* vp9_ivf) {
+  //   // Write IVF marker
+  //   WriteBitString("DKIF", 32);
+  //   // Write Version Number
+  //   WriteBitString("\x00\x00", 16);
+  //   // Write length of header
+  //   WriteBitString("\x20\x00", 16);
+  //   // Write VP9 FourCC
+  //   WriteBitString("VP90", 32);
+  //   // Write Pixel Width
+  //   WriteBitString("\x00\x00", 16);
+  //   // Write Pixel Height
+  //   WriteBitString("\x00\x00", 16);
+  //   // Write Time Denominator (1000)
+  //   WriteBitString("\xE8\x03\x00\x00", 32);
+  //   // Write Time Numerator (1)
+  //   WriteBitString("\x01\x00\x00\x00", 32);
+  //   // Write number of frames in tile
+  //   uint32_t frame_count = vp9_ivf->has_vp9_frame_1() +
+  //                          vp9_ivf->has_vp9_frame_2() +
+  //                          vp9_ivf->has_vp9_frame_3();
+  //   WriteBitUInt(((uint8_t*) &frame_count)[0], 8); // little endian :P
+  //   WriteBitUInt(((uint8_t*) &frame_count)[1], 8);
+  //   // Write unused bytes
+  //   WriteBitString("MICH", 32);
+  //   // Write frames
+  //   if (vp9_ivf->has_vp9_frame_1()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_1());
+  //   if (vp9_ivf->has_vp9_frame_2()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_2());
+  //   if (vp9_ivf->has_vp9_frame_3()) WriteVP9FrameWithIVFHeader(&vp9_ivf->vp9_frame_3());
+  // }
 };

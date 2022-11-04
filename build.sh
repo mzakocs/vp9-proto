@@ -1,2 +1,2 @@
 export BAZEL_CXXOPTS="-std=c++14"
-bazel build :all --compilation_mode=dbg
+bazel build :vp9_to_proto --compilation_mode=dbg $1

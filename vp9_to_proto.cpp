@@ -131,7 +131,7 @@ int64_t ReadBool(int64_t p) {
   }
 
   {
-    const unsigned char shift = vpx_norm[(unsigned char)range];
+    const unsigned char shift = VP9Fuzzer::vpx_norm[(unsigned char)range];
     range <<= shift;
     value <<= shift;
     count -= shift;
@@ -373,8 +373,8 @@ UncompressedHeader_SegmentationParams* ReadVP9SegmentationParams() {
           feature->set_feature_enabled(feature_enabled);
 
           if (feature_enabled == 1) {
-            feature->set_feature_value(ReadBitString(segmentation_feature_bits[j]));
-            if (segmentation_feature_signed[j] == 1) {
+            feature->set_feature_value(ReadBitString(VP9Fuzzer::segmentation_feature_bits[j]));
+            if (VP9Fuzzer::segmentation_feature_signed[j] == 1) {
               feature->set_feature_sign((VP9BitField) ReadBitUInt(1));
             }
           }
@@ -643,7 +643,7 @@ CompressedHeader_TxModeProbs* ReadVP9TxModeProbs() {
 
 CompressedHeader_ReadCoefProbs* ReadVP9ReadCoefProbs() {
   auto read_coef_probs = new CompressedHeader_ReadCoefProbs();
-  for (uint32_t txSz = TX_4X4; txSz <= tx_mode_to_biggest_tx_size[tx_mode]; ++txSz) {
+  for (uint32_t txSz = VP9Fuzzer::TX_4X4; txSz <= VP9Fuzzer::tx_mode_to_biggest_tx_size[tx_mode]; ++txSz) {
     read_coef_probs->add_read_coef_probs();
     auto loop_obj = read_coef_probs->mutable_read_coef_probs(txSz);
 
@@ -715,22 +715,22 @@ CompressedHeader_FrameReferenceMode* ReadVP9FrameReferenceMode() {
     frame_reference_mode->set_non_single_reference(non_single_reference);
 
     if (non_single_reference == 0) {
-      reference_mode = SINGLE_REFERENCE;
+      reference_mode = VP9Fuzzer::SINGLE_REFERENCE;
     }
     else {
       VP9BitField reference_select = (VP9BitField) ReadLiteral(1);
       frame_reference_mode->set_reference_select(reference_select);
 
       if (reference_select == 0) {
-        reference_mode = COMPOUND_REFERENCE;
+        reference_mode = VP9Fuzzer::COMPOUND_REFERENCE;
       }
       else {
-        reference_mode = REFERENCE_MODE_SELECT;
+        reference_mode = VP9Fuzzer::REFERENCE_MODE_SELECT;
       }
     }
   }
   else {
-    reference_mode = SINGLE_REFERENCE;
+    reference_mode = VP9Fuzzer::SINGLE_REFERENCE;
   }
 
   return frame_reference_mode;
@@ -740,19 +740,19 @@ CompressedHeader_FrameReferenceModeProbs* ReadVP9FrameReferenceModeProbs() {
   auto frame_reference_mode_probs = new CompressedHeader_FrameReferenceModeProbs();
   
   uint32_t written_count = 0;
-  if (reference_mode == REFERENCE_MODE_SELECT) {
+  if (reference_mode == VP9Fuzzer::REFERENCE_MODE_SELECT) {
     for (uint32_t i = 0; i < 5; i++) {
       frame_reference_mode_probs->add_diff_update_prob();
       ReadVP9DiffUpdateProb(frame_reference_mode_probs->mutable_diff_update_prob(written_count++));
     }
   }
-  if (reference_mode != COMPOUND_REFERENCE) {
+  if (reference_mode != VP9Fuzzer::COMPOUND_REFERENCE) {
     for (uint32_t i = 0; i < 5; i++) {
       frame_reference_mode_probs->add_diff_update_prob();
       ReadVP9DiffUpdateProb(frame_reference_mode_probs->mutable_diff_update_prob(written_count++));
     }
   }
-  if (reference_mode != SINGLE_REFERENCE) {
+  if (reference_mode != VP9Fuzzer::SINGLE_REFERENCE) {
     for (uint32_t i = 0; i < 5; i++) {
       frame_reference_mode_probs->add_diff_update_prob();
       ReadVP9DiffUpdateProb(frame_reference_mode_probs->mutable_diff_update_prob(written_count++));
@@ -907,7 +907,7 @@ void ReadVP9Frame(VP9Frame* vp9_frame, uint32_t frame_size) {
   std::cout << "Bits Read: " << bit_counter << " / " << bit_buffer.size() << std::endl;
 }
 
-void ReadVP9Frames(VP9IVF* ivf) {
+void ReadVP9Frames(VP9Fuzz* fuzz) {
   // https://wiki.multimedia.cx/index.php/Duck_IVF
   // Reads the first frame of an IVF file
   // Reads 32-byte IVF header
@@ -920,9 +920,10 @@ void ReadVP9Frames(VP9IVF* ivf) {
   bit_counter += 64;
   // Read frame
   auto vp9_frame = new VP9Frame();
+  auto ivf = new VP9IVF();
   ReadVP9Frame(vp9_frame, frame_size);
   ivf->set_allocated_vp9_frame_1(vp9_frame);
-  return;
+  fuzz->set_allocated_ivf(ivf);6
 }
 
 int main(int argc, char** argv) {
@@ -950,13 +951,13 @@ int main(int argc, char** argv) {
   }
 
   // Create VP9 Protobuf Object
-  auto vp9_ivf = new VP9IVF();
+  auto vp9_fuzz = new VP9Fuzz();
   // Convert vp9 binary frame to protobuf
-  ReadVP9Frames(vp9_ivf);
+  ReadVP9Frames(vp9_fuzz);
 
   // Serialize protobuf and store to file
   std::ofstream ofs(argv[2], std::ios_base::out | std::ios_base::binary);
-  vp9_ivf->SerializeToOstream(&ofs);
+  vp9_fuzz->SerializeToOstream(&ofs);
 
   std::cout << "Writing to file " << argv[2] << std::endl;
   return 0;
