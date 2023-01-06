@@ -2,7 +2,8 @@ syntax = "proto3";
 
 /* 
   Protobuf Specification for the VP9 Video Codec 
-  spec: https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf 
+  Written by Mitchell Zakocs, 2022
+  Based on this spec: https://storage.googleapis.com/downloads.webmproject.org/docs/vp9/vp9-bitstream-specification-v0.6-20160331-draft.pdf 
 */
 
 // TODO: Implement SuperFrames

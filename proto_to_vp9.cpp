@@ -3,6 +3,9 @@
 #include <fstream>
 #include <vector>
 
+// Written by Mitchell Zakocs, 2022
+// Experimental code, use at your own risk
+
 // TODO: Add Superframe Support
 // TODO: Add full inter-frame reference support
 // TODO: Add partition/tile tree fields

@@ -7,6 +7,9 @@
 #include "vp9.pb.h"
 #include "vp9_constants.h"
 
+// Written by Mitchell Zakocs, 2022
+// Experimental code, use at your own risk
+
 std::ifstream file;
 std::vector<bool> bit_buffer;
 uint64_t bit_counter = 0;
